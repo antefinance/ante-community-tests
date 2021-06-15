@@ -5,8 +5,8 @@ pragma solidity >=0.7.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./interfaces/AnteTest.sol";
 
-// Ante Test to check alETH supply never exceeds amount of DAI locked in Alchemix
-contract Ante_alETHSupplyTest is AnteTest("alETH doesn't exceed DAI locked in Alchemix") {
+// Ante Test to check alETH supply never exceeds amount of ETH locked in Alchemix
+contract Ante_alETHSupplyTest is AnteTest("alETH doesn't exceed ETH locked in Alchemix") {
     // https://etherscan.io/address/0x0100546F2cD4C9D97f798fFC9755E47865FF7Ee6
     address public constant alETHAddr = 0x0100546F2cD4C9D97f798fFC9755E47865FF7Ee6;
     // https://etherscan.io/token/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
