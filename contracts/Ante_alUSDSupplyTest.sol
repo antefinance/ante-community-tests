@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity >=0.7.0;
+pragma solidity >=0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./interfaces/AnteTest.sol";
+import "./interfaces/IVault.sol";
 
 // Ante Test to check alUSD supply never exceeds amount of DAI locked in Alchemix
 contract Ante_alUSDSupplyTest is AnteTest("alUSD doesn't exceed DAI locked in Alchemix") {
@@ -23,6 +24,7 @@ contract Ante_alUSDSupplyTest is AnteTest("alUSD doesn't exceed DAI locked in Al
     IERC20 public DAIToken = IERC20(DAIAddr);
     IERC20 public alUSDToken = IERC20(alUSDAddr);
     IERC20 public yvDAIToken = IERC20(yvDAIAddr);
+    IVault public yvDAIVault = IVault(yvDAIAddr);
 
     constructor () {
         protocolName = "Alchemix";
@@ -33,33 +35,37 @@ contract Ante_alUSDSupplyTest is AnteTest("alUSD doesn't exceed DAI locked in Al
         uint TransmuterVL = DAIToken.balanceOf(TransmuterAddr) / 1e18;
         uint AlchemistVL = DAIToken.balanceOf(AlchemistAddr) / 1e18;
         uint TransmuterBVL = DAIToken.balanceOf(TransmuterBAddr) / 1e18;
-        uint AlchemistYVAVL = yvDAIToken.balanceOf(AlchemistYVAAddr) / 1e18;
-        uint TransmuterBYVAVL = yvDAIToken.balanceOf(TransmuterBYVAddr) / 1e18;
+        uint PricePerShare = yvDAIVault.pricePerShare();
+        uint AlchemistYVAVL = yvDAIToken.balanceOf(AlchemistYVAAddr) * PricePerShare / 1e36;
+        uint TransmuterBYVAVL = yvDAIToken.balanceOf(TransmuterBYVAddr) * PricePerShare / 1e36;
         uint TotalValueLocked = TransmuterVL + AlchemistVL + TransmuterBVL + AlchemistYVAVL + TransmuterBYVAVL;
         uint TotalSupply = alUSDToken.totalSupply() / 1e18;
         return (TotalSupply <= TotalValueLocked);
     }
-    function CheckTransmuterVL() public view returns (uint) {
+    function checkTransmuterVL() public view returns (uint) {
         return DAIToken.balanceOf(TransmuterAddr) / 1e18;
     }
-    function CheckAlchemistVL() public view returns (uint) {
+    function checkAlchemistVL() public view returns (uint) {
         return DAIToken.balanceOf(AlchemistAddr) / 1e18;
     }
-    function CheckTransmuterBVL() public view returns (uint) {
+    function checkTransmuterBVL() public view returns (uint) {
         return DAIToken.balanceOf(TransmuterBAddr) / 1e18;
     }
-    function CheckAlchemistYVAVL() public view returns (uint) {
-        return yvDAIToken.balanceOf(AlchemistYVAAddr) / 1e18;
+    function checkAlchemistYVAVL() public view returns (uint) {
+        uint PricePerShare = yvDAIVault.pricePerShare();
+        return yvDAIToken.balanceOf(AlchemistYVAAddr) * PricePerShare / 1e36;
     }
-    function CheckTransmuterBYVAVL() public view returns (uint) {
-        return yvDAIToken.balanceOf(TransmuterBYVAddr) / 1e18;
+    function checkTransmuterBYVAVL() public view returns (uint) {
+        uint PricePerShare = yvDAIVault.pricePerShare();
+        return yvDAIToken.balanceOf(TransmuterBYVAddr) * PricePerShare / 1e36;
     }
     function checkBalance() public view returns (uint) {
         uint TransmuterVL = DAIToken.balanceOf(TransmuterAddr) / 1e18;
         uint AlchemistVL = DAIToken.balanceOf(AlchemistAddr) / 1e18;
         uint TransmuterBVL = DAIToken.balanceOf(TransmuterBAddr) / 1e18;
-        uint AlchemistYVAVL = yvDAIToken.balanceOf(AlchemistYVAAddr) / 1e18;
-        uint TransmuterBYVAVL = yvDAIToken.balanceOf(TransmuterBYVAddr) / 1e18;
+        uint PricePerShare = yvDAIVault.pricePerShare();
+        uint AlchemistYVAVL = yvDAIToken.balanceOf(AlchemistYVAAddr)* PricePerShare / 1e36;
+        uint TransmuterBYVAVL = yvDAIToken.balanceOf(TransmuterBYVAddr) * PricePerShare / 1e36;
         return TransmuterVL + AlchemistVL + TransmuterBVL + AlchemistYVAVL + TransmuterBYVAVL;
     }
     function checkCirculating() public view returns (uint) {

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity >=0.7.0;
+pragma solidity >=0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@chainlink/contracts/src/v0.6/interfaces/AggregatorV3Interface.sol";
@@ -25,6 +25,6 @@ contract Ante_DaiPegTest is AnteTest("DAI is pegged to USD") {
 
     function checkTestPasses() public view override returns (bool) {
         ( , int price, , , ) = priceFeed.latestRoundData();
-        return (99500000 < price && price < 105000000);
+        return (95000000 < price && price < 105000000);
     }
 }

@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity >=0.7.0;
+pragma solidity >=0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./interfaces/AnteTest.sol";
+import "./interfaces/IVault.sol";
 
 // Ante Test to check alETH supply never exceeds amount of ETH locked in Alchemix
 contract Ante_alETHSupplyTest is AnteTest("alETH doesn't exceed ETH locked in Alchemix") {
@@ -22,6 +23,7 @@ contract Ante_alETHSupplyTest is AnteTest("alETH doesn't exceed ETH locked in Al
     IERC20 public alETHToken = IERC20(alETHAddr);
     IERC20 public WETHToken = IERC20(WETHAddr);
     IERC20 public yvWETHToken = IERC20(yvWETHAddr);
+    IVault public yvWETHVault = IVault(yvWETHAddr);
 
     constructor () {
         protocolName = "Alchemix";
@@ -31,29 +33,33 @@ contract Ante_alETHSupplyTest is AnteTest("alETH doesn't exceed ETH locked in Al
     function checkTestPasses() public view override returns (bool) {
         uint TransmuterVL = WETHToken.balanceOf(TransmuterAddr) / 1e18;
         uint AlchemistVL = WETHToken.balanceOf(AlchemistAddr) / 1e18;
-        uint AlchemistYVAVL = yvWETHToken.balanceOf(AlchemistYVAAddr) / 1e18;
-        uint TransmuterBYVAVL = yvWETHToken.balanceOf(TransmuterYVAddr) / 1e18;
+        uint PricePerShare = yvWETHVault.pricePerShare();
+        uint AlchemistYVAVL = yvWETHToken.balanceOf(AlchemistYVAAddr) * PricePerShare / 1e36;
+        uint TransmuterBYVAVL = yvWETHToken.balanceOf(TransmuterYVAddr) * PricePerShare / 1e36;
         uint TotalValueLocked = TransmuterVL + AlchemistVL + AlchemistYVAVL + TransmuterBYVAVL;
         uint TotalSupply = alETHToken.totalSupply() / 1e18;
         return (TotalSupply <= TotalValueLocked);
     }
-    function CheckTransmuterVL() public view returns (uint) {
+    function checkTransmuterVL() public view returns (uint) {
         return WETHToken.balanceOf(TransmuterAddr) / 1e18;
     }
-    function CheckAlchemistVL() public view returns (uint) {
+    function checkAlchemistVL() public view returns (uint) {
         return WETHToken.balanceOf(AlchemistAddr) / 1e18;
     }
-    function CheckAlchemistYVAVL() public view returns (uint) {
-        return yvWETHToken.balanceOf(AlchemistYVAAddr) / 1e18;
+    function checkAlchemistYVAVL() public view returns (uint) {
+        uint PricePerShare = yvWETHVault.pricePerShare();
+        return yvWETHToken.balanceOf(AlchemistYVAAddr) * PricePerShare / 1e36;
     }
-    function CheckTransmuterBYVAVL() public view returns (uint) {
-        return yvWETHToken.balanceOf(TransmuterYVAddr) / 1e18;
+    function checkTransmuterBYVAVL() public view returns (uint) {
+        uint PricePerShare = yvWETHVault.pricePerShare();
+        return yvWETHToken.balanceOf(TransmuterYVAddr) * PricePerShare / 1e36;
     }
     function checkBalance() public view returns (uint) {
         uint TransmuterVL = WETHToken.balanceOf(TransmuterAddr) / 1e18;
         uint AlchemistVL = WETHToken.balanceOf(AlchemistAddr) / 1e18;
-        uint AlchemistYVAVL = yvWETHToken.balanceOf(AlchemistYVAAddr) / 1e18;
-        uint TransmuterBYVAVL = yvWETHToken.balanceOf(TransmuterYVAddr) / 1e18;
+        uint PricePerShare = yvWETHVault.pricePerShare();
+        uint AlchemistYVAVL = yvWETHToken.balanceOf(AlchemistYVAAddr) * PricePerShare / 1e36;
+        uint TransmuterBYVAVL = yvWETHToken.balanceOf(TransmuterYVAddr) * PricePerShare / 1e36;
         return TransmuterVL + AlchemistVL + AlchemistYVAVL + TransmuterBYVAVL;
     }
     function checkCirculating() public view returns (uint) {
