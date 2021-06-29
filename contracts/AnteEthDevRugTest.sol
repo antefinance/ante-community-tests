@@ -11,25 +11,22 @@
 
 pragma solidity ^0.7.0;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./interfaces/AnteTest.sol";
 
-// Ante Test to check WBTC supply never exceeds 21 million
-contract AnteWBTCSupplyTest is AnteTest("Wrapped BTC (WBTC) supply doesn't exceed 21m") {
-    // https://etherscan.io/address/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599#code
-    address public constant wBTCAddr = 0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599; 
+// Ante Test to check if EthDev multisig "rugs" 99% of its ETH
+// NOTE: this is JUST ILLUSTRATIVE; the multisig CAN MOVE FUNDS FOR ANY REASON
+contract AnteEthDevRugTest is AnteTest("EthDev MultiSig Doesnt Rug 99% of its ETH Test") { 
+    // https://etherscan.io/address/0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae
+    address public constant ethDevAddr = 0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe;
 
-    //21 million * 1e8 (for decimals), maximum total Bitcoin supply
-    uint256 constant THRESHOLD_SUPPLY = 21 * 1000 * 1000 * 1e8; 
-
-    IERC20 public wBTCToken = IERC20(wBTCAddr);
+    // 2021-05-24: EthDev has 394k ETH, so -99% is ~4k ETH
+    uint256 public constant RUG_THRESHOLD = 4 * 1000 * 1e18; 
 
     constructor () {
-        protocolName = "WBTC";
-        testedContracts = [wBTCAddr];
+        testedContracts = [ethDevAddr];
     }
     
     function checkTestPasses() public view override returns (bool) {
-        return (wBTCToken.totalSupply() <= THRESHOLD_SUPPLY);
+        return ethDevAddr.balance >= RUG_THRESHOLD;
     }
 }
