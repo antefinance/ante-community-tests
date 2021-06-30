@@ -4,7 +4,10 @@ pragma solidity >=0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./interfaces/AnteTest.sol";
-import "./interfaces/IVault.sol";
+
+interface IVault {
+    function pricePerShare() external view returns (uint);
+}
 
 // Ante Test to check alUSD supply never exceeds amount of DAI locked in Alchemix
 contract Ante_alUSDSupplyTest is AnteTest("alUSD doesn't exceed DAI locked in Alchemix") {
