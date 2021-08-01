@@ -9,7 +9,6 @@ interface IRibbonThetaVault {
     function totalBalance() external view returns (uint256);
     //Returns the vault's total balance, ncluding the amounts locked into a short position
     function assetBalance() external view returns (uint256);
-    
 }
 
 // Ante Test to check if Ribbon Theta Vault maintains a total balance above or equal to its asset balance
