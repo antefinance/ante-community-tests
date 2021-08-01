@@ -3,7 +3,6 @@
 pragma solidity >=0.8.0;
 
 import "./interfaces/AnteTest.sol";
-import "hardhat/console.sol";
 
 interface IRibbonThetaVault {
     //Returns the asset balance on the vault.
@@ -26,8 +25,6 @@ contract AnteRibbonBalanceTest is AnteTest("Ribbon Theta Vault Balance above or 
     }
     
     function checkTestPasses() public view override returns (bool) {
-        console.logUint(ribbonThetaVault.totalBalance());
-        console.logUint(ribbonThetaVault.assetBalance());
         return (ribbonThetaVault.totalBalance() >= ribbonThetaVault.assetBalance());
     }
 }
