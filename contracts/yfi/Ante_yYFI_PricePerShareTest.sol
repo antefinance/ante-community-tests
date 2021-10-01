@@ -2,10 +2,10 @@
 
 pragma solidity >=0.8.0;
 
-import "./interfaces/AnteTest.sol";
+import "../AnteTest.sol";
 
 interface IVault {
-    function getPricePerFullShare() external view returns (uint);
+    function getPricePerFullShare() external view returns (uint256);
 }
 
 // Ante Test to check yYFI stakeholders can withdraw their full deposit
@@ -15,12 +15,12 @@ contract Ante_yYFI_PricePerShareTest is AnteTest("yYFI vault is in profit") {
 
     IVault public yYFIVault = IVault(yYFIAddr);
 
-    constructor () {
+    constructor() {
         protocolName = "YFI";
         testedContracts = [yYFIAddr];
     }
-    
+
     function checkTestPasses() public view override returns (bool) {
-        return (uint(yYFIVault.getPricePerFullShare()) >= 1e18);
+        return (uint256(yYFIVault.getPricePerFullShare()) >= 1e18);
     }
 }

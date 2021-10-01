@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-only
+
 // ┏━━━┓━━━━━┏┓━━━━━━━━━┏━━━┓━━━━━━━━━━━━━━━━━━━━━━━
 // ┃┏━┓┃━━━━┏┛┗┓━━━━━━━━┃┏━━┛━━━━━━━━━━━━━━━━━━━━━━━
 // ┃┗━┛┃┏━┓━┗┓┏┛┏━━┓━━━━┃┗━━┓┏┓┏━┓━┏━━┓━┏━┓━┏━━┓┏━━┓
@@ -7,29 +9,31 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-// SPDX-License-Identifier: MIT
-
 pragma solidity ^0.7.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "./interfaces/AnteTest.sol";
+import "../AnteTest.sol";
 
-// Ante Test to check WBTC supply never exceeds 21 million
-contract AnteWBTCSupplyTest is AnteTest("Wrapped BTC (WBTC) supply doesn't exceed 21m") {
-    // https://etherscan.io/address/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599#code
-    address public constant wBTCAddr = 0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599; 
+/// @title WETH9 issued fully backed by ETH test
+/// @notice Ante Test to check WETH9 minted WETH matches deposited ETH in contract
+contract AnteWETH9Test is AnteTest("Checks WETH9 issued WETH fully backed by ETH") {
+    // https://etherscan.io/address/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+    address public immutable wETH9Addr;
 
-    //21 million * 1e8 (for decimals), maximum total Bitcoin supply
-    uint256 constant THRESHOLD_SUPPLY = 21 * 1000 * 1000 * 1e8; 
+    IERC20 public wETH9Token;
 
-    IERC20 public wBTCToken = IERC20(wBTCAddr);
+    /// @param _wETH9Addr WETH9 contract address (0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 on mainnet)
+    constructor(address _wETH9Addr) {
+        wETH9Addr = _wETH9Addr;
+        wETH9Token = IERC20(_wETH9Addr);
 
-    constructor () {
-        protocolName = "WBTC";
-        testedContracts = [wBTCAddr];
+        protocolName = "WETH9";
+        testedContracts = [_wETH9Addr];
     }
-    
-    function checkTestPasses() public view override returns (bool) {
-        return (wBTCToken.totalSupply() <= THRESHOLD_SUPPLY);
+
+    /// @notice test to check WETH token supply against contract balance
+    /// @return true if WETH9 token supply equals contract balance
+    function checkTestPasses() external view override returns (bool) {
+        return address(wETH9Token).balance == wETH9Token.totalSupply();
     }
 }

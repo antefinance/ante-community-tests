@@ -2,11 +2,12 @@
 
 pragma solidity >=0.8.0;
 
-import "./interfaces/AnteTest.sol";
+import "../AnteTest.sol";
 
 interface IRibbonThetaVault {
     //Returns the asset balance on the vault.
     function totalBalance() external view returns (uint256);
+
     //Returns the vault's total balance, ncluding the amounts locked into a short position
     function assetBalance() external view returns (uint256);
 }
@@ -18,11 +19,11 @@ contract AnteRibbonBalanceTest is AnteTest("Ribbon Theta Vault Balance above or 
 
     IRibbonThetaVault public ribbonThetaVault = IRibbonThetaVault(ribbonThetaVaultAddr);
 
-    constructor () {
+    constructor() {
         protocolName = "Ribbon";
         testedContracts = [ribbonThetaVaultAddr];
     }
-    
+
     function checkTestPasses() public view override returns (bool) {
         return (ribbonThetaVault.totalBalance() >= ribbonThetaVault.assetBalance());
     }

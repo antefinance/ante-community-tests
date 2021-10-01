@@ -2,16 +2,17 @@
 
 pragma solidity >=0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@chainlink/contracts/src/v0.6/interfaces/AggregatorV3Interface.sol";
-import "./interfaces/AnteTest.sol";
+import "../interfaces/IERC20.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import "../AnteTest.sol";
 
 // Ante Test to check DAI remains +- 5% of USD
-contract Ante_DaiPegTest is AnteTest("DAI is pegged to USD") {
+contract AnteDaiPegTest is AnteTest("DAI is pegged to USD") {
     // https://etherscan.io/token/0x6b175474e89094c44da98b954eedeac495271d0f
     address public constant DaiAddr = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
 
     AggregatorV3Interface internal priceFeed;
+
     /**
      * Network: Mainnet
      * Aggregator: DAI/USD
@@ -24,7 +25,7 @@ contract Ante_DaiPegTest is AnteTest("DAI is pegged to USD") {
     }
 
     function checkTestPasses() public view override returns (bool) {
-        ( , int price, , , ) = priceFeed.latestRoundData();
+        (, int256 price, , , ) = priceFeed.latestRoundData();
         return (95000000 < price && price < 105000000);
     }
 }

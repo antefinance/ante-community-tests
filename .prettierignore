@@ -6,18 +6,15 @@
 .pnp.js
 # testing
 /coverage
-coverage.json
 # production
 
 /build
-abi
-
 # misc
 .DS_Store
-.env
 .env.local
-.env.dev
-.env.production
+.env.development.local
+.env.test.local
+.env.production.local
 *.swp
 npm-debug.log*
 yarn-debug.log*
@@ -36,6 +33,7 @@ lerna-debug.log
 # added 2021-06-01
 **/node_modules
 artifacts
+deployments
 typechain
 packages/react-app/src/contracts/*
 !packages/react-app/src/contracts/contracts.js
