@@ -10,7 +10,7 @@ coverage.json
 # production
 
 /build
-/abi
+abi
 
 # misc
 .DS_Store
