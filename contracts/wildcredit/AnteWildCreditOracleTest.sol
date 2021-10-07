@@ -35,6 +35,12 @@ contract AnteWildCreditOracleTest is
     function checkTestPasses() public view override returns (bool) {
         uint256 price1 = uniswapV3Oracle.tokenPrice(wildCreditTokenAddr);
         uint256 price2 = controllerPriceOracle.tokenPrice(wildCreditTokenAddr);
-        return ((price1 * accuracy) / (price2)) > 99e11 || ((price2 * accuracy) / (price1)) > 99e11;
+
+        // return false if price1 or price2 is 0
+        if (price1 == 0 || price2 == 0) {
+            return false;
+        }
+
+        return ((price1 * accuracy) / (price2)) > 99e11 && ((price2 * accuracy) / (price1)) > 99e11;
     }
 }
