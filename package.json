@@ -45,7 +45,7 @@
     "lint:ts": "eslint --config ./.eslintrc.yaml --ignore-path ./.eslintignore --ext .js,.ts .",
     "slither": "slither .",
     "compile": "npx hardhat compile",
-    "test": "npx hardhat test",
+    "test": "npx hardhat typechain && npx hardhat test",
     "node": "npx hardhat node"
   }
 }
