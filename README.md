@@ -40,10 +40,10 @@ npm install --save-dev
 
 ### Write your ante test
 
-Write an ante test for your desired protocol and put it in a file called `./contracts/[PROTOCOL_NAME]/[YOUR_TEST_NAME].sol`. For more information on writing Ante Tests, see our [docs](https://docs.ante.finance/). Also stop by our Discord and ask questions!
+Write an ante test for your desired protocol and put it in a file called `./contracts/[PROTOCOL_NAME]/[YOUR_TEST_NAME].sol`. For more information on writing Ante Tests, see our [docs](https://docs.ante.finance/). Also stop by our [Discord](https://discord.gg/yaJthzNdNG) and ask questions!
 
 
-**(Optional) you can also write some unit tests that check whether or not your AnteTest works. These unit tests should be placed in a file called `./test/[PROTOCOL_NAME]/[YOUR_TEST_NAME].spec.ts`
+**(Optional)** you can also write some unit tests that check whether or not your AnteTest works. These unit tests should be placed in a file called `./test/[PROTOCOL_NAME]/[YOUR_TEST_NAME].spec.ts`
 
 Then run the following command:
 
@@ -57,12 +57,12 @@ This command runs your unit tests against a forked version of the ethereum mainn
 
 ### Finally, push your code to your own github repo and create a pull request against this repo
 
+Show off what you've built in our [discord](https://discord.gg/yaJthzNdNG) or tweet your PR at us on [twitter](https://twitter.com/antefinance)! **VERY IMPORTANT** - Make sure to get feedback from our community before deploying your Ante Test to main-net! Testing and feedback are the best way to catch bugs early (and avoid wasting gas).
 
 
+# Beginner-friendly Setup Tutorial
 
-# Beginner's Tutorial
-
-_The following has been provided by [@waynebruce0x](https://github.com/waynebruce0x) and provides a beginner-introduction to setting up a Hardhat development environment and writing an Ante Test from scratch:_
+_The following has been provided by [@waynebruce0x](https://github.com/waynebruce0x) and provides a beginner-friendly introduction to setting up a Hardhat development environment and writing an Ante Test from scratch:_
 
 ## Getting Started Writing Ante Tests
 There are many different tools and methods you can use to develop Ante Tests. In this guide we’ll use
