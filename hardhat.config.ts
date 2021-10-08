@@ -51,7 +51,7 @@ const config: HardhatUserConfig = {
     apiKey: process.env.ETHERSCAN_KEY,
   },
   mocha: {
-    timeout: 40000,
+    timeout: 60000,
   },
 };
 
