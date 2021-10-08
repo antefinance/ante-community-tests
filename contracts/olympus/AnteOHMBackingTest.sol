@@ -32,10 +32,9 @@ contract AnteOHMBackingTest is AnteTest("Olympus OHM fully backed by treasury re
   function checkTestPasses() external view override returns (bool) {
     uint256 reserves;
     bool hasMore = true;
-    uint MAX_TOKENS = 20;
     uint i;
 
-    while(hasMore && i < MAX_TOKENS) {
+    while(hasMore) {
       try olympusTreasury.reserveTokens(i++) returns (address reserveToken) {
         reserves = reserves.add(
           olympusTreasury.valueOf(reserveToken, IERC20(reserveToken).balanceOf(address(olympusTreasury)))
@@ -46,7 +45,7 @@ contract AnteOHMBackingTest is AnteTest("Olympus OHM fully backed by treasury re
     }
     i = 0;
     hasMore = true;
-    while(hasMore && i < MAX_TOKENS) {
+    while(hasMore) {
       try olympusTreasury.liquidityTokens(i++) returns (address liquidityToken) {
         reserves = reserves.add(
           olympusTreasury.valueOf(liquidityToken, IERC20(liquidityToken).balanceOf(address(olympusTreasury)))
