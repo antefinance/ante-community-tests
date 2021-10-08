@@ -6,6 +6,10 @@ Website: [ante.finance](https://www.ante.finance/)
 Twitter: [AnteFinance](https://twitter.com/AnteFinance)  
 Discord: [Ante Finance](https://discord.gg/yaJthzNdNG)  
 
+**IMPORTANT - We're incredibly excited by the enthusiasm the community is showing towards writing Ante Tests for their favorite protocols. We're still working on making the test deployment process as seamless and user-friendly as possible.**
+
+**To help with this, we ask that you open a PR against this repo and get feedback from our community before deploying your ante test on-chain**
+
 ---
 
 ## If you want to contribute to the community repository see the instructions below
@@ -18,10 +22,10 @@ Install Node and NPM ([Instructions](https://docs.npmjs.com/downloading-and-inst
 Make sure to use Node version 14 or higher and NPM version 6 or higher
 ```
 
-Clone the ante-v0-core repository
+Fork the ante-community-tests repository by clicking the `Fork` button in the upper right hand corner of this page, then clone your fork to your local machine with
 
 ```
-git clone git@github.com:antefinance/ante-community-tests.git
+git clone git@github.com:[YOUR_GITHUB_USERNAME]/ante-community-tests.git
 ```
 
 Install all required packages
