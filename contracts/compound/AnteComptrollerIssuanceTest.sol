@@ -15,10 +15,10 @@ import "../AnteTest.sol";
 import "../interfaces/IERC20.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 
-/// @title Compound comptroller doesn't lose COMP balance too quickly
+/// @title Compound comptroller issuance rate is not too fast
 /// @notice Ante Test to check the decrease in the balance of COMP in the comptroller  doesn't exceed threshold
 /// currently 10,000 COMP/day
-contract AnteCompoundComptrollerTest is AnteTest("Compound comptroller doesn't lose COMP balance too quickly") {
+contract AnteComptrollerIssuanceTest is AnteTest("$COMP (Comptroller) Issuance Rate Test") {
     using SafeMath for uint256;
 
     /// @notice minimum period after checkpointing before checkTestPasses call
