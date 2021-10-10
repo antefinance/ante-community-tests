@@ -14,7 +14,7 @@ interface ICToken {
 /// @title Compound markets do not lose 90% of their assets test
 /// @notice Ante Test to check that the total assets in each of Compound's top 5 markets
 /// does not drop by 90%
-contract AnteCompoundTVLTest is AnteTest("Compound markets do not lose 90% of their assets") {
+contract AnteCompoundTVLTest is AnteTest("Compound Markets TVL Drop Test") {
     // top 5 markets on compound by $ value
     ICToken[5] public cTokens = [
         ICToken(0x4Ddc2D193948926D02f9B1fE9e1daa0718270ED5), // cETH
