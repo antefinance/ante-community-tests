@@ -40,6 +40,8 @@ contract AnteCompoundTVLTest is AnteTest("Compound Markets TVL Drop Test") {
     uint256 public constant PERCENT_DROP_THRESHOLD = 10;
 
     constructor() {
+        protocolName = "Compound";
+
         for (uint256 i = 0; i < 5; i++) {
             ICToken cToken = cTokens[i];
             testedContracts.push(address(cToken));
