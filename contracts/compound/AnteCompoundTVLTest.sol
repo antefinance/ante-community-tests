@@ -48,7 +48,7 @@ contract AnteCompoundTVLTest is AnteTest("Compound Markets TVL Drop Test") {
         }
     }
 
-    /// @notice checks that compound TVL in top 5 markets
+    /// @notice checks compound TVL in top 5 markets
     /// @return true if TVL in all top 5 markets has not dropped by 90%, false if it has in at least one
     function checkTestPasses() public view override returns (bool) {
         for (uint256 i = 0; i < 5; i++) {
