@@ -1,7 +1,7 @@
 import hre from 'hardhat';
 const { waffle } = hre;
 
-import { AnteCompoundTVLTest__factory, AnteCompoundTVLTest } from '../../typechain';
+import { AnteCompoundTVLTest__factory, AnteCompoundTVLTest, CToken } from '../../typechain';
 
 import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
@@ -30,4 +30,6 @@ describe('AnteCompoundTVLTest', function () {
   it('should pass', async () => {
     expect(await test.checkTestPasses()).to.be.true;
   });
+
+  it('should pass after token transferred directly into contract', async () => {});
 });
