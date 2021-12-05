@@ -31,7 +31,8 @@ contract AnteComptrollerIssuanceTest is AnteTest("$COMP (Comptroller) Issuance R
     /// @notice maximum rate of COMP decrease per second allowed, set to 10,000 COMP/day
     /// @dev according to https://compound.finance/governance/comp as of 2021/10/05
     /// the current rate of COMP distribution per day is 2312, so we set this conservatively
-    /// to 10,000 COMP/day (set in units of COMP/second)
+    /// to 10,000 COMP/day (set in units of COMP/second). It's possible to trigger a
+    /// failing test with a smaller decrese in COMP balance depending on the MIN_PERIOD parameter
     uint256 public constant COMP_PER_SEC_THRESHOLD = 115740740740740736;
 
     /// @notice last time a checkpoint was taken
