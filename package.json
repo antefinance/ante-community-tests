@@ -47,6 +47,7 @@
     "slither": "slither .",
     "compile": "npx hardhat compile",
     "test": "npx hardhat typechain && npx hardhat test",
-    "node": "npx hardhat node"
+    "node": "npx hardhat node",
+    "deploy-test": "npx hardhat run scripts/deploy_test.ts"
   }
 }
