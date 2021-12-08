@@ -13,13 +13,16 @@ describe('AnteOHMBackingTest', function () {
 
   const INITIAL_TESTING_ETH = ethers.utils.parseEther('10.0').toHexString();
 
-  const _olympusTreasuryAddr = '0x31F8Cc382c9898b273eff4e0b7626a6987C846E8' // Olympus Treasury
+  const _olympusTreasuryAddr = '0x31F8Cc382c9898b273eff4e0b7626a6987C846E8'; // Olympus Treasury
   const _ohmTokenAddr = '0x383518188c0c6d7730d91b2c03a03c837814a899'; // OHM Token
 
   // Reserve Tokens as of block 13089428
   const _daiTokenAddr = '0x6b175474e89094c44da98b954eedeac495271d0f'; // DAI Token
   const _fraxTokenAddr = '0x853d955aCEf822Db058eb8505911ED77F175b99e'; // FRAX Token
-  const _wETHAddr =	'0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'; // wETH Token
+  const _wETHAddr = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'; // wETH Token
+
+  // updated reserve token as of block 13743164
+  const _lusdAddr = '0x5f98805A4E8be255a32880FDeC7F6728C6568bA0'; //lusd token
 
   // Liquidity Tokens as of block 13089428
   const _slpOhmDaiAddr = '0x34d7d7Aaf50AD4944B70B320aCB24C95fa2def7c';
@@ -49,7 +52,7 @@ describe('AnteOHMBackingTest', function () {
     await runAsSigner(_olympusTreasuryAddr, async () => {
       const donor = await ethers.getSigner(_olympusTreasuryAddr);
       await hre.network.provider.request({
-        method: "hardhat_setBalance",
+        method: 'hardhat_setBalance',
         params: [_olympusTreasuryAddr, INITIAL_TESTING_ETH],
       });
 
@@ -60,7 +63,8 @@ describe('AnteOHMBackingTest', function () {
         _slpOhmDaiAddr,
         _uniswapOhmFraxAddr,
         _sushiAddr,
-        _xSushiAddr
+        _xSushiAddr,
+        _lusdAddr, // added in Oct 2021
       ];
 
       // Withdraw all the tokens
