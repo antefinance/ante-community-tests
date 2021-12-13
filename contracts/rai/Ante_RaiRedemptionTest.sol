@@ -30,7 +30,7 @@ contract AnteRaiRedemptionTest is AnteTest("RAI redemption vs Chainlink oracle w
     // https://etherscan.io/address/0x07210B8871073228626AB79c296d9b22238f63cE
     address public constant snapAddr = 0x07210B8871073228626AB79c296d9b22238f63cE;
 
-    // The redemption rate is 27 decimals, the CL feed is 8 decimals
+    // The redemption rate is 27 decimals, the CL feed is 8 decimals, using difference to compare
     uint256 public constant DECIMALS = 19;
 
     // Allowed deviation
