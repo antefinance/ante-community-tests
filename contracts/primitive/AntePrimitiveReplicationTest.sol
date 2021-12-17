@@ -15,6 +15,9 @@ import "../AnteTest.sol";
 import "./interfaces/IPrimitiveEngine.sol";
 
 contract AntePrimitiveReplicationTest is AnteTest("Checks Primitive RMM-01 replicates covered call payoff") {
+    // convenience event to see test result in logs
+    event CheckTestPasses(bool indexed passing);
+
     // terminal error of pool in units of PRECISION
     mapping(bytes32 => uint256) public terminalError;
     mapping(bytes32 => bool) public checked;
@@ -28,9 +31,9 @@ contract AntePrimitiveReplicationTest is AnteTest("Checks Primitive RMM-01 repli
 
     // probably overkill
     uint256 constant PRECISION = 10**18;
-    // equivalent to 5%
+    // equivalent to 10%
     // TODO: discuss this bound
-    uint256 constant TOLERANCE = (PRECISION * 95) / 100;
+    uint256 constant TOLERANCE = (PRECISION * 90) / 100;
 
     // couldn't find a place where the list of poolIds was stored
     // in the manager or core repo, so just provide functionality to
@@ -61,6 +64,7 @@ contract AntePrimitiveReplicationTest is AnteTest("Checks Primitive RMM-01 repli
         for (uint256 i = 0; i < _poolIds.length; i++) {
             bytes32 poolId = _poolIds[i];
             (, , uint32 maturity, , ) = primitiveEngine.calibrations(poolId);
+            // poolId won't be added if not present because maturity will be set to 0
             if (block.timestamp < maturity && !_poolIdPresent[poolId]) {
                 poolIds.push(poolId);
                 _poolIdPresent[poolId] = true;
@@ -76,6 +80,8 @@ contract AntePrimitiveReplicationTest is AnteTest("Checks Primitive RMM-01 repli
         if (checked[poolId]) return true;
 
         (uint128 strike, , uint32 maturity, , ) = primitiveEngine.calibrations(poolId);
+        // strike set be zero indicates no pool was found for this poolId
+        if (strike == 0) return true;
 
         // don't check pool unless after expiry
         if (block.timestamp < maturity + _buffer) return true;
@@ -96,7 +102,9 @@ contract AntePrimitiveReplicationTest is AnteTest("Checks Primitive RMM-01 repli
 
         checked[poolId] = true;
         terminalError[poolId] = _terminalError;
+
         // TODO: check upper bound too? I assume we don't care if LP payoff is higher than expected
+        emit CheckTestPasses(_terminalError > TOLERANCE);
         return _terminalError > TOLERANCE;
     }
 }
