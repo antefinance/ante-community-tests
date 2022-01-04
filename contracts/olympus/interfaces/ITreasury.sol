@@ -16,6 +16,12 @@ interface ITreasury {
         OHMDEBTOR
     }
 
+    function enable(
+        STATUS _status,
+        address _address,
+        address _calculator
+    ) external;
+
     function registry(STATUS _status, uint256 _index) external view returns (address);
 
     function permissions(STATUS _status, address _token) external view returns (bool);
