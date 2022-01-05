@@ -16,13 +16,13 @@ contract Ante_alUSDSupplyTest is AnteTest("alUSD doesn't exceed DAI locked in Al
     // https://etherscan.io/token/0x6B175474E89094C44Da98b954EedeAC495271d0F
     address public constant DAIAddr = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
     // https://etherscan.io/address/0x19d3364a399d251e894ac732651be8b0e4e85001
-    address public constant yvDAIAddr = 0x19D3364A399d251E894aC732651be8B0E4e85001;
+    address public constant yvDAIAddr = 0xdA816459F1AB5631232FE5e97a05BBBb94970c95;
 
-    address public constant TransmuterAddr = 0xaB7A49B971AFdc7Ee26255038C82b4006D122086;
     address public constant AlchemistAddr = 0xc21D353FF4ee73C572425697f4F5aaD2109fe35b;
-    address public constant TransmuterBAddr = 0xf3cFfaEEa177Db444b68FB6f033d4a82f6D8C82d;
-    address public constant AlchemistYVAAddr = 0x014dE182c147f8663589d77eAdB109Bf86958f13;
-    address public constant TransmuterBYVAddr = 0x491EAFC47D019B44e13Ef7cC649bbA51E15C61d7;
+    address public constant TransmuterAddr = 0xaB7A49B971AFdc7Ee26255038C82b4006D122086;
+    address public constant TransmuterBAddr = 0xeE69BD81Bd056339368c97c4B2837B4Dc4b796E7;
+    address public constant AlchemistYVAAddr = 0xb039eA6153c827e59b620bDCd974F7bbFe68214A;
+    address public constant TransmuterBYVAddr = 0x6Fe02BE0EC79dCF582cBDB936D7037d2eB17F661;
 
     IERC20 public DAIToken = IERC20(DAIAddr);
     IERC20 public alUSDToken = IERC20(alUSDAddr);
