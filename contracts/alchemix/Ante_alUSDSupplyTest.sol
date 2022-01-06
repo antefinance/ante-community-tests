@@ -15,7 +15,7 @@ contract Ante_alUSDSupplyTest is AnteTest("alUSD doesn't exceed DAI locked in Al
     address public constant alUSDAddr = 0xBC6DA0FE9aD5f3b0d58160288917AA56653660E9;
     // https://etherscan.io/token/0x6B175474E89094C44Da98b954EedeAC495271d0F
     address public constant DAIAddr = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
-    // https://etherscan.io/address/0x19d3364a399d251e894ac732651be8b0e4e85001
+    // https://etherscan.io/address/0xdA816459F1AB5631232FE5e97a05BBBb94970c95
     address public constant yvDAIAddr = 0xdA816459F1AB5631232FE5e97a05BBBb94970c95;
 
     address public constant AlchemistAddr = 0xc21D353FF4ee73C572425697f4F5aaD2109fe35b;
