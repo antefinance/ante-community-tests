@@ -14,6 +14,7 @@ pragma solidity >=0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "../AnteTest.sol";
 //import "./LongShortPair.sol";
+import "./interfaces/ILongShortPair.sol";
 
 
 /// @title Amount of collateral token locked equals long/short tokens minted times collateral
@@ -31,17 +32,17 @@ contract AnteUMACollateralTest is AnteTest(
   /// @return true if all contracts have balanced minted tokens times collateral to locked collateral
   function checkTestPasses() public view override returns (bool) {
     for (uint256 i = 0; i < testedContracts.length; i++) {
-      //LongShortPair umaLsp = LongShortPair(testedContracts[i]);
-      //uint256 collateral = umaLsp.collateralPerPair;
-      //uint256 collateralLocked = IERC20(umaLsp.collateralToken).balanceOf(testedContracts[i]);
-      //uint256 longTokensMinted = IERC20(umaLsp.longToken).totalSupply();
-      //uint256 shortTokensMinted = IERC20(umaLsp.shortToken).totalSupply();
-      //if (longTokensMinted != shortTokensMinted) {
-      //  return false;
-      //}
-      //if (collateral.mul(longTokensMinted).div(1e18) != collateralLocked) {
-      //  return false;
-      //}
+      LongShortPair umaLsp = ILongShortPair(testedContracts[i]);
+      uint256 collateral = umaLsp.collateralPerPair;
+      uint256 collateralLocked = IERC20(umaLsp.collateralToken).balanceOf(testedContracts[i]);
+      uint256 longTokensMinted = IERC20(umaLsp.longToken).totalSupply();
+      uint256 shortTokensMinted = IERC20(umaLsp.shortToken).totalSupply();
+      if (longTokensMinted != shortTokensMinted) {
+        return false;
+      }
+      if (collateral.mul(longTokensMinted).div(1e18) != collateralLocked) {
+        return false;
+      }
     }
     return true;
   }
