@@ -6,8 +6,8 @@ import "../interfaces/IERC20.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "../AnteTest.sol";
 
-// Ante Test to check DAI remains +- 5% of USD
-contract AnteDaiPegTest is AnteTest("DAI is pegged to USD") {
+// Ante Test to check BUSD remains +- 5% of USD
+contract AnteBusdPegTest is AnteTest("BUSD is pegged to USD") {
     // https://etherscan.io/token/0x4Fabb145d64652a948d72533023f6E7A623C7C53
     address public constant BusdAddr = 0x4Fabb145d64652a948d72533023f6E7A623C7C53;
 
@@ -19,7 +19,7 @@ contract AnteDaiPegTest is AnteTest("DAI is pegged to USD") {
      * Address: 0x833D8Eb16D306ed1FbB5D7A2E019e106B960965A
      */
     constructor() {
-        protocolName = "DAI";
+        protocolName = "BUSD";
         testedContracts = [BusdAddr];
         priceFeed = AggregatorV3Interface(0x833D8Eb16D306ed1FbB5D7A2E019e106B960965A);
     }
