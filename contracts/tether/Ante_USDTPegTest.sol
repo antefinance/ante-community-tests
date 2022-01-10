@@ -16,12 +16,12 @@ contract AnteUSDTPegTest is AnteTest("USDT is above 90 cents on the dollar") {
     /**
      * Network: Mainnet
      * Aggregator: USDT/USD
-     * Address: 0xEe9F2375b4bdF6387aa8265dD4FB8F16512A1d46
+     * Address: 0x3e7d1eab13ad0104d2750b8863b489d65364e32d
      */
     constructor() {
         protocolName = "USDT";
         testedContracts = [TetherAddr];
-        priceFeed = AggregatorV3Interface(0xEe9F2375b4bdF6387aa8265dD4FB8F16512A1d46);
+        priceFeed = AggregatorV3Interface(0x3e7d1eab13ad0104d2750b8863b489d65364e32d);
     }
 
     function checkTestPasses() public view override returns (bool) {
