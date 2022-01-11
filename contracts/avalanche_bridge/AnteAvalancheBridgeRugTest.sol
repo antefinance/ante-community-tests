@@ -28,12 +28,8 @@ contract AnteAvalancheBridgeRugTest is AnteTest("EOA Avalanche Bridge Doesnt Rug
     }
 
     /// @notice test to check balance of Avalanche Bridge
-    /// @return true if bridge has over 2000 ETH
+    /// @return true if bridge has over 2 ETH
     function checkTestPasses() external view override returns (bool) {
         return eoaAvalancheBridgeAddr.balance >= RUG_THRESHOLD;
-    }
-
-    function bridgeBalance() external view returns (uint256) {
-        return eoaAvalancheBridgeAddr.balance / (1 ether);
     }
 }
