@@ -7,7 +7,7 @@ import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "../AnteTest.sol";
 
 // Ante Test to check BUSD remains +- 5% of USD
-contract AnteBusdPegTest is AnteTest("BUSD is pegged to USD") {
+contract AnteBusdPegTest is AnteTest("BUSD is pegged to +- 5% of USD") {
     // https://etherscan.io/token/0x4Fabb145d64652a948d72533023f6E7A623C7C53
     address public constant BusdAddr = 0x4Fabb145d64652a948d72533023f6E7A623C7C53;
 
