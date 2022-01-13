@@ -15,7 +15,7 @@ import "../AnteTest.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /// @title Avalanche Bridge doesn't rug test on mainnet
-/// @notice Ante Test to check if EOA Avalanche Bridge "rugs" 99% of its value (as of Janurary 2022)
+/// @notice Ante Test to check if EOA Avalanche Bridge "rugs" 99% of its value (as of test deployment)
 contract AnteAvalancheBridgeRugTest is AnteTest("EOA Avalanche Bridge Doesnt Rug 99% of its Value Test") {
     // https://etherscan.io/address/0xE78388b4CE79068e89Bf8aA7f218eF6b9AB0e9d0
     address public constant eoaAvalancheBridgeAddr = 0xE78388b4CE79068e89Bf8aA7f218eF6b9AB0e9d0;
