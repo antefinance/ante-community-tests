@@ -9,18 +9,27 @@ import "../interfaces/IERC20.sol";
 import "./interfaces/ITreasury.sol";
 import "./interfaces/IOlympusAuthority.sol";
 
-import "hardhat/console.sol";
-
 /// @title OlympusDAO OHMv2 supply fully backed by Olympus treasury
 /// @notice Ante Test to check Olympus treasury balance exceeds the OHMv2 token supply
 /// @dev OHM Backing formula: https://docs.olympusdao.finance/main/references/equations#backing-per-ohm
 contract AnteOHMv2BackingTest is AnteTest("Olympus OHMv2 fully backed by treasury reserves") {
     IERC20 public ohm;
     IOlympusAuthority public authority;
+    address[] public liquidityTokens;
+    address[] public reserveTokens;
 
-    /// @param _authorityAddress Olympus Treasury contract address (0x1c21f8ea7e39e2ba00bc12d2968d63f4acb38b7a on mainnet)
+    /// @param _authorityAddress Olympus Authority contract address (0x1c21f8ea7e39e2ba00bc12d2968d63f4acb38b7a on mainnet)
     /// @param _ohmAddress Olympus OHMv2 Token contract address (0x64aa3364f17a4d01c6f1751fd97c2bd3d7e7f1d5 on  mainnet)
-    constructor(address _authorityAddress, address _ohmAddress) {
+    /// @param _liquidityTokens array of approved liquidity tokens in the Olympus treasury,
+    /// currently only 0xb612c37688861f1f90761dc7f382c2af3a50cc39)
+    /// @param _reserveTokens array of approved reserve tokens in the Olympus treasury,
+    /// currently 0x853d955acef822db058eb8505911ed77f175b99e and 0x6b175474e89094c44da98b954eedeac495271d0f
+    constructor(
+        address _authorityAddress,
+        address _ohmAddress,
+        address[] memory _liquidityTokens,
+        address[] memory _reserveTokens
+    ) {
         ohm = IERC20(_ohmAddress);
         authority = IOlympusAuthority(_authorityAddress);
 
@@ -28,6 +37,9 @@ contract AnteOHMv2BackingTest is AnteTest("Olympus OHMv2 fully backed by treasur
         // treasury reserves being tested but treasury address is read through authority
         // and could change in future
         testedContracts = [_ohmAddress, _authorityAddress, authority.vault()];
+
+        liquidityTokens = _liquidityTokens;
+        reserveTokens = _reserveTokens;
     }
 
     /// @notice convenience method for getting treasury interface from authority
@@ -42,37 +54,23 @@ contract AnteOHMv2BackingTest is AnteTest("Olympus OHMv2 fully backed by treasur
         uint256 reserves;
         ITreasury treasury = olympusVault();
 
-        bool hasMore = true;
-        uint256 i;
-        while (hasMore) {
-            try treasury.registry(ITreasury.STATUS.RESERVETOKEN, i++) returns (address reserveToken) {
-                console.log("reserveToken %s", reserveToken);
-                if (treasury.permissions(ITreasury.STATUS.RESERVETOKEN, reserveToken)) {
-                    reserves += treasury.tokenValue(reserveToken, IERC20(reserveToken).balanceOf(address(treasury)));
-                }
-            } catch {
-                hasMore = false;
+        for (uint256 i = 0; i < reserveTokens.length; i++) {
+            if (treasury.permissions(ITreasury.STATUS.RESERVETOKEN, reserveTokens[i])) {
+                reserves += treasury.tokenValue(
+                    reserveTokens[i],
+                    IERC20(reserveTokens[i]).balanceOf(address(treasury))
+                );
             }
         }
 
-        i = 0;
-        hasMore = true;
-
-        while (hasMore) {
-            try treasury.registry(ITreasury.STATUS.LIQUIDITYTOKEN, i++) returns (address liquidityToken) {
-                if (treasury.permissions(ITreasury.STATUS.LIQUIDITYTOKEN, liquidityToken)) {
-                    reserves += treasury.tokenValue(
-                        liquidityToken,
-                        IERC20(liquidityToken).balanceOf(address(treasury))
-                    );
-                }
-            } catch {
-                hasMore = false;
+        for (uint256 i = 0; i < liquidityTokens.length; i++) {
+            if (treasury.permissions(ITreasury.STATUS.LIQUIDITYTOKEN, liquidityTokens[i])) {
+                reserves += treasury.tokenValue(
+                    liquidityTokens[i],
+                    IERC20(liquidityTokens[i]).balanceOf(address(treasury))
+                );
             }
         }
-
-        console.log("ohm supply %s", ohm.totalSupply());
-        console.log("reserves %s", reserves);
 
         return reserves >= ohm.totalSupply();
     }
