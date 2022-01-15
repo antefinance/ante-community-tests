@@ -8,10 +8,10 @@ import { expect } from 'chai';
 
 describe('AnteOHMv2BackingTest', function () {
   let test: AnteOHMv2BackingTest;
-
+  let olympusTreasury: string;
   let globalSnapshotId: string;
 
-  const INITIAL_TESTING_ETH = ethers.utils.parseEther('10.0').toHexString();
+  const INITIAL_TESTING_ETH = ethers.utils.parseEther('1000.0').toHexString();
 
   const _olympusAuthorityAddr = '0x1c21f8ea7e39e2ba00bc12d2968d63f4acb38b7a'; // Olympus Treasury
   const _ohmTokenAddr = '0x64aa3364f17a4d01c6f1751fd97c2bd3d7e7f1d5'; // OHM Token
@@ -38,7 +38,9 @@ describe('AnteOHMv2BackingTest', function () {
       [_slpOhmFraxAddr],
       [_daiTokenAddr, _fraxTokenAddr]
     );
+
     await test.deployed();
+    olympusTreasury = await test.olympusVault();
   });
 
   afterEach(async () => {
@@ -49,37 +51,26 @@ describe('AnteOHMv2BackingTest', function () {
     expect(await test.checkTestPasses()).to.be.true;
   });
 
-  /*
-  it('should fail after DAI withdrawal to external', async () => {
+  it('should fail after reserve token withdrawal to external', async () => {
     const LUCKY_RECIPIENT = '0x030ba81f1c18d280636f32af80b9aad02cf0854e'; // Aave: aWETH Token V2 Contract
-    await runAsSigner(_olympusTreasuryAddr, async () => {
-      const donor = await ethers.getSigner(_olympusTreasuryAddr);
+    await runAsSigner(olympusTreasury, async () => {
+      const donor = await ethers.getSigner(olympusTreasury);
       await hre.network.provider.request({
         method: 'hardhat_setBalance',
-        params: [_olympusTreasuryAddr, INITIAL_TESTING_ETH],
+        params: [olympusTreasury, INITIAL_TESTING_ETH],
       });
 
-      const treasuryTokens = [
-        _daiTokenAddr,
-        _fraxTokenAddr,
-        _wETHAddr,
-        _slpOhmDaiAddr,
-        _uniswapOhmFraxAddr,
-        _sushiAddr,
-        _xSushiAddr,
-        _lusdAddr, // added in Oct 2021
-      ];
+      const treasuryTokens = [_daiTokenAddr, _fraxTokenAddr];
 
       // Withdraw all the tokens
       for (let i = 0; i < treasuryTokens.length; i++) {
         let tokenAddr = treasuryTokens[i];
         let token = <IERC20>await ethers.getContractAt('contracts/interfaces/IERC20.sol:IERC20', tokenAddr, donor);
-        let tokenBalance = await token.balanceOf(_olympusTreasuryAddr);
+        let tokenBalance = await token.balanceOf(olympusTreasury);
         await token.transfer(LUCKY_RECIPIENT, tokenBalance);
       }
 
       expect(await test.checkTestPasses()).to.be.false;
     });
   });
-  */
 });
