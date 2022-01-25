@@ -9,36 +9,29 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-pragma solidity ^0.7.0;
+pragma solidity ^0.8.0;
 
-import "@openzeppelin-contracts-old/contracts/token/ERC20/ERC20.sol";
 import "../AnteTest.sol";
 
-/// @title Ante Test to check USDT supply never exceeds M2 (as of May 2021)
-/// @dev As of 2021-05-31, est. M2 monetary supply is ~$20.1086 Trillion USD
-/// From https://www.federalreserve.gov/releases/h6/current/default.htm
-/// We represent the threshold as 20.1 Trillion * (10 ** usdt Decimals)
-/// Or, more simply, 20.1 Trillion = 20,100 Billion
-contract AnteUSDTSupplyTest is AnteTest("ERC20 Tether (USDT) supply doesn't exceed M2, ~$20T") {
-    // https://etherscan.io/address/0xdac17f958d2ee523a2206206994597c13d831ec7#code
-    address public immutable usdtAddr;
-    uint256 public immutable thresholdSupply;
+/// @title ETHDev multisig doesn't rug test
+/// @notice Ante Test to check if EthDev multisig "rugs" 99% of its ETH (as of May 2021)
+contract AnteEthDevRugTest is AnteTest("EthDev MultiSig Doesnt Rug 99% of its ETH Test") {
+    // https://etherscan.io/address/0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae
+    address public immutable ethDevAddr;
 
-    ERC20 public usdtToken;
+    // 2021-05-24: EthDev has 394k ETH, so -99% is ~4k ETH
+    uint256 public constant RUG_THRESHOLD = 4 * 1000 * 1e18;
 
-    /// @param _usdtAddr USDT contract address (0xdac17f958d2ee523a2206206994597c13d831ec7 on mainnet)
-    constructor(address _usdtAddr) {
-        usdtAddr = _usdtAddr;
-        usdtToken = ERC20(_usdtAddr);
-
-        protocolName = "Tether";
-        testedContracts = [_usdtAddr];
-        thresholdSupply = 20100 * (1000 * 1000 * 1000) * (10**usdtToken.decimals());
+    /// @param _ethDevAddr eth multisig address (0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae on mainnet)
+    constructor(address _ethDevAddr) {
+        protocolName = "ETH";
+        ethDevAddr = _ethDevAddr;
+        testedContracts = [_ethDevAddr];
     }
 
-    /// @notice test to check if USDT token supply is greater than M2 money supply
-    /// @return true if USDT token supply is over M2
+    /// @notice test to check balance of eth multisig
+    /// @return true if eth multisig has over 4000 ETH
     function checkTestPasses() external view override returns (bool) {
-        return (usdtToken.totalSupply() <= thresholdSupply);
+        return ethDevAddr.balance >= RUG_THRESHOLD;
     }
 }

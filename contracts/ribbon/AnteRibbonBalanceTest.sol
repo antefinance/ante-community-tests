@@ -13,6 +13,7 @@ interface IRibbonThetaVault {
 }
 
 // Ante Test to check if Ribbon Theta Vault maintains a total balance above or equal to its asset balance
+// written for Ribbon V1
 contract AnteRibbonBalanceTest is AnteTest("Ribbon Theta Vault Balance above or equal to asset value") {
     // https://etherscan.io/address/0x0FABaF48Bbf864a3947bdd0Ba9d764791a60467A
     address public constant ribbonThetaVaultAddr = 0x0FABaF48Bbf864a3947bdd0Ba9d764791a60467A;
