@@ -38,7 +38,7 @@ contract AnteSPELLSupplyTest is AnteTest("SPELL supply doesn't exceed 21b") {
     }
 
     /// @notice test to check SPELL token supply
-    /// @return true if SPELL supply is less than 420 billion and 210 billion SPELL has been burned by being sent to the smart contract
+    /// @return true if SPELL supply is less than 420 billion and more than 210 billion SPELL has been burned by being sent to the smart contract
     function checkTestPasses() external view override returns (bool) {
         return (SPELLToken.totalSupply() <= THRESHOLD_SUPPLY && SPELLToken.balanceOf(SPELLAddr) >= BURNED_SUPPLY);
     }
