@@ -5,6 +5,8 @@ pragma solidity >=0.8.0;
 import "../interfaces/IERC20.sol";
 import "../AnteTest.sol";
 
+// NB: As of 1/4/22 this test is currently failing on mainnet
+// total ETH tvl across all addresses below is 79703 and alETH supply is 85633
 interface IVault {
     function pricePerShare() external view returns (uint256);
 }
@@ -18,10 +20,10 @@ contract Ante_alETHSupplyTest is AnteTest("alETH doesn't exceed ETH locked in Al
     // https://etherscan.io/address/0xa258C4606Ca8206D8aA700cE2143D7db854D168c
     address public constant yvWETHAddr = 0xa258C4606Ca8206D8aA700cE2143D7db854D168c;
 
-    address public constant TransmuterAddr = 0x45f81eF5F2ae78f49851f7A62e4061FF54Ff674B;
+    address public constant TransmuterAddr = 0x9FD9946E526357B35D95Bcb4b388614be4cFd4AC;
     address public constant AlchemistAddr = 0x6B566554378477490ab040f6F757171c967D03ab;
     address public constant AlchemistYVAAddr = 0xEBA649E0010818Aa4321088D34bD6162d65E7971;
-    address public constant TransmuterYVAddr = 0x54dc35eb8c2E2E20f3657Af6F84cd9949C08CF38;
+    address public constant TransmuterYVAddr = 0x6d75657771256C7a8CB4d475fDf5047B70160132;
 
     IERC20 public alETHToken = IERC20(alETHAddr);
     IERC20 public WETHToken = IERC20(WETHAddr);
