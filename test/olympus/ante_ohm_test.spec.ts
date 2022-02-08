@@ -11,8 +11,7 @@ describe('AnteOHMBackingTest', function () {
 
   let globalSnapshotId: string;
 
-  const INITIAL_TESTING_ETH = ethers.utils.parseEther('10.0').toHexString();
-
+  const INITIAL_TESTING_ETH = ethers.utils.parseEther('1000.0').toHexString();
   const _olympusTreasuryAddr = '0x31F8Cc382c9898b273eff4e0b7626a6987C846E8'; // Olympus Treasury
   const _ohmTokenAddr = '0x383518188c0c6d7730d91b2c03a03c837814a899'; // OHM Token
 

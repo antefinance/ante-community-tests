@@ -13,7 +13,7 @@ describe('AnteComptrollerIssuanceTest', function () {
 
   let checkpointTime;
 
-  const INITIAL_TESTING_ETH = hre.ethers.utils.parseEther('10.0').toHexString();
+  const INITIAL_TESTING_ETH = hre.ethers.utils.parseEther('1000.0').toHexString();
   const COMPTROLLER_ADDRESS = '0x3d9819210A31b4961b30EF54bE2aeD79B9c9Cd3B';
 
   let globalSnapshotId: string;
