@@ -4,6 +4,8 @@ pragma solidity =0.8.4;
 import {Vault} from "../libraries/Vault.sol";
 
 interface IRibbonThetaVault {
+    function GAMMA_CONTROLLER() external view returns (address);
+
     function currentOption() external view returns (address);
 
     function nextOption() external view returns (address);

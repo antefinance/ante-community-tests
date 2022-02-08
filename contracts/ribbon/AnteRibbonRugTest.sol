@@ -12,26 +12,54 @@
 pragma solidity ^0.8.0;
 
 import "../AnteTest.sol";
+import "./ribbon-v2-contracts/interfaces/IRibbonThetaVault.sol";
+import "./opyn/IMarginPool.sol";
 
-/// @title ETHDev multisig doesn't rug test
-/// @notice Ante Test to check if EthDev multisig "rugs" 99% of its ETH (as of May 2021)
-contract AnteEthDevRugTest is AnteTest("EthDev MultiSig Doesnt Rug 99% of its ETH Test") {
-    // https://etherscan.io/address/0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae
-    address public immutable ethDevAddr;
+import {Vault} from "./ribbon-v2-contracts/libraries/Vault.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-    // 2021-05-24: EthDev has 394k ETH, so -99% is ~4k ETH
-    uint256 public constant RUG_THRESHOLD = 4 * 1000 * 1e18;
+/// @title Checks that RibbonV2 vaults do not lose 90% of their assets
+/// @notice Ante Test to check if a catastrophic failure has occured in RibbonV2
+contract AnteRibbonRugTest is AnteTest("RibbonV2 doesn't lose 90% of its TVL") {
+    // currently deployed RibbonV2 theta vaults
+    IRibbonThetaVault[] public thetaVaults = [
+        IRibbonThetaVault(0x25751853Eab4D0eB3652B5eB6ecB102A2789644B), // eth vault
+        IRibbonThetaVault(0x65a833afDc250D9d38f8CD9bC2B1E3132dB13B2F) // wbtc vault
+    ];
 
-    /// @param _ethDevAddr eth multisig address (0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae on mainnet)
-    constructor(address _ethDevAddr) {
-        protocolName = "ETH";
-        ethDevAddr = _ethDevAddr;
-        testedContracts = [_ethDevAddr];
+    // Opyn MarginPool
+    MarginPoolInterface public marginPool = MarginPoolInterface(0x5934807cC0654d46755eBd2848840b616256C6Ef);
+
+    // threshold amounts for test to fail
+    uint256[] public thresholds;
+
+    /// @notice percent drop threshold (set to 10%)
+    uint8 public constant PERCENT_DROP_THRESHOLD = 10;
+
+    constructor() {
+        protocolName = "Ribbon";
+        for (uint256 i; i < thetaVaults.length; i++) {
+            thresholds[i] = (calculateAssetBalance(thetaVaults[i]) * PERCENT_DROP_THRESHOLD) / 100;
+        }
     }
 
-    /// @notice test to check balance of eth multisig
-    /// @return true if eth multisig has over 4000 ETH
+    function calculateAssetBalance(IRibbonThetaVault vault) public view returns (uint256) {
+        Vault.VaultParams memory vaultParams = vault.vaultParams();
+        Vault.VaultState memory vaultState = vault.vaultState();
+        IERC20 underlying = IERC20(vaultParams.underlying);
+
+        // TODO: see if there is a way to get the minted oTokens or collateral from the MarginPool
+        // Controller, or EasyAuction so we are not relying on theta vault to be honest
+        return underlying.balanceOf(address(vault)) + vaultState.lockedAmount;
+    }
+
     function checkTestPasses() external view override returns (bool) {
-        return ethDevAddr.balance >= RUG_THRESHOLD;
+        for (uint256 i; i < thetaVaults.length; i++) {
+            if (calculateAssetBalance(thetaVaults[i]) < thresholds[i]) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
