@@ -2,7 +2,6 @@
 
 pragma solidity >=0.8.0;
 
-import "hardhat/console.sol";
 import "../interfaces/IERC20.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
@@ -62,9 +61,9 @@ contract AnteMultichainBridgeRugTest is AnteTest("Top 5 assets do not lose 90% v
     function checkTestPasses() public view override returns (bool) {
         return
             anyswapBalanceAtDeploy * 90 <= anyswapToken.balanceOf(eoaAnyswapBSCBridgeAddr) * 100 &&
-            ftmBalanceAtDeploy * 90 <= ftmToken.balanceOf(eoaAnyswapBSCBridgeAddr)* 100 &&
-            usdcBalanceAtDeploy * 90 <= usdcToken.balanceOf(eoaAnyswapBSCBridgeAddr)* 100 &&
-            tehterBalanceAtDeploy * 90 <= tetherToken.balanceOf(eoaAnyswapBSCBridgeAddr)* 100 &&
+            ftmBalanceAtDeploy * 90 <= ftmToken.balanceOf(eoaAnyswapBSCBridgeAddr) * 100 &&
+            usdcBalanceAtDeploy * 90 <= usdcToken.balanceOf(eoaAnyswapBSCBridgeAddr) * 100 &&
+            tehterBalanceAtDeploy * 90 <= tetherToken.balanceOf(eoaAnyswapBSCBridgeAddr) * 100 &&
             daiBalanceAtDeploy * 90 <= daiToken.balanceOf(eoaAnyswapBSCBridgeAddr) * 100;
     }
 }
