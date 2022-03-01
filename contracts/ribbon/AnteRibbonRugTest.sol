@@ -11,9 +11,8 @@
 
 pragma solidity ^0.8.0;
 
-import "../AnteTest.sol";
-import "./ribbon-v2-contracts/interfaces/IRibbonThetaVault.sol";
-
+import {AnteTest} from "../AnteTest.sol";
+import {IRibbonThetaVault} from "./ribbon-v2-contracts/interfaces/IRibbonThetaVault.sol";
 import {IController, GammaTypes} from "./ribbon-v2-contracts/interfaces/GammaInterface.sol";
 import {Vault} from "./ribbon-v2-contracts/libraries/Vault.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
