@@ -167,4 +167,10 @@ npx hardhat compile
 npx hardhat run scripts/deploy.js --network localhost
 ```
 
+Once finished, the smart contracts can be deployed to the Rinkeby network with a similar command.
+
+```
+npx hardhat run scripts/deploy.js --network rinkeby
+```
+
 

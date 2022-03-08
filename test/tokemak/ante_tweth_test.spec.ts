@@ -11,7 +11,7 @@ describe('AnteTWETHTest', function () {
 
   let globalSnapshotId: string;
 
-  const INITIAL_TESTING_ETH = ethers.utils.parseEther('10.0').toHexString();
+  const INITIAL_TESTING_ETH = ethers.utils.parseEther('1000.0').toHexString();
 
   const _tokemakManagerAddr = '0xa86e412109f77c45a3bc1c5870b880492fb86a14'; // Tokemak Manager
   const _WETH9Addr = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'; // WETH9 Token
@@ -38,14 +38,16 @@ describe('AnteTWETHTest', function () {
     await runAsSigner(BENEVOLENT_WETH_DONOR, async () => {
       const donor = await ethers.getSigner(BENEVOLENT_WETH_DONOR);
       await hre.network.provider.request({
-        method: "hardhat_setBalance",
+        method: 'hardhat_setBalance',
         params: [BENEVOLENT_WETH_DONOR, INITIAL_TESTING_ETH],
       });
 
-      const wETH9Token = <IERC20>await ethers.getContractAt('contracts/interfaces/IERC20.sol:IERC20', _WETH9Addr, donor);
+      const wETH9Token = <IERC20>(
+        await ethers.getContractAt('contracts/interfaces/IERC20.sol:IERC20', _WETH9Addr, donor)
+      );
       const tWETHToken = <IERC20>await ethers.getContractAt('contracts/interfaces/IERC20.sol:IERC20', _tWETHAddr);
 
-      await wETH9Token.transferFrom(BENEVOLENT_WETH_DONOR, _tWETHAddr, ethers.utils.parseUnits("4242", 'gwei'));
+      await wETH9Token.transferFrom(BENEVOLENT_WETH_DONOR, _tWETHAddr, ethers.utils.parseUnits('4242', 'gwei'));
 
       const wETHBalancePostTransfer = await wETH9Token.balanceOf(_tWETHAddr);
       const tWETHSupply = await tWETHToken.totalSupply();
@@ -60,14 +62,16 @@ describe('AnteTWETHTest', function () {
     await runAsSigner(_tWETHAddr, async () => {
       const donor = await ethers.getSigner(_tWETHAddr);
       await hre.network.provider.request({
-        method: "hardhat_setBalance",
+        method: 'hardhat_setBalance',
         params: [_tWETHAddr, INITIAL_TESTING_ETH],
       });
 
-      const wETH9Token = <IERC20>await ethers.getContractAt('contracts/interfaces/IERC20.sol:IERC20', _WETH9Addr, donor);
+      const wETH9Token = <IERC20>(
+        await ethers.getContractAt('contracts/interfaces/IERC20.sol:IERC20', _WETH9Addr, donor)
+      );
       const tWETHToken = <IERC20>await ethers.getContractAt('contracts/interfaces/IERC20.sol:IERC20', _tWETHAddr);
 
-      await wETH9Token.transfer(LUCKY_WETH_RECIPIENT, ethers.utils.parseUnits("1337", 'gwei'));
+      await wETH9Token.transfer(LUCKY_WETH_RECIPIENT, ethers.utils.parseUnits('1337', 'gwei'));
 
       const wETHBalancePostTransfer = await wETH9Token.balanceOf(_tWETHAddr);
       const tWETHSupply = await tWETHToken.totalSupply();
