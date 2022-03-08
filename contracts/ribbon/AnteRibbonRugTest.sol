@@ -17,7 +17,7 @@ import {IController, GammaTypes} from "./ribbon-v2-contracts/interfaces/GammaInt
 import {Vault} from "./ribbon-v2-contracts/libraries/Vault.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-/// @title Checks that Ribbon Theta V2 vaults do not lose 90% of their assets
+/// @title Checks that RibbonV2 Theta vaults do not lose 90% of their assets
 /// @notice Ante Test to check if a catastrophic failure has occured in RibbonV2
 contract AnteRibbonRugTest is AnteTest("RibbonV2 doesn't lose 90% of its TVL") {
     // currently deployed RibbonV2 theta vaults
@@ -39,24 +39,23 @@ contract AnteRibbonRugTest is AnteTest("RibbonV2 doesn't lose 90% of its TVL") {
         protocolName = "Ribbon";
         for (uint256 i; i < thetaVaults.length; i++) {
             thresholds[i] = (calculateAssetBalance(thetaVaults[i]) * PERCENT_DROP_THRESHOLD) / 100;
+            testedContracts.push(address(thetaVaults[i]));
         }
     }
 
     /// @notice computes balance of underlying asset in a given Ribbon Theta Vault
-    /// @param vault Ribbon Theta Vault address
+    /// @param vault RibbonV2 Theta Vault address
     /// @return balance of vault
     function calculateAssetBalance(IRibbonThetaVault vault) public view returns (uint256) {
         Vault.VaultParams memory vaultParams = vault.vaultParams();
-        Vault.VaultState memory vaultState = vault.vaultState();
         IERC20 underlying = IERC20(vaultParams.underlying);
 
-        // TODO: any other places collateral can be besides vault and marginpool?
-        // query Opyn Controller directly so we don't have to trust Ribbon contracts to be honest
-        // about their internal state
-        GammaTypes.Vault memory opynVault = controller.getVault(address(vault), vaultState.round - 1);
+        GammaTypes.Vault memory opynVault = controller.getVault(
+            address(vault),
+            controller.getAccountVaultCounter(address(vault))
+        );
 
         // make assumption that there is only one collateral asset in vault
-        // can relax with more intelligent logic if necessary
         return underlying.balanceOf(address(vault)) + opynVault.collateralAmounts[0];
     }
 

@@ -11,7 +11,7 @@
 
 pragma solidity ^0.7.0;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin-contracts-old/contracts/token/ERC20/IERC20.sol";
 import "../AnteTest.sol";
 
 /// @title SPELL supply never exceeds 420 billion test and 210 billion SPELL has been burned
