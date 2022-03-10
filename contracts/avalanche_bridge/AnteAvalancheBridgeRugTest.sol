@@ -12,7 +12,7 @@
 pragma solidity ^0.7.0;
 
 import "../AnteTest.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin-contracts-old/contracts/token/ERC20/IERC20.sol";
 
 /// @title Avalanche Bridge doesn't rug test on mainnet
 /// @notice Ante Test to check if EOA Avalanche Bridge "rugs" 99% of its value (as of test deployment)

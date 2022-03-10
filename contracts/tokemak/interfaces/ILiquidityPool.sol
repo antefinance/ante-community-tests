@@ -2,8 +2,9 @@
 
 pragma solidity 0.7.6; // modified from original 0.6.11
 
-import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+import "@openzeppelin-contracts-old/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import "../interfaces/IManager.sol";
+
 // FROM https://raw.githubusercontent.com/Tokemak/tokemak-smart-contracts-public/main/contracts/interfaces/ILiquidityPool.sol
 
 /// @title Interface for Pool
@@ -12,7 +13,6 @@ import "../interfaces/IManager.sol";
 /// @notice Holders of fTokens earn rewards based on duration their tokens were deployed and the demand for that asset.
 /// @notice Holders of fTokens can redeem for underlying asset after issuing requestWithdrawal and waiting for the next cycle.
 interface ILiquidityPool {
-
     struct WithdrawalInfo {
         uint256 minCycle;
         uint256 amount;

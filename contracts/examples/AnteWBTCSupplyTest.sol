@@ -11,7 +11,7 @@
 
 pragma solidity ^0.7.0;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin-contracts-old/contracts/token/ERC20/IERC20.sol";
 import "../AnteTest.sol";
 
 /// @title WBTC supply never exceeds 21 million test
