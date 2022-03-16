@@ -5,7 +5,6 @@ pragma experimental ABIEncoderV2;
 
 // FROM: https://raw.githubusercontent.com/Tokemak/tokemak-smart-contracts-public/main/contracts/interfaces/IManager.sol
 interface IManager {
-
     // bytes can take on the form of deploying or recovering liquidity
     struct ControllerTransferData {
         bytes32 controllerId; // controller to target
@@ -18,7 +17,7 @@ interface IManager {
     }
 
     struct MaintenanceExecution {
-         ControllerTransferData[] cycleSteps;
+        ControllerTransferData[] cycleSteps;
     }
 
     struct RolloverExecution {
