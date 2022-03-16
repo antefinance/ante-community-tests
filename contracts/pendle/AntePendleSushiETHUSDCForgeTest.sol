@@ -7,7 +7,7 @@ import "../AnteTest.sol";
 import "./interfaces/IUniswapV2Pair.sol";
 import "./interfaces/IMasterChef.sol";
 import "./libraries/MathLib.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin-contracts-old/contracts/token/ERC20/IERC20.sol";
 import "hardhat/console.sol";
 
 /// @notice Ante Test to check that the total OT divided by the exchange rate never exceed the amount of sushi lp tokens deposited

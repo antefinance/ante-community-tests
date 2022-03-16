@@ -4,7 +4,7 @@ pragma solidity ^0.7.0;
 
 import "../AnteTest.sol";
 import "./interfaces/IPendleMarket.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin-contracts-old/contracts/token/ERC20/IERC20.sol";
 
 /// @notice Ante Test to check the reserve data balance is backed by the actual balance of the market
 contract AntePendleMarketBalanceTest is AnteTest("Pendle Market Balance Test") {

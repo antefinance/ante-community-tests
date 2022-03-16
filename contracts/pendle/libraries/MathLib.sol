@@ -2,7 +2,7 @@
 pragma solidity ^0.7.0;
 pragma abicoder v2;
 
-import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin-contracts-old/contracts/math/SafeMath.sol";
 
 library Math {
     using SafeMath for uint256;

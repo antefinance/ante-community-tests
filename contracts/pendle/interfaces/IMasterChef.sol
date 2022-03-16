@@ -22,7 +22,7 @@
  */
 pragma solidity 0.7.6;
 pragma abicoder v2;
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin-contracts-old/contracts/token/ERC20/IERC20.sol";
 
 interface IMasterChef {
     struct UserInfo {
