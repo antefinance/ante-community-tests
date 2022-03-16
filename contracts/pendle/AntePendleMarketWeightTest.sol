@@ -4,7 +4,7 @@ pragma solidity ^0.7.0;
 
 import "../AnteTest.sol";
 import "./interfaces/IPendleMarket.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin-contracts-old/contracts/token/ERC20/IERC20.sol";
 
 /// @notice Ante Test to check if the weight of xyt and token add up to 2^40,
 /// xyt weight should be less than or equal to token weight

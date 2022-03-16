@@ -4,7 +4,7 @@ pragma solidity ^0.7.0;
 
 import "../AnteTest.sol";
 import "./libraries/MathLib.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin-contracts-old/contracts/token/ERC20/IERC20.sol";
 
 /// @notice Ante Test to check that the total OT never exceed the amount of aave yield-bearing tokens deposited
 /// into Pendle, hence 1 OT can always redeem back 1 aave yield-bearing token

@@ -6,7 +6,7 @@ import "../AnteTest.sol";
 import "./interfaces/ICToken.sol";
 import "./interfaces/IPendleCompoundForge.sol";
 import "./libraries/MathLib.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin-contracts-old/contracts/token/ERC20/IERC20.sol";
 
 /// @notice Ante Test to check that the total OT supply divided by the exchangeRate never exceed the amount of compound yield-bearing tokens deposited
 /// into Pendle
