@@ -36,9 +36,14 @@ contract AnteUSTPegTest is AnteTest("UST price remains within 5% of 1 USD") {
         // grab latest price from Chainlink feed (currently 0.3% deviation, 24h heartbeat)
         (, int256 price, , , ) = priceFeed.latestRoundData();
 
-        // assuming decimals() will never be large enough for overflow to be an issue
-        return
-            price >= int256((10**priceFeed.decimals() * 95) / 100) &&
-            price <= int256((10**priceFeed.decimals() * 105) / 100);
+        // Exclude negative prices so we can safely cast to uint
+        if (price < 0) {
+            return false;
+        }
+
+        // make result not dependent on decimals in price feed remaining constant (assumes never <2)
+        uint256 scalingFactor = 10**priceFeed.decimals() / 100;
+
+        return uint256(price) >= (95 * scalingFactor) && uint256(price) <= (105 * scalingFactor);
     }
 }
