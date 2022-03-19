@@ -14,8 +14,8 @@ import {AnteTest} from "../AnteTest.sol";
 import {LlamaPayFactory} from "./interfaces/LlamaPayFactory.sol";
 import {LlamaPay} from "./interfaces/LlamaPay.sol";
 
-/// @title  LlamaPay never
-/// @notice Ante Test to check ...
+/// @title  LlamaPay never goes back in time
+/// @notice Ante Test to check that lastPayerUpdate <= block.timestamp holds
 /// may no longer hold after 231,800 A.D.
 contract AnteLlamaPayTest is AnteTest("Ante LlamaPay Test") {
     LlamaPayFactory internal factory;
@@ -48,7 +48,6 @@ contract AnteLlamaPayTest is AnteTest("Ante LlamaPay Test") {
     function checkTestPasses() external view override returns (bool) {
         // if a valid token is specified, check payer for specific token llamapay contract
         if (tokenAddress != address(0)) {
-            // TestSetter already checks tokenAddress in payContracts
             return checkSingle(factory.payContracts(tokenAddress));
         }
 
@@ -70,10 +69,11 @@ contract AnteLlamaPayTest is AnteTest("Ante LlamaPay Test") {
     /// @notice Sets the payer address for the Ante Test to check
     /// @param _payerAddress address of payer to check
     function setPayerAddress(address _payerAddress) external {
-        //check that payer address is valid? is there a way to do this without getting expensive?
+        //check that payer address is valid?
         require(_payerAddress != address(0), "Invalid payer address");
-        // TODO would be more thorough to loop through llamapay contracts and verify that at least one
-        // instance of a valid payer mapping exists
+        // TODO might be more thorough to loop through llamapay contracts and verify that at least one
+        // instance of a valid payer mapping exists. but also an invalid payer address doesn't fail
+        // the test so no risk of false positive
 
         payerAddress = _payerAddress;
     }
