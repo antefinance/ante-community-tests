@@ -29,7 +29,7 @@ contract MyAnteTest is AnteTest("Make sure at least 0.5% of Lido stake is insure
          * Generally we would do x / y > 0.5 but since we are inversing the percentage
          * we flip the inequality sign. So we get: y / x < 200;
         */
-        return (lidoContract.balance / lidoInsuranceContract.balance) < 200;
+        return (lidoContract.balance / lidoInsuranceContract.balance) <= 200;
     }
 
     function getInsurancePercentageInverse() public view returns(uint256) {
