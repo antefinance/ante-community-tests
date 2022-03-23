@@ -4,8 +4,8 @@ pragma solidity ^0.8.0;
 import "../AnteTest.sol";
 
 contract MyAnteTest is AnteTest("Make sure at least 0.5% of Lido stake is insured!") {
-    address lidoContract = 0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84;
-    address lidoInsuranceContract = 0x3e40D73EB977Dc6a537aF587D48316feE66E9C8c;
+    address public immutable lidoContract;
+    address public immutable lidoInsuranceContract;
 
     constructor (address _lidoContract, address _lidoInsuranceContract) {
         lidoContract = _lidoContract;
