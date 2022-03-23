@@ -20,16 +20,13 @@ contract AnteLidoInsuranceTest is AnteTest("Make sure at least 0.5% of Lido stak
          * Solidity doesn't support decimals (yet). So where x / y < 1; solidity will
          * cut off the decimals and "round to 0". 
          *
-         * To avoid this issue, we can use the inverse percentage.
-         * 
-         * Let x = contract balance and y = insurance balance
+         * To avoid this issue, we use a slightly modified equation
          *
-         * Note, we are ensuring 0.5% is insured. 0.5 / 100 = 0.005 and 100 / 0.5 = 200;
-         *
-         * Generally we would do x / y > 0.5 but since we are inversing the percentage
-         * we flip the inequality sign. So we get: y / x < 200;
+         * x / y >= 0.005
+         * x >= 0.005 * y
+         * x >= y * 5 / 1000 
         */
-        return (lidoContract.balance / lidoInsuranceContract.balance) <= 200;
+        return (lidoInsuranceContract.balance >= lidoContract.balance * 5 / 1000);
     }
 
     function getInsurancePercentageInverse() public view returns(uint256) {
