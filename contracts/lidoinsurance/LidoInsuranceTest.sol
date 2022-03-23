@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.7.0;
 
 import "../AnteTest.sol";
 
-contract MyAnteTest is AnteTest("Make sure at least 0.5% of Lido stake is insured!") {
+contract AnteLidoInsuranceTest is AnteTest("Make sure at least 0.5% of Lido stake is insured!") {
     address public immutable lidoContract;
     address public immutable lidoInsuranceContract;
 
