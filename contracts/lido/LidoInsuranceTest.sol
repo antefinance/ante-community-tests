@@ -19,8 +19,7 @@ contract AnteLidoInsuranceTest is AnteTest("Make sure at least 0.5% of Lido stak
         testedContracts = [_lidoContract, _lidoInsuranceContract];
     }
     
-    // @notice returns true if at least 0.5% of stake is insured
-    // @notice returns false if less than 0.5% of stake is insured
+    // @return true if at least 0.5% of stake is insured
     function checkTestPasses() public view override returns (bool) {
 
         /* 
