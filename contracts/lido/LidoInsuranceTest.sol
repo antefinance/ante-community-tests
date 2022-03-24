@@ -10,8 +10,8 @@ contract AnteLidoInsuranceTest is AnteTest("Make sure at least 0.5% of Lido stak
     constructor (address _lidoContract, address _lidoInsuranceContract) {
         lidoContract = _lidoContract;
         lidoInsuranceContract = _lidoInsuranceContract;
-        protocolName = "Lido Staking ";
-        testedContracts = [0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84];
+        protocolName = "Lido";
+        testedContracts = [_lidoContract, _lidoInsuranceContract];
     }
     
     function checkTestPasses() public view override returns (bool) {
