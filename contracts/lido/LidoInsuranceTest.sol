@@ -3,10 +3,15 @@ pragma solidity ^0.7.0;
 
 import "../AnteTest.sol";
 
+// @title Lido Insurance Test 
+// @author github.com/icepaq
+// @notice ensures at least 0.5% of Lido stake is insured
 contract AnteLidoInsuranceTest is AnteTest("Make sure at least 0.5% of Lido stake is insured!") {
     address public immutable lidoContract;
     address public immutable lidoInsuranceContract;
 
+    // @param _lidoContract Address of lido contract
+    // @param _lidoInsuranceContract Address of lido insurance contract
     constructor (address _lidoContract, address _lidoInsuranceContract) {
         lidoContract = _lidoContract;
         lidoInsuranceContract = _lidoInsuranceContract;
@@ -14,6 +19,8 @@ contract AnteLidoInsuranceTest is AnteTest("Make sure at least 0.5% of Lido stak
         testedContracts = [_lidoContract, _lidoInsuranceContract];
     }
     
+    // @notice returns true if at least 0.5% of stake is insured
+    // @notice returns false if less than 0.5% of stake is insured
     function checkTestPasses() public view override returns (bool) {
 
         /* 
@@ -29,8 +36,9 @@ contract AnteLidoInsuranceTest is AnteTest("Make sure at least 0.5% of Lido stak
         return (lidoInsuranceContract.balance >= lidoContract.balance * 5 / 1000);
     }
 
+    // @notice Returns the insured inverse percentage of lido stake
+    // @notice To get the percentage you do 1 / return value * 100
     function getInsurancePercentageInverse() public view returns(uint256) {
-        // To get the percentage you do 1 / return value * 100
         return (lidoContract.balance / lidoInsuranceContract.balance);
     }
 }
