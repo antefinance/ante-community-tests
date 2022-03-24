@@ -34,10 +34,4 @@ contract AnteLidoInsuranceTest is AnteTest("Make sure at least 0.5% of Lido stak
         */
         return (lidoInsuranceContract.balance >= lidoContract.balance * 5 / 1000);
     }
-
-    // @notice To get the percentage you do 1 / return value * 100
-    // @return the inverse percentage of the contract insurance reserve
-    function getInsurancePercentageInverse() public view returns(uint256) {
-        return (lidoContract.balance / lidoInsuranceContract.balance);
-    }
 }
