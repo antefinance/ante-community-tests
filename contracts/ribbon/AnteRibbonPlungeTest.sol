@@ -19,7 +19,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /// @title Checks that RibbonV2 Theta vaults do not lose 90% of their assets
 /// @notice Ante Test to check if a catastrophic failure has occured in RibbonV2
-contract AnteRibbonRugTest is AnteTest("RibbonV2 doesn't lose 90% of its TVL") {
+contract AnteRibbonPlungeTest is AnteTest("RibbonV2 doesn't lose 90% of its TVL") {
     // currently deployed RibbonV2 theta vaults
     IRibbonThetaVault[2] public thetaVaults = [
         IRibbonThetaVault(0x25751853Eab4D0eB3652B5eB6ecB102A2789644B), // eth vault
