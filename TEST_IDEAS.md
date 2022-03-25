@@ -23,7 +23,7 @@ Note: when we say rug, that could imply draining funds, but could also include f
 | Cobie doesn't rug Do-Algod-DCR Luna bet escrow wallet                                                   | Merged      | abitwhaleish |
 | Compound test? (re: latest vulnerability)                                                               | Not started |              |
 | Curve 3pool doesn't rug                                                                                 | Not started |              |
-| Curve 3pool doesn't becomes unbalanced past threshold (look at historic balances and choose some stdev) | Not started |              |
+| Curve 3pool doesn't becomes unbalanced past threshold<br />(look at historic balances and choose some stdev) | Not started |              |
 | Curve stETH x ETH pool doesn't rug                                                                      | Not started |              |
 | Curve TVL doesn't plunge                                                                                | Not started |              |
 | ___ DAO multisig doesn't rug                                                                            | Not started |              |
