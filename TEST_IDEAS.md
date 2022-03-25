@@ -13,7 +13,7 @@ Have protocols you want tested? Submit Ante Test ideas to the list below or in [
 3. Happy test writing! See [Writing an Ante Test](https://docs.ante.finance/antev05/for-devs/writing-an-ante-test) for a step-by-step guide.
 
 ## Test Ideas
-Note: when we say rug, that could imply draining funds, but could also include failure of any guarantee in a meaningful manner
+Note: when we say rug, that could imply draining funds, but could also include failure of any guarantee in a meaningful manner.
 
 | Test Idea                                               | Status      | Test Writer  |
 | :------------------------------------------------------ | :---------- | :----------- |
