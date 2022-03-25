@@ -21,7 +21,7 @@ const config: HardhatUserConfig = {
     mainnet: {
       url: `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
       accounts: {
-        mnemonic: process.env.MNEMONIC || '',
+        mnemonic: process.env.MAINNET_PRIVATE_KEY || '',
       },
     },
     rinkeby: {
