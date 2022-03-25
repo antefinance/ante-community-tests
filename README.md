@@ -1,4 +1,5 @@
 # ante-community-tests
+Contribute test ideas or pick up a test to write! [Ante Test Ideas](TEST_IDEAS.md)
 
 Please feel free to join our Discord to bounce ideas and discuss various ideas with the community and developers!
 
