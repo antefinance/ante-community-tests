@@ -22,7 +22,6 @@ contract AnteCurveTVLPlungeTest is AnteTest("Ensure that curve keeps a TVL of > 
     ERC20 constant SUSD = ERC20(0x57Ab1ec28D129707052df4dF418D58a2D46d5f51);
     ERC20 constant SBTC = ERC20(0xfE18be6b3Bd88A2D2A7f928d00292E7a9963CfC6);
 
-    // As of 2022-04-05
     uint256 immutable oldTVL;
 
     constructor() {
