@@ -25,7 +25,7 @@ Note: when we say rug, that could imply draining funds, but could also include f
 | Curve 3pool doesn't rug                                                                                 | Not started |              |
 | Curve 3pool doesn't becomes unbalanced past threshold<br />(look at historic balances and choose some stdev) | Not started |              |
 | Curve stETH x ETH pool doesn't rug                                                                      | Not started |              |
-| Curve TVL doesn't plunge                                                                                | Not started |              |
+| Curve TVL doesn't plunge                                                                                | Merged |   icepaq   |
 | ___ DAO multisig doesn't rug                                                                            | Not started |              |
 | Fei doesn't rug                                                                                         | Not started |              |
 | Frax always sufficiently collateralized                                                                 | Not started |              |
