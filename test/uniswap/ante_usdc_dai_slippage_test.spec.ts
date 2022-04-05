@@ -6,7 +6,7 @@ import { AnteDAIUSDCSlippage, AnteDAIUSDCSlippage__factory } from '../../typecha
 import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
 
-describe('AnteUSDTUSTSlippage', function () {
+describe('AnteDAIUSDCSlippage', function () {
   let test: AnteDAIUSDCSlippage;
 
   let globalSnapshotId: string;
@@ -15,7 +15,7 @@ describe('AnteUSDTUSTSlippage', function () {
     globalSnapshotId = await evmSnapshot();
 
     const [deployer] = waffle.provider.getWallets();
-    const factory = (await hre.ethers.getContractFactory('AnteUSDTUSTSlippage', deployer)) as AnteDAIUSDCSlippage__factory;
+    const factory = (await hre.ethers.getContractFactory('AnteDAIUSDCSlippage', deployer)) as AnteDAIUSDCSlippage__factory;
     test = await factory.deploy();
     await test.deployed();
   });
