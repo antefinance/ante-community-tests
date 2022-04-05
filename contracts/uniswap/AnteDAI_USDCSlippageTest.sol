@@ -25,16 +25,8 @@ contract AnteDAIUSDCSlippage is AnteTest("Ante DAI-USDC Slippage Test on Uniswap
         // x and y may be different values but not because of slippage.
         // The number 12 comes from the decimal difference.
         // To find the decimals, lookup the token on etherscan
-        if(x > y) {
-            for(uint8 i = 0; i < 12; i++) {
-                x = x / 10;
-            }
-        }
-
-        if(y > x) {
-            for(uint8 i = 0; i < 12; i++) {
-                y = y / 10;
-            }
+        for(uint8 i = 0; i < 12; i++) {
+            x = x / 10;
         }
 
         // Always make sure that the percentage will be equal to or less than 100
