@@ -14,13 +14,21 @@ contract AnteUSDTUSTSlippage is AnteTest("Ante UST-USDT Slippage Test on Uniswap
         protocolName = "Uniswap";
         testedContracts = [USDT_UST_Pair];
     }
-    
+
     // @return reserve0 and reserve1 from the uniswap pair
     // @notice Will only work on mainnet
     function getTokenPrice() public view returns(uint112, uint112) {
         IUniswapV2Pair uniswapPair = IUniswapV2Pair(USDT_UST_Pair);
 
         (uint112 x, uint112 y,) = uniswapPair.getReserves();
+
+        while(x > 1000000) {
+            x = x / 10;
+        }
+
+        while(y > 1000000) {
+            y = y / 10;
+        }
 
         // Always make sure that the percentage will be equal to or less than 100
         if(x > y) {
