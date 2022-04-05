@@ -22,6 +22,8 @@ contract AnteUSDTUSTSlippage is AnteTest("Ante UST-USDT Slippage Test on Uniswap
 
         (uint112 x, uint112 y,) = uniswapPair.getReserves();
 
+        // x and y may be different values but not because of slippage. Use first 7 digits
+        // to calculate slippage
         while(x > 1000000) {
             x = x / 10;
         }
