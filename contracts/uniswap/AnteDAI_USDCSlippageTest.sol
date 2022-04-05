@@ -1,0 +1,48 @@
+// SPDX-License-Identifier: MIT
+
+pragma solidity ^0.8.0;
+
+import "../AnteTest.sol";
+import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
+
+// @title Ensure that the slippage of these two tokens are <= 3%
+contract AnteDAIUSDCSlippage is AnteTest("Ante DAI-USDC Slippage Test on Uniswap") {
+    // https://etherscan.io/token/0xc50Ef7861153C51D383d9a7d48e6C9467fB90c38
+    address public constant USDC_DAI_Pair = 0xAE461cA67B15dc8dc81CE7615e0320dA1A9aB8D5;
+
+    constructor() {
+        protocolName = "Uniswap";
+        testedContracts = [USDC_DAI_Pair];
+    }
+
+    // @return reserve0 and reserve1 from the uniswap pair
+    // @notice Will only work on mainnet
+    function getTokenPrice() public view returns(uint112, uint112) {
+        IUniswapV2Pair uniswapPair = IUniswapV2Pair(USDC_DAI_Pair);
+
+        (uint112 x, uint112 y,) = uniswapPair.getReserves();
+
+        // x and y may be different values but not because of slippage. Use first 7 digits
+        // to calculate slippage
+        while(x > 1000000) {
+            x = x / 10;
+        }
+
+        while(y > 1000000) {
+            y = y / 10;
+        }
+
+        // Always make sure that the percentage will be equal to or less than 100
+        if(x > y) {
+            (x, y) = (y, x); // More gas efficient swap compared to using a temp var
+        }
+        return (x, y);
+    }
+
+    // @return bool if the price difference is >= 3%
+    function checkTestPasses() public view override returns (bool) {
+        (uint112 x, uint112 y) = getTokenPrice();
+
+        return(100 * x / y >= 97);
+    }
+} 
