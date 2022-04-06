@@ -38,7 +38,7 @@ contract AnteAllbridgeRugTest is AnteTest(" Allbridge mainnet bridge doesn't los
     /// @notice test to check balance of eth 
     /// @return true if bridge doesn't drop under 15% of the balance at the time of deployment
     function checkTestPasses() external view override returns (bool) {
-        return (etherBalanceAtDeploy > threshold);
+        return (allbridgeBridgeAddr.balance > threshold);
     }
 
 
