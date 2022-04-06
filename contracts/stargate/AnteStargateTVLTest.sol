@@ -31,9 +31,6 @@ contract StargateTVLTest is AnteTest("Ensure that stargate keeps a TVL of > 10%"
     function checkTestPasses() public view override returns (bool) {
         // Solve forked mainnet not having balances for stargate.
         // This ends up casuing divide by zero errors.
-        if(oldTVL == 0) { 
-            return true;
-        }
         return (100 * getBalances() / oldTVL > 10);
     }
 }

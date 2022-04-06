@@ -6,7 +6,7 @@ import { StargateTVLTest, StargateTVLTest__factory } from '../../typechain';
 import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
 
-describe('AnteUSDCPegTest', function () {
+describe('StargateTVLTest', function () {
   let test: StargateTVLTest;
 
   let globalSnapshotId: string;
