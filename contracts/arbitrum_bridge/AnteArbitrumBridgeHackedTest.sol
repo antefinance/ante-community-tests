@@ -17,51 +17,55 @@ import "@openzeppelin-contracts-old/contracts/token/ERC20/IERC20.sol";
 /// @title Arbitrum Bridge Doesn't Get Hacked
 /// @notice Ante Test to check if Arbitrum Bridge Doesn't Get Hacked (as of test deployment)
 contract AnteArbitrumBridgeHackedTest is AnteTest("Arbitrum Bridge Doesn't Get Hacked") {
-    // https://etherscan.io/address/0x011b6e24ffb0b5f5fcc564cf4183c5bbbc96d515
-    address public constant ArbitrumBridgeAddr = 0x011B6E24FfB0B5f5fCc564cf4183C5BBBc96D515;
-    // https://etherscan.io/address/0x06a87F6aFEc4a739c367bEF69eEfE383D27106bd
-    address public constant scoobiAddr = 0x06a87F6aFEc4a739c367bEF69eEfE383D27106bd;
-    // https://etherscan.io/address/0x2eE543b8866F46cC3dC93224C6742a8911a59750
-    address public constant mvdgAddr = 0x2eE543b8866F46cC3dC93224C6742a8911a59750;
-    // https://etherscan.io/address/0x89C81D3725EB9e1D4aE21082865D1653E10EaE1b
-    address public constant evmosAddr = 0x89C81D3725EB9e1D4aE21082865D1653E10EaE1b;
-    // https://etherscan.io/address/0xca8a414F170Bc635f7Bb21aF7951922fa33A82B0
-    address public constant lzeroAddr = 0xca8a414F170Bc635f7Bb21aF7951922fa33A82B0;
+    // https://etherscan.io/address/0xa3A7B6F88361F48403514059F1F16C8E78d60EeC
+    address public constant ArbitrumBridgeAddr = 0xa3A7B6F88361F48403514059F1F16C8E78d60EeC;
+    // https://etherscan.io/address/0xB0c7a3Ba49C7a6EaBa6cD4a96C55a1391070Ac9A
+    address public constant magicAddr = 0xB0c7a3Ba49C7a6EaBa6cD4a96C55a1391070Ac9A;
+    // https://etherscan.io/address/0xEec2bE5c91ae7f8a338e1e5f3b5DE49d07AfdC81
+    address public constant dopexAddr = 0xEec2bE5c91ae7f8a338e1e5f3b5DE49d07AfdC81;
+    // https://etherscan.io/address/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599
+    address public constant wrappedAddr = 0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599;
+    // https://etherscan.io/address/0x97872EAfd79940C7b24f7BCc1EADb1457347ADc9
+    address public constant stripsAddr = 0x97872EAfd79940C7b24f7BCc1EADb1457347ADc9;
+    // https://etherscan.io/address/0x8df6606b8E624333EBEcce706edbf7139BDD56B1
+    address public constant l2padAddr = 0x8df6606b8E624333EBEcce706edbf7139BDD56B1;
 
-    IERC20 public scoobiToken;
-    IERC20 public mvdgToken;
-    IERC20 public evmosToken;
-    IERC20 public lzeroToken;
+    IERC20 public magicToken;
+    IERC20 public dopexToken;
+    IERC20 public wrappedToken;
+    IERC20 public stripsToken;
+    IERC20 public l2padToken;
 
-    uint256 public immutable etherBalanceAtDeploy;
-    uint256 public immutable scoobiBalanceAtDeploy;
-    uint256 public immutable mvdgBalanceAtDeploy;
-    uint256 public immutable evmosBalanceAtDeploy;
-    uint256 public immutable lzeroBalanceAtDeploy;
+    uint256 public immutable magicBalanceAtDeploy;
+    uint256 public immutable dopexBalanceAtDeploy;
+    uint256 public immutable wrappedBalanceAtDeploy;
+    uint256 public immutable stripsBalanceAtDeploy;
+    uint256 public immutable l2padBalanceAtDeploy;
 
     constructor() {
         protocolName = "Arbitrum: Bridge";
         testedContracts = [ArbitrumBridgeAddr];
 
-        scoobiToken = IERC20(scoobiAddr);
-        mvdgToken = IERC20(mvdgAddr);
-        evmosToken = IERC20(evmosAddr);
-        lzeroToken = IERC20(lzeroAddr);
+        magicToken = IERC20(magicAddr);
+        dopexToken = IERC20(dopexAddr);
+        wrappedToken = IERC20(wrappedAddr);
+        stripsToken = IERC20(stripsAddr);
+        l2padToken = IERC20(l2padAddr);
 
-        etherBalanceAtDeploy = ArbitrumBridgeAddr.balance;
-        scoobiBalanceAtDeploy = scoobiToken.balanceOf(ArbitrumBridgeAddr);
-        mvdgBalanceAtDeploy = mvdgToken.balanceOf(ArbitrumBridgeAddr);
-        evmosBalanceAtDeploy = evmosToken.balanceOf(ArbitrumBridgeAddr);
-        lzeroBalanceAtDeploy = lzeroToken.balanceOf(ArbitrumBridgeAddr);
+        magicBalanceAtDeploy = magicToken.balanceOf(ArbitrumBridgeAddr);
+        dopexBalanceAtDeploy = dopexToken.balanceOf(ArbitrumBridgeAddr);
+        wrappedBalanceAtDeploy = wrappedToken.balanceOf(ArbitrumBridgeAddr);
+        stripsBalanceAtDeploy = stripsToken.balanceOf(ArbitrumBridgeAddr);
+        l2padBalanceAtDeploy = l2padToken.balanceOf(ArbitrumBridgeAddr);
     }
 
     /// @notice test to check value of ether + top 5 tokens on Arbitrum Bridge is not rugged
     /// @return true if bridge has more than 10% of assets from when it was deployed
     function checkTestPasses() external view override returns (bool) {
-        return ((etherBalanceAtDeploy / 10) < ArbitrumBridgeAddr.balance &&
-            (scoobiBalanceAtDeploy / 10) < scoobiToken.balanceOf(ArbitrumBridgeAddr) &&
-            (mvdgBalanceAtDeploy / 10) < mvdgToken.balanceOf(ArbitrumBridgeAddr) &&
-            (evmosBalanceAtDeploy / 10) < evmosToken.balanceOf(ArbitrumBridgeAddr) &&
-            (lzeroBalanceAtDeploy / 10) < lzeroToken.balanceOf(ArbitrumBridgeAddr));
+        return ((magicBalanceAtDeploy / 10) < magicToken.balanceOf(ArbitrumBridgeAddr) &&
+            (dopexBalanceAtDeploy / 10) < dopexToken.balanceOf(ArbitrumBridgeAddr) &&
+            (wrappedBalanceAtDeploy / 10) < wrappedToken.balanceOf(ArbitrumBridgeAddr) &&
+            (stripsBalanceAtDeploy / 10) < stripsToken.balanceOf(ArbitrumBridgeAddr) &&
+            (l2padBalanceAtDeploy / 10) < l2padToken.balanceOf(ArbitrumBridgeAddr));
     }
 }
