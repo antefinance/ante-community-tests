@@ -8,6 +8,9 @@
 // ┗┛ ┗┛┗┛┗┛━┗━┛┗━━┛━┗┛━┗┛━━━┗┛┗┛┗┛┗━━━┛┗┛┗┛┗━━┛┗━━┛
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+// https://.etherscan.io/address/[CONTRACT_ADDRESS]#readContract to check
+// https://.etherscan.io/address/[CONTRACT_ADDRESS]#writeContract to set values
+
 pragma solidity ^0.8.0;
 
 import {AnteTest} from "../AnteTest.sol";
@@ -28,6 +31,7 @@ contract AnteLlamaPayTest is AnteTest("Ante LlamaPay Test") {
 
         protocolName = "LlamaPay"; // <3
         testedContracts = [_llamaPayFactoryAddress];
+        // wonder if could update this when user sets LlamaPay address
     }
 
     /// @notice checks that lastPayerUpdate <= block.timestamp for a given payer in a given LlamaPay instance
@@ -91,5 +95,6 @@ contract AnteLlamaPayTest is AnteTest("Ante LlamaPay Test") {
         }
 
         tokenAddress = _tokenAddress;
+        // also update testedContracts?
     }
 }
