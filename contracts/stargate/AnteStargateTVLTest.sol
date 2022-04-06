@@ -4,8 +4,8 @@ import "../AnteTest.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 // @title Stargate TVL Plunge Test
-// @notice Ensure that curve keeps a TVL of > 10%"
-contract StargateTVLTest is AnteTest("Ensure that curve keeps a TVL of > 10%") {
+// @notice Ensure that Stargate keeps a TVL of > 10%"
+contract StargateTVLTest is AnteTest("Ensure that stargate keeps a TVL of > 10%") {
 
     address constant USDT_STARGATE = 0x38EA452219524Bb87e18dE1C24D3bB59510BD783;
     address constant USDC_STARGATE = 0xdf0770dF86a8034b3EFEf0A1Bb3c889B8332FF56;
