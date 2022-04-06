@@ -25,6 +25,10 @@ contract AnteCurveTVLPlungeTest is AnteTest("Ensure that curve keeps a TVL of > 
     uint256 immutable oldTVL;
 
     constructor() {
+
+        testedContracts = [COMPOUND_SWAP, USDT_SWAP, SUSD_SWAP, SBTC_SWAP];
+        protocolName = "Curve";
+
         oldTVL = COMPOUND.balanceOf(COMPOUND_SWAP) + 
                     USDT.balanceOf(USDT_SWAP) + 
                     SUSD.balanceOf(SUSD_SWAP) + 
