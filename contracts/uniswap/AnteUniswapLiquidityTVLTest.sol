@@ -40,6 +40,9 @@ contract AnteUniswapUSDCETHUSDTETHPoolTVLDifference is AnteTest("Make sure that 
         return(ethusdcUSDC, ethusdcWETH, ethusdtUSDT, ethusdtWETH, signedethToUSD);
     }
 
+    /// @notice Takes the TVL of two liquidity pools. USDC/ETH and USDT/ETH
+    /// @notice Due to ETH being more expensive. It has a lower weight in the TVL calculation.
+    /// @notice To overcome this, we convert the ETH to USD.
     /// @return bool if the price difference is >= 3%
     function checkTestPasses() public view override returns (bool) {
 
