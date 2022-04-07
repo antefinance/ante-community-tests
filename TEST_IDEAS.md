@@ -41,6 +41,7 @@ Note: when we say rug, that could imply draining funds, but could also include f
 | Tetra locker doesn't rug                                                                                | Not started |              |
 | Uniswap periphery functioning correctly                                                                 | Not started |              |
 | USDM fully backed by Mochi vault assets                                                                 | Not started |              |
+| USDC-DAI exchange rate remains steady                                                                   | Merged | icepaq |
 | USDT-UST exchange rate remains steady                                                                   | Merged | icepaq |
 | USDT-USDC exchange rate remains steady                                                                  | Merged | icepaq |        
 | USDT-DAI exchange rate remains steady                                                                   | Not started |              |
