@@ -23,6 +23,7 @@ contract AnteDAIUSDCSlippage is AnteTest("Ante DAI-USDC Slippage Test on Uniswap
         (uint112 x, uint112 y,) = uniswapPair.getReserves();
 
         // x and y may be different values but not because of slippage.
+        // DAI has 18 decimals. USDC has 6 decimals.
         // The number 12 comes from the decimal difference.
         // To find the decimals, lookup the token on etherscan
         for(uint8 i = 0; i < 12; i++) {
