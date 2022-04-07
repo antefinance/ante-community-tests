@@ -1,18 +1,18 @@
 pragma solidity ^0.8.0;
 
 import "../AnteTest.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "../interfaces/IERC20.sol";
 
 // @title Gnosis Plunge Test
 contract GnosisTVLPlungeTest is AnteTest("Make sure the TVL is at least 15% of the original TVL") {
 
-    ERC20 private constant USDT = ERC20(0xdAC17F958D2ee523a2206206994597C13D831ec7);
-    ERC20 private constant USDC = ERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
-    ERC20 private constant DAI = ERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F);
-    ERC20 private constant UST = ERC20(0xa47c8bf37f92aBed4A126BDA807A7b7498661acD);
-    ERC20 private constant WETH = ERC20(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2); 
+    IERC20 private constant USDT = IERC20(0xdAC17F958D2ee523a2206206994597C13D831ec7);
+    IERC20 private constant USDC = IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
+    IERC20 private constant DAI = IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F);
+    IERC20 private constant UST = IERC20(0xa47c8bf37f92aBed4A126BDA807A7b7498661acD);
+    IERC20 private constant WETH = IERC20(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2); 
 
-    ERC20 private constant GNOSIS_CONTRACT = ERC20(0x6F400810b62df8E13fded51bE75fF5393eaa841F);
+    IERC20 private constant GNOSIS_CONTRACT = IERC20(0x6F400810b62df8E13fded51bE75fF5393eaa841F);
 
     uint256 private immutable oldTVL;
 
@@ -35,7 +35,6 @@ contract GnosisTVLPlungeTest is AnteTest("Make sure the TVL is at least 15% of t
         usdtBalance = usdtBalance / 10 ** 12;
         usdcBalance = usdcBalance / 10 ** 12;
 
-        // y should always be larger than x
         return (usdtBalance + usdcBalance + daiBalance + ustBalance + wethBalance);
     }
 
