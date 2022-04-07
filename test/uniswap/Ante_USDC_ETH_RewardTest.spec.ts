@@ -28,12 +28,4 @@ describe('AnteUniswapUSDCETHUSDTETHPoolTVLDifference', function () {
   it('should pass', async () => {
     expect(await test.checkTestPasses()).to.be.true;
   });
-
-  it('tvl values should all be greater than 1', async () => {
-    expect((await test.getLiquidityRewards())[0]).to.be.above(1);
-    expect((await test.getLiquidityRewards())[1]).to.be.above(1);
-    expect((await test.getLiquidityRewards())[2]).to.be.above(1);
-    expect((await test.getLiquidityRewards())[3]).to.be.above(1);
-    expect((await test.getLiquidityRewards())[4]).to.be.above(1);
-  });  
 });

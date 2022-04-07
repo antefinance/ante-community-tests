@@ -26,24 +26,10 @@ contract AnteUniswapUSDCETHUSDTETHPoolTVLDifference is AnteTest("Make sure that 
         testedContracts = [ETH_USDT, ETH_USDC];
     }
 
-    /// @notice sanity function for the unit tests
-    /// @return all values that are used in the calculation of the liquidity TVL
-    function getLiquidityRewards() public view returns (uint256, uint256, uint256, uint256, int256) {
-        uint256 ethusdcUSDC = USDC.balanceOf(ETH_USDC);
-        uint256 ethusdcWETH = WETH.balanceOf(ETH_USDC);
-
-        uint256 ethusdtUSDT = USDT.balanceOf(ETH_USDT);
-        uint256 ethusdtWETH = WETH.balanceOf(ETH_USDT);
-
-        (, int256 signedethToUSD, , ,) = ethPriceFeed.latestRoundData();
-
-        return(ethusdcUSDC, ethusdcWETH, ethusdtUSDT, ethusdtWETH, signedethToUSD);
-    }
-
     /// @notice Takes the TVL of two liquidity pools. USDC/ETH and USDT/ETH
     /// @notice Due to ETH being more expensive. It has a lower weight in the TVL calculation.
     /// @notice To overcome this, we convert the ETH to USD.
-    /// @return bool if the price difference is >= 3%
+    /// @return if the price difference is 10x or greater.
     function checkTestPasses() public view override returns (bool) {
 
         (, int256 signedethToUSD, , ,) = ethPriceFeed.latestRoundData();
