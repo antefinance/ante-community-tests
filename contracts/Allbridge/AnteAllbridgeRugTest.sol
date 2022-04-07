@@ -16,7 +16,7 @@ import "../AnteTest.sol";
 /// @title Allbridge doesn't rug on mainnet test
 /// @notice Ante test to check if Allbride "rugs" or something terrible happens (at the time of deployment)
 
-contract AnteAllbridgeRugTest is AnteTest(" Allbridge mainnet bridge doesn't lose 15% of its ETH test") {
+contract AnteAllbridgeRugTest is AnteTest(" Allbridge mainnet bridge doesn't drop under 15% of its ETH") {
     // https://etherscan.io/address/0xBBbD1BbB4f9b936C3604906D7592A644071dE884
     address public immutable allbridgeBridgeAddr = 0xBBbD1BbB4f9b936C3604906D7592A644071dE884;
 
