@@ -17,21 +17,21 @@ contract AnteDAIUSDCSlippage is AnteTest("Ante DAI-USDC Slippage Test on Uniswap
 
     // @return reserve0 and reserve1 from the uniswap pair
     // @notice Will only work on mainnet
-    function getTokenPrice() public view returns(uint112, uint112) {
+    function getTokenPrice() public view returns (uint112, uint112) {
         IUniswapV2Pair uniswapPair = IUniswapV2Pair(USDC_DAI_Pair);
 
-        (uint112 x, uint112 y,) = uniswapPair.getReserves();
+        (uint112 x, uint112 y, ) = uniswapPair.getReserves();
 
         // x and y may be different values but not because of slippage.
         // DAI has 18 decimals. USDC has 6 decimals.
         // The number 12 comes from the decimal difference.
         // To find the decimals, lookup the token on etherscan
-        for(uint8 i = 0; i < 12; i++) {
+        for (uint8 i = 0; i < 12; i++) {
             x = x / 10;
         }
 
         // Always make sure that the percentage will be equal to or less than 100
-        if(x > y) {
+        if (x > y) {
             (x, y) = (y, x); // More gas efficient swap compared to using a temp var
         }
         return (x, y);
@@ -41,6 +41,6 @@ contract AnteDAIUSDCSlippage is AnteTest("Ante DAI-USDC Slippage Test on Uniswap
     function checkTestPasses() public view override returns (bool) {
         (uint112 x, uint112 y) = getTokenPrice();
 
-        return(100 * x / y >= 97);
+        return ((100 * x) / y >= 97);
     }
-} 
+}

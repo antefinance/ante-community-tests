@@ -14,16 +14,16 @@ contract AnteUSDCUSDTPeg is AnteTest("Ante USDC-USDT Slippage Test on Uniswap") 
         protocolName = "Uniswap";
         testedContracts = [USDT_USDC_Pair];
     }
-    
+
     // @return reserve0 and reserve1 from the uniswap pair
     // @notice Will only work on mainnet
-    function getTokenPrice() private view returns(uint112, uint112) {
+    function getTokenPrice() private view returns (uint112, uint112) {
         IUniswapV2Pair uniswapPair = IUniswapV2Pair(USDT_USDC_Pair);
 
-        (uint112 x, uint112 y,) = uniswapPair.getReserves();
+        (uint112 x, uint112 y, ) = uniswapPair.getReserves();
 
         // Always make sure that the percentage will be equal to or less than 100
-        if(x > y) {
+        if (x > y) {
             (x, y) = (y, x); // More gas efficient swap compared to using a temp var
         }
         return (x, y);
@@ -33,6 +33,6 @@ contract AnteUSDCUSDTPeg is AnteTest("Ante USDC-USDT Slippage Test on Uniswap") 
     function checkTestPasses() public view override returns (bool) {
         (uint112 x, uint112 y) = getTokenPrice();
 
-        return(100 * x / y >= 97);
+        return ((100 * x) / y >= 97);
     }
 }
