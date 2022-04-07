@@ -8,16 +8,17 @@ contract AnteSTETHCurveRugTest is AnteTest("Curve stETH Keeps 99% of it's ETH.")
     address public stETHCurveSwap = 0xDC24316b9AE028F1497c275EB9192a3Ea0f67022;
 
     // 2022-04-05: stETH Curve Contract has 800k ETH, so -99% is ~8k ETH
-    uint256 public constant RUG_THRESHOLD = 8 * 1000 * 1e18;
+    uint256 public immutable originalBalance;
 
     constructor() {
         protocolName = "Curve";
         testedContracts = [stETHCurveSwap];
+        originalBalance = stETHCurveSwap.balance;
     }
 
     /// @notice test to check balance of stETH curve pool
-    /// @return true if stETH Curve pool  has over 4000 ETH
+    /// @return if stETH Curve pool  has at least 1% the original balance
     function checkTestPasses() external view override returns (bool) {
-        return stETHCurveSwap.balance >= RUG_THRESHOLD;
+        return (100 * stETHCurveSwap.balance / originalBalance > 1);
     }
 }
