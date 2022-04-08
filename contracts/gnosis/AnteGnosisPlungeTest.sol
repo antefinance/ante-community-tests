@@ -12,12 +12,12 @@ contract GnosisTVLPlungeTest is AnteTest("Make sure the TVL is at least 15% of t
     IERC20 private constant UST = IERC20(0xa47c8bf37f92aBed4A126BDA807A7b7498661acD);
     IERC20 private constant WETH = IERC20(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2); 
 
-    IERC20 private constant GNOSIS_CONTRACT = IERC20(0x6F400810b62df8E13fded51bE75fF5393eaa841F);
+    address private constant GNOSIS_CONTRACT = 0x6F400810b62df8E13fded51bE75fF5393eaa841F;
 
     uint256 private immutable oldTVL;
 
     constructor() {
-        testedContracts = [0x6F400810b62df8E13fded51bE75fF5393eaa841F];
+        testedContracts = [GNOSIS_CONTRACT];
         protocolName = "Gnosis";
 
         oldTVL = getBalances();
@@ -25,11 +25,11 @@ contract GnosisTVLPlungeTest is AnteTest("Make sure the TVL is at least 15% of t
 
     // @return the current tvl
     function getBalances() public view returns(uint256) {
-        uint256 usdtBalance = USDT.balanceOf(0x6F400810b62df8E13fded51bE75fF5393eaa841F);
-        uint256 usdcBalance = USDC.balanceOf(0x6F400810b62df8E13fded51bE75fF5393eaa841F);
-        uint256 daiBalance = DAI.balanceOf(0x6F400810b62df8E13fded51bE75fF5393eaa841F);
-        uint256 ustBalance = UST.balanceOf(0x6F400810b62df8E13fded51bE75fF5393eaa841F);
-        uint256 wethBalance = WETH.balanceOf(0x6F400810b62df8E13fded51bE75fF5393eaa841F);
+        uint256 usdtBalance = USDT.balanceOf(GNOSIS_CONTRACT);
+        uint256 usdcBalance = USDC.balanceOf(GNOSIS_CONTRACT);
+        uint256 daiBalance = DAI.balanceOf(GNOSIS_CONTRACT);
+        uint256 ustBalance = UST.balanceOf(GNOSIS_CONTRACT);
+        uint256 wethBalance = WETH.balanceOf(GNOSIS_CONTRACT);
 
         // USDC and USDT use 6 decimals. Everything else uses 18. Need to convert it for equal weight.
         usdtBalance = usdtBalance / 10 ** 12;
