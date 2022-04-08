@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.0;
 
 import "../AnteTest.sol";
@@ -19,6 +21,6 @@ contract AnteSTETHCurveRugTest is AnteTest("Curve stETH Keeps 99% of it's ETH.")
     /// @notice test to check balance of stETH curve pool
     /// @return if stETH Curve pool  has at least 1% the original balance
     function checkTestPasses() external view override returns (bool) {
-        return (100 * stETHCurveSwap.balance / originalBalance > 1);
+        return ((100 * stETHCurveSwap.balance) / originalBalance > 1);
     }
 }

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.0;
 
 import "../AnteTest.sol";
@@ -6,7 +8,6 @@ import "../interfaces/IERC20.sol";
 // @title Curve TVL Plunge Test
 // @notice Ensure that curve keeps a TVL of > 10%"
 contract AnteCurveTVLPlungeTest is AnteTest("Ensure that curve keeps a TVL of > 10%") {
-
     address constant COMPOUND_SWAP = 0xA2B47E3D5c44877cca798226B7B8118F9BFb7A56;
     address constant USDT_SWAP = 0x52EA46506B9CC5Ef470C5bf89f17Dc28bB35D85C;
     address constant SUSD_SWAP = 0xA5407eAE9Ba41422680e2e00537571bcC53efBfD;
@@ -25,26 +26,27 @@ contract AnteCurveTVLPlungeTest is AnteTest("Ensure that curve keeps a TVL of > 
     uint256 immutable oldTVL;
 
     constructor() {
-
         testedContracts = [COMPOUND_SWAP, USDT_SWAP, SUSD_SWAP, SBTC_SWAP];
         protocolName = "Curve";
 
-        oldTVL = COMPOUND.balanceOf(COMPOUND_SWAP) + 
-                    USDT.balanceOf(USDT_SWAP) + 
-                    SUSD.balanceOf(SUSD_SWAP) + 
-                    SBTC.balanceOf(SBTC_SWAP);
+        oldTVL =
+            COMPOUND.balanceOf(COMPOUND_SWAP) +
+            USDT.balanceOf(USDT_SWAP) +
+            SUSD.balanceOf(SUSD_SWAP) +
+            SBTC.balanceOf(SBTC_SWAP);
     }
 
     // @return the current tvl
-    function getTotalValue() public view returns(uint256){
-        return COMPOUND.balanceOf(COMPOUND_SWAP) + 
-                    USDT.balanceOf(USDT_SWAP) + 
-                    SUSD.balanceOf(SUSD_SWAP) + 
-                    SBTC.balanceOf(SBTC_SWAP);
+    function getTotalValue() public view returns (uint256) {
+        return
+            COMPOUND.balanceOf(COMPOUND_SWAP) +
+            USDT.balanceOf(USDT_SWAP) +
+            SUSD.balanceOf(SUSD_SWAP) +
+            SBTC.balanceOf(SBTC_SWAP);
     }
 
     // @return if the current tvl is above 10% of the original TVL
     function checkTestPasses() public view override returns (bool) {
-        return (100 * getTotalValue() / oldTVL > 10);
+        return ((100 * getTotalValue()) / oldTVL > 10);
     }
 }
