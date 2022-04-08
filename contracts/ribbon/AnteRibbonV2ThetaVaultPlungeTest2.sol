@@ -19,23 +19,19 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /// @title Checks that RibbonV2 Theta vaults do not lose 90% of their assets
 /// @notice Ante Test to check if a catastrophic failure has occured in RibbonV2
-contract AnteRibbonV2ThetaVaultPlungeTest2 is
-    AnteTest("Ribbon V2 Theta Vaults don't lose 90% of TVL (ETH put, STETH call, AAVE call)")
-{
+contract AnteRibbonV2ThetaVaultPlungeTest2 is AnteTest("Ribbon V2 Theta Vaults don't lose 90% of their TVL") {
     // currently deployed RibbonV2 theta vaults
-    IRibbonThetaVault[3] public thetaVaults = [
+    IRibbonThetaVault[6] public thetaVaults = [
         IRibbonThetaVault(0xCc323557c71C0D1D20a1861Dc69c06C5f3cC9624), // T-YVUSDC-P-ETH vault
         IRibbonThetaVault(0x53773E034d9784153471813dacAFF53dBBB78E8c), // T-STETH-C vault
-        IRibbonThetaVault(0xe63151A0Ed4e5fafdc951D877102cf0977Abd365) // T-AAVE-C vault
-        //IRibbonThetaVault(0xc0cF10Dd710aefb209D9dc67bc746510ffd98A53)  // T-APE-C vault does not appear to have an Opyn vault?
-        // controller.getAccountVaultCounter does not return a valid value for the APE call vault
+        IRibbonThetaVault(0xe63151A0Ed4e5fafdc951D877102cf0977Abd365), // T-AAVE-C vault
+        IRibbonThetaVault(0x25751853Eab4D0eB3652B5eB6ecB102A2789644B), // T-ETH-C vault
+        IRibbonThetaVault(0x65a833afDc250D9d38f8CD9bC2B1E3132dB13B2F), // T-WBTC-C vault
+        IRibbonThetaVault(0xc0cF10Dd710aefb209D9dc67bc746510ffd98A53) // T-APE-C vault
     ];
 
-    // Opyn Controller
-    IController internal controller = IController(0x4ccc2339F87F6c59c6893E1A678c2266cA58dC72);
-
     // threshold amounts for test to fail
-    uint256[3] public thresholds;
+    uint256[6] public thresholds;
 
     /// @notice percent drop threshold (set to 10%)
     uint8 public constant PERCENT_DROP_THRESHOLD = 10;
@@ -54,6 +50,9 @@ contract AnteRibbonV2ThetaVaultPlungeTest2 is
     function calculateAssetBalance(IRibbonThetaVault vault) public view returns (uint256) {
         Vault.VaultParams memory vaultParams = vault.vaultParams();
         IERC20 underlying = IERC20(vaultParams.underlying);
+
+        // get Opyn controller from vault
+        IController controller = IController(vault.GAMMA_CONTROLLER());
 
         GammaTypes.Vault memory opynVault = controller.getVault(
             address(vault),
