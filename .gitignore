@@ -1,5 +1,42 @@
-node_modules
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-#Hardhat files
-cache
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+# testing
+/coverage
+coverage.json
+# production
+
+/build
+abi
+
+# misc
+.DS_Store
+.env
+.env.local
+.env.dev
+.env.production
+*.swp
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.idea/
+.vscode/
+node_modules/
+build
+*.tgz
+my-app*
+secret*
+template/src/__tests__/__snapshots__/
+lerna-debug.log
+/.changelog
+.npm/
+# added 2021-06-01
+**/node_modules
 artifacts
+typechain
+packages/react-app/src/contracts/*
+!packages/react-app/src/contracts/contracts.js
+cache
