@@ -24,8 +24,8 @@ Note: when we say rug, that could imply draining funds, but could also include f
 | Compound test? (re: latest vulnerability)                                                               | Not started |              |
 | Curve 3pool doesn't rug                                                                                 | Not started |              |
 | Curve 3pool doesn't becomes unbalanced past threshold<br />(look at historic balances and choose some stdev) | Not started |              |
-| Curve stETH x ETH pool doesn't rug                                                                      | Not started |              |
-| Curve TVL doesn't plunge                                                                                | Not started |              |
+| Curve stETH x ETH pool doesn't rug                                                                      | Merged | icepaq |
+| Curve TVL doesn't plunge                                                                                | Merged | icepaq |
 | ___ DAO multisig doesn't rug                                                                            | Not started |              |
 | Fei doesn't rug                                                                                         | Not started |              |
 | Frax always sufficiently collateralized                                                                 | Not started |              |
@@ -41,8 +41,9 @@ Note: when we say rug, that could imply draining funds, but could also include f
 | Tetra locker doesn't rug                                                                                | Not started |              |
 | Uniswap periphery functioning correctly                                                                 | Not started |              |
 | USDM fully backed by Mochi vault assets                                                                 | Not started |              |
-| USDT-USDC exchange rate remains steady                                                                  | Not started |              |
-| USDT-UST exchange rate remains steady                                                                   | Not started |              |
+| USDC-DAI exchange rate remains steady                                                                   | Merged | icepaq |
+| USDT-UST exchange rate remains steady                                                                   | Merged | icepaq |
+| USDT-USDC exchange rate remains steady                                                                  | Merged | icepaq |        
 | USDT-DAI exchange rate remains steady                                                                   | Not started |              |
 | UST price stays pegged within 5% of 1 USD                                                               | Merged      | abitwhaleish |
 | VC token dump test                                                                                      | Not started |              |
