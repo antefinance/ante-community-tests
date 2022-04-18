@@ -4,7 +4,7 @@ const { waffle } = hre;
 import { AnteDumpTest, AnteDumpTest__factory, BasicERC20, BasicERC20__factory } from '../../typechain';
 import ERC20 from '../ABI/ERC20';
 
-import { evmSnapshot, evmRevert } from '../helpers';
+import { evmSnapshot, evmRevert, evmIncreaseTime, evmMineBlocks } from '../helpers';
 import { expect } from 'chai';
 import { Contract } from 'ethers';
 
@@ -29,7 +29,7 @@ describe('AnteDumpTest', function () {
     await TEST_TOKEN.deployed();
     await TEST_TOKEN.connect(owner).mint('1000000000000000000000000', wallet1.address);
 
-    test = await factory.deploy([TEST_TOKEN.address], [wallet1.address], '50');
+    test = await factory.deploy([TEST_TOKEN.address], [wallet1.address], '50', '1892160000');
     await test.deployed();
 
   });
@@ -38,7 +38,7 @@ describe('AnteDumpTest', function () {
     await evmRevert(globalSnapshotId);
   });
 
-  it('should pass then fail', async () => {
+  it('should pass then fail then pass again', async () => {
     await TEST_TOKEN.connect(wallet1).transfer(wallet2.address, '500000000000000000000000');
 
     expect((await test.checkTestPasses())).to.be.true;
@@ -47,5 +47,9 @@ describe('AnteDumpTest', function () {
 
     expect((await test.checkTestPasses())).to.be.false;
 
+    await evmIncreaseTime(1892160000);
+    await evmMineBlocks(1);
+
+    expect((await test.checkTestPasses())).to.be.true;
   });
 });
