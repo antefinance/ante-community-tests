@@ -14,16 +14,35 @@ struct WalletTest {
     uint256 expiry;
 }
 
-contract AnteDumpTest is AnteTest("USDC is above 90 cents on the dollar") {
+contract AnteDumpTest is AnteTest("Ensure a set of wallets doesn't dump their associated tokens") {
+    
     WalletTest[] private walletTests;
+    uint8 public immutable thresholdPercent;
 
-    uint8 private immutable thresholdPercent;
+    address public immutable admin;
+    address public immutable owner;
 
-    constructor(address[] memory  _tokenAddress, address[] memory _monitorWallet, uint8 _thresholdPercent, uint256 _timeValid) {
+    modifier onlyAdmin() {
+        require(msg.sender == admin || msg.sender == owner, "ANTE: Must be an admin or owner");
+        _;
+    }
+
+    /// @notice Initializes the test
+    /// @param _tokenAddress A list of adddresses for tokens
+    /// @param _monitorWallet a list of wallets to monitor
+    /// @param _thresholdPercent the percentage of tokens that must be owned by a wallet
+    /// @param _timeValid the time that a wallet condition is valid
+    /// @dev When passing in a list, each wallet address will correspond to the token at the same index
+    /// @dev Eg [USDC, DAI] | [WALLET1, WALLET2] - WALLET1 will own USDC and WALLET2 will own DAI
+    constructor(address[] memory  _tokenAddress, address[] memory _monitorWallet, uint8 _thresholdPercent, uint256 _timeValid, address _admin) {
+
         protocolName = "Ante";
         testedContracts = _tokenAddress;
 
         thresholdPercent = _thresholdPercent;
+
+        admin = _admin;
+        owner = msg.sender;
 
         for(uint256 i = 0; i < _monitorWallet.length; i++) {
             IERC20 token = IERC20(_tokenAddress[i]);
@@ -41,7 +60,11 @@ contract AnteDumpTest is AnteTest("USDC is above 90 cents on the dollar") {
         }
     }
 
-    function addWallet(address _wallet, address _token, uint256 _timeValid) public {
+    /// @notice adds a wallet to the list of wallets to monitor
+    /// @param _wallet the wallet to add
+    /// @param _token the token address to monitor for said wallet
+    /// @param _timeValid the time that a wallet condition is valid
+    function addWallet(address _wallet, address _token, uint256 _timeValid) public onlyAdmin{
         IERC20 token = IERC20(_token);
 
         WalletTest memory walletTest;
@@ -57,14 +80,25 @@ contract AnteDumpTest is AnteTest("USDC is above 90 cents on the dollar") {
         walletTests.push(walletTest);
     }
 
+    /// @return all stored wallets and their respective information
     function getWallets() public view returns (WalletTest[] memory) {
         return walletTests;
     }
 
-    function getBlockTime() public view returns (uint256) {
-        return block.timestamp;
+    /// @param timeRegistered the time that a wallet was registered
+    /// @param timeValid the time that a wallet condition is valid
+    /// @param blockTime the current block time
+    /// @return allowedPErcent the percent threshold adjusted for time
+    function getAllowedPercentThreshold(uint256 timeRegistered, uint256 timeValid, uint256 blockTime) public view returns (uint256) {
+        uint256 timeSinceRegistered = blockTime - timeRegistered;
+        uint256 timeRemaining = timeValid - timeSinceRegistered;
+
+        uint256 allowedPercent = timeRemaining * thresholdPercent / timeValid;
+
+        return allowedPercent;
     }
 
+    /// @return if all wallet conditions are still valid
     function checkTestPasses() public view override returns (bool) {
         uint256 currentTime = block.timestamp;
 
@@ -77,7 +111,9 @@ contract AnteDumpTest is AnteTest("USDC is above 90 cents on the dollar") {
             uint256 oldBalance = walletTests[i].amount;
             uint256 newBalance = token.balanceOf(walletTests[i].wallet);
 
-            if(newBalance < oldBalance * thresholdPercent / 100) {
+            uint256 allowedPercent = getAllowedPercentThreshold(walletTests[i].timeRegistered, walletTests[i].timeValid, currentTime);
+
+            if(newBalance < oldBalance * allowedPercent / 100) {
                 return false;
             }
         }
