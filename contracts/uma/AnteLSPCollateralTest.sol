@@ -13,10 +13,6 @@ interface LongShortPair {
 /// @notice Ensure that issued tokens are less than or equal to LSP collateral * collateral per pair
 contract AnteLSPCollateralTest is AnteTest("Ensure that collateral x CPP is correct") {
 
-    // To verify this LSP, go to https://etherscan.io/address/0x439a990f83250FE2E5E6b8059F540af1dA1Ba04D#events
-    // Under events tab, you will see several LSPs have been created
-    // Select the TX hash starting with 0x141f. You will see the LSP address
-
     LongShortPair private immutable contractLSP;
     address private immutable addressLSP;
     address private immutable addressToken;
