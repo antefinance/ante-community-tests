@@ -33,6 +33,7 @@ contract AnteFoxTokenLSPCollateralTest is AnteTest("Ensure that collateral x CPP
         testedContracts = [addressFoxLSP];
     }
     
+    /// @return if the LSP collateral >= issued tokens
     function checkTestPasses() public view override returns (bool) {
         // insert logic here to check the My Protocol invariant
         uint256 collateral = contractFoxToken.balanceOf(addressFoxLSP);
