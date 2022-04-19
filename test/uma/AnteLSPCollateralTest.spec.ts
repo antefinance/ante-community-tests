@@ -17,7 +17,7 @@ describe('AnteLSPCollateralTest', function () {
 
     const [deployer] = waffle.provider.getWallets();
     const factory = (await hre.ethers.getContractFactory('AnteLSPCollateralTest', deployer)) as AnteLSPCollateralTest__factory;
-    test = await factory.deploy('0xE38f290eAC1f83A960c461100b0c7a231B9Cae16', '0xc770EEfAd204B5180dF6a14Ee197D99d808ee52d');
+    test = await factory.deploy('0xE38f290eAC1f83A960c461100b0c7a231B9Cae16');
     await test.deployed();
   });
 

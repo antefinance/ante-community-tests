@@ -8,6 +8,8 @@ import "../interfaces/IERC20.sol";
 interface LongShortPair {
     function longToken() external view returns (address);
     function shortToken() external view returns (address);
+    function collateralToken() external view returns (address);
+    function collateralPerPair() external view returns (uint256);
 }
 
 /// @notice Ensure that issued tokens are less than or equal to LSP collateral * collateral per pair
@@ -25,29 +27,35 @@ contract AnteLSPCollateralTest is AnteTest("Ensure that collateral x CPP is corr
     IERC20 private immutable contractShort;
 
     /// @param _addressLSP The address of the Long Short Pair
-    /// @param _addressToken The address of the token that is being bet on
-    constructor (address _addressLSP, address _addressToken) {
+    constructor (address _addressLSP) {
         protocolName = "UMA";
         testedContracts = [_addressLSP];
 
         addressLSP = _addressLSP;
-        addressToken = _addressToken;
 
         contractLSP = LongShortPair(addressLSP);
         addressLong = contractLSP.longToken();
         addressShort = contractLSP.shortToken();
 
-        contractToken = IERC20(addressToken);
         contractLong = IERC20(addressLong);
         contractShort = IERC20(addressShort);
+
+        addressToken = contractLSP.collateralToken();
+        contractToken = IERC20(addressToken);
     }
     
     /// @return if the LSP collateral >= issued tokens
     function checkTestPasses() public view override returns (bool) {
         // insert logic here to check the My Protocol invariant
         uint256 collateral = contractToken.balanceOf(addressLSP);
-        uint256 supply = contractLong.totalSupply() + contractShort.totalSupply();
+        uint256 collateralPerPair = contractLSP.collateralPerPair();
 
-        return collateral >= supply;
+        uint256 longSupply = contractLong.totalSupply();
+        uint256 shortSupply = contractShort.totalSupply();
+
+        // The reason one side is multiplied by 10e18 is because when multiplying by collateralPerPair
+        // The side is increaased by the collateral (eg 1.5) times 10e18
+        return (collateral*10e18 >= longSupply * collateralPerPair) 
+                && (collateral*10e18 >= shortSupply * collateralPerPair);
     }
 }
