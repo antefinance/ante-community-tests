@@ -87,10 +87,10 @@ contract AnteDumpTest is AnteTest("Ensure a set of wallets doesn't dump their as
 
     /// @param timeRegistered the time that a wallet was registered
     /// @param timeValid the time that a wallet condition is valid
-    /// @param blockTime the current block time
+    /// @param timeStamp the current block timestamp
     /// @return allowedPErcent the percent threshold adjusted for time
-    function getAllowedPercentThreshold(uint256 timeRegistered, uint256 timeValid, uint256 blockTime) public view returns (uint256) {
-        uint256 timeSinceRegistered = blockTime - timeRegistered;
+    function getAllowedPercentThreshold(uint256 timeRegistered, uint256 timeValid, uint256 timeStamp) public view returns (uint256) {
+        uint256 timeSinceRegistered = timeStamp - timeRegistered;
         uint256 timeRemaining = timeValid - timeSinceRegistered;
 
         uint256 allowedPercent = timeRemaining * thresholdPercent / timeValid;
@@ -111,9 +111,9 @@ contract AnteDumpTest is AnteTest("Ensure a set of wallets doesn't dump their as
             uint256 oldBalance = walletTests[i].amount;
             uint256 newBalance = token.balanceOf(walletTests[i].wallet);
 
-            uint256 allowedPercent = getAllowedPercentThreshold(walletTests[i].timeRegistered, walletTests[i].timeValid, currentTime);
+            uint256 timeAdjustedPercent = getAllowedPercentThreshold(walletTests[i].timeRegistered, walletTests[i].timeValid, currentTime);
 
-            if(newBalance < oldBalance * allowedPercent / 100) {
+            if(newBalance < oldBalance * timeAdjustedPercent / 100) {
                 return false;
             }
         }
