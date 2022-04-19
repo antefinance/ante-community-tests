@@ -14,6 +14,8 @@ struct WalletTest {
     uint256 expiry;
 }
 
+/// @title  AnteDumpTest
+/// @notice Ensures a wallet doens't dump x amount of tokens over y time
 contract AnteDumpTest is AnteTest("Ensure a set of wallets doesn't dump their associated tokens") {
     
     WalletTest[] private walletTests;
