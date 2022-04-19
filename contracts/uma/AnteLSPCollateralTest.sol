@@ -12,6 +12,7 @@ interface LongShortPair {
     function collateralPerPair() external view returns (uint256);
 }
 
+/// @title AnteLSPCollateralTest
 /// @notice Ensure that issued tokens are less than or equal to LSP collateral * collateral per pair
 contract AnteLSPCollateralTest is AnteTest("Ensure that collateral x CPP is correct") {
 
@@ -52,10 +53,11 @@ contract AnteLSPCollateralTest is AnteTest("Ensure that collateral x CPP is corr
 
         uint256 longSupply = contractLong.totalSupply();
         uint256 shortSupply = contractShort.totalSupply();
+        uint256 decimals = 10 ** contractToken.decimals();
 
         // The reason one side is multiplied by 10e18 is because when multiplying by collateralPerPair
         // The side is increaased by the collateral (eg 1.5) times 10e18
-        return (collateral*10e18 >= longSupply * collateralPerPair) 
-                && (collateral*10e18 >= shortSupply * collateralPerPair);
+        return (collateral * decimals >= longSupply * collateralPerPair) 
+                && (collateral * decimals >= shortSupply * collateralPerPair);
     }
 }
