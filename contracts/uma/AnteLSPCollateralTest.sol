@@ -14,7 +14,7 @@ interface LongShortPair {
 
 /// @title AnteLSPCollateralTest
 /// @notice Ensure that issued tokens are less than or equal to LSP collateral * collateral per pair
-contract AnteLSPCollateralTest is AnteTest("Ensure that collateral x CPP is correct") {
+contract AnteLSPCollateralTest is AnteTest("Ensure that Long Short Pair has enough collateral") {
 
     LongShortPair private immutable contractLSP;
     address private immutable addressLSP;
