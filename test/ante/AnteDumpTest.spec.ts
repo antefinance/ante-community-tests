@@ -2,11 +2,9 @@ import hre from 'hardhat';
 const { waffle } = hre;
 
 import { AnteDumpTest, AnteDumpTest__factory, BasicERC20, BasicERC20__factory } from '../../typechain';
-import ERC20 from './ERC20ABI';
 
 import { evmSnapshot, evmRevert, evmIncreaseTime, evmMineBlocks } from '../helpers';
 import { expect } from 'chai';
-import { BigNumber, Contract } from 'ethers';
 import { ONE_DAY_IN_SECONDS } from '../constants';
 
 describe('AnteDumpTest', function () {
