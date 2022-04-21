@@ -11,12 +11,16 @@
 
 pragma solidity ^0.7.0;
 
-import "@openzeppelin-contracts-old/contracts/token/ERC20/ERC20.sol";
 import "../AnteTest.sol";
 
-import "hardhat/console.sol";
+interface IERC20 {
+    /**
+     * @dev Returns the amount of tokens in existence.
+     */
+    function totalSupply() external view returns (uint256);
+}
 
-/// @title Ante Test to check cUSDC total supply never will be less than 8591273087904514301/(10^8) = 85 912 730 879
+/// @title Ante Test to check Compund Finance cUSDC total supply never will be less than 8591273087904514301/(10^8) = 85 912 730 879
 /// @dev Checks cUSDC totalSupply in Compound cUSDC contract
 
 contract AnteCompoundcUSDCSupplyTest is AnteTest("cUSDC totalSupply is greater than 8591273087904514301") {
@@ -31,7 +35,7 @@ contract AnteCompoundcUSDCSupplyTest is AnteTest("cUSDC totalSupply is greater t
         cusdcToken = ERC20(_cusdcAddress);
         thresholdSupply = 8591273087904514301;
 
-        protocolName = "cUSDC";
+        protocolName = "Compound";
         testedContracts = [_cusdcAddress];
     }
 
@@ -39,7 +43,6 @@ contract AnteCompoundcUSDCSupplyTest is AnteTest("cUSDC totalSupply is greater t
     /// @return true if supply is greater than 8591273087904514301
     function checkTestPasses() external view override returns (bool) {
         // Protocol Math: https://compound.finance/docs#protocol-math
-        console.log("Current Total Supply %s", cusdcToken.totalSupply());
         return (cusdcToken.totalSupply() >= thresholdSupply);
     }
 }
