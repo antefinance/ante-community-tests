@@ -21,7 +21,7 @@ contract AnteDumpTest is AnteTest("Ensure a set of wallets doesn't dump their as
     WalletTest[] private walletTests;
     uint8 public immutable thresholdPercent;
 
-    address public immutable admin;
+    address private admin;
     address public immutable owner;
 
     modifier onlyAdmin() {
@@ -60,6 +60,10 @@ contract AnteDumpTest is AnteTest("Ensure a set of wallets doesn't dump their as
 
             walletTests.push(walletTest);
         }
+    }
+
+    function changeAdmin(address _admin) external onlyAdmin {
+        admin = _admin;
     }
 
     /// @notice adds a wallet to the list of wallets to monitor

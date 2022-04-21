@@ -12,7 +12,7 @@ describe('AnteDumpTest', function () {
 
   let globalSnapshotId: string;
 
-  const [admin, owner, burnWallet, wallet1, wallet2, wallet3, wallet4] = waffle.provider.getWallets();
+  const [admin, admin2, owner, burnWallet, wallet1, wallet2, wallet3, wallet4] = waffle.provider.getWallets();
 
   let TEST_TOKEN: BasicERC20;
 
@@ -104,5 +104,11 @@ describe('AnteDumpTest', function () {
 
   it('should revert when adding a wallet without admin acount', async() => {
     await expect(test.connect(wallet1).addWallet(wallet4.address, TEST_TOKEN.address, YEAR_IN_SECONDS_STR)).to.be.revertedWith('ANTE: Must be an admin or owner');
-  }); 
+  });
+
+  it('should change admin account', async () => {
+    await expect(test.connect(admin2).addWallet(wallet4.address, TEST_TOKEN.address, YEAR_IN_SECONDS_STR)).to.be.revertedWith('ANTE: Must be an admin or owner');
+    await test.connect(admin).changeAdmin(admin2.address);
+    await test.connect(admin2).addWallet(wallet4.address, TEST_TOKEN.address, YEAR_IN_SECONDS_STR);
+  });
 });
