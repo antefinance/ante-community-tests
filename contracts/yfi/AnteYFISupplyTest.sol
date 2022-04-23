@@ -31,6 +31,7 @@ contract AnteYFISupplyTest is AnteTest("YFI doesn't inflate 10x over 2 months") 
         lastCheckedEpoch = block.timestamp;
     }
 
+    /// @return last time the YFI supply was updated
     function getLastUpdate() external view returns (uint256) {
         return lastCheckedEpoch;
     }
