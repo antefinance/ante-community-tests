@@ -16,7 +16,6 @@ import "../interfaces/IERC20.sol";
 
 /// @title Ante Test to check Compund Finance cUSDC total supply never will be less than 8591273087904514301/(10^8) = 85 912 730 879
 /// @dev Checks cUSDC totalSupply in Compound cUSDC contract
-
 contract AnteCompoundcUSDCSupplyTest is AnteTest("cUSDC totalSupply is greater than 8591273087904514301") {
     // cUSDC Address: https://etherscan.io/token/0x39aa39c021dfbae8fac545936693ac917d5e7563
 
