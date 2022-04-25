@@ -12,13 +12,7 @@
 pragma solidity ^0.7.0;
 
 import "../AnteTest.sol";
-
-interface IERC20 {
-    /**
-     * @dev Returns the amount of tokens in existence.
-     */
-    function totalSupply() external view returns (uint256);
-}
+import "../interfaces/IERC20.sol";
 
 /// @title Ante Test to check Compund Finance cUSDC total supply never will be less than 8591273087904514301/(10^8) = 85 912 730 879
 /// @dev Checks cUSDC totalSupply in Compound cUSDC contract
@@ -28,11 +22,11 @@ contract AnteCompoundcUSDCSupplyTest is AnteTest("cUSDC totalSupply is greater t
 
     address public immutable cusdcAddress;
     uint256 public immutable thresholdSupply;
-    ERC20 public cusdcToken;
+    IERC20 public cusdcToken;
 
     constructor(address _cusdcAddress) {
         cusdcAddress = _cusdcAddress;
-        cusdcToken = ERC20(_cusdcAddress);
+        cusdcToken = IERC20(_cusdcAddress);
         thresholdSupply = 8591273087904514301;
 
         protocolName = "Compound";

@@ -5,7 +5,7 @@ import { AnteCompoundcUSDCSupplyTest, AnteCompoundcUSDCSupplyTest__factory } fro
 import { evmSnapshot, evmRevert } from './helpers';
 import { expect } from 'chai';
 
-describe.only('AnteETHDevRugTest', function () {
+describe.only('AnteCompoundcUSDSupplyTest', function () {
   let test: AnteCompoundcUSDCSupplyTest;
 
   let globalSnapshotId: string;
