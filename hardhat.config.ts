@@ -14,7 +14,7 @@ const config: HardhatUserConfig = {
     localhost: {
       forking: {
         url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
-        blockNumber: 13743164,
+        blockNumber: 14490226,
       },
       url: 'http://localhost:8545',
     },
@@ -33,7 +33,7 @@ const config: HardhatUserConfig = {
     hardhat: {
       forking: {
         url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
-        blockNumber: 14390226,
+        blockNumber: 14490226,
       },
     },
   },
