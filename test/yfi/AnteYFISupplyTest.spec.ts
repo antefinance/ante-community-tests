@@ -32,7 +32,7 @@ describe('AnteYFISupplyTest', function () {
     const getLastTime = await test.getLastUpdate();
     await evmIncreaseTime(2592000); // 1 Month in seconds
     await evmMineBlocks(1);
-    await test.update();
+    await test.updateSupply();
     const getLastTime2 = await test.getLastUpdate();
 
     // 20 second cushion incase the local EVM is being slow.
@@ -41,6 +41,6 @@ describe('AnteYFISupplyTest', function () {
   });
 
   it('should not allow update if less than 1 month has passed', async () => {
-    expect(test.update()).to.be.revertedWith("Can only be updated once per month");
+    expect(test.updateSupply()).to.be.revertedWith("Can only be updated once per month");
   });
 });
