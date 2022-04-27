@@ -38,7 +38,6 @@ contract AnteYFITVLPlungeTest is AnteTest("YFI doesn't lose 90% of it's TVL") {
                             DAI_VAULT_ADDRESS, WBTC_VAULT_ADDRESS, USDT_VAULT_ADDRESS
                         ];
 
-        // Get original balances
         originalBalance = YFI_CONTRACT.balanceOf(YFI_VAULT_ADDRESS)
                             + WETH_CONTRACT.balanceOf(WETH_VAULT_ADDRESS)
                             + USDC_CONTRACT.balanceOf(USDC_VAULT_ADDRESS)
@@ -57,9 +56,7 @@ contract AnteYFITVLPlungeTest is AnteTest("YFI doesn't lose 90% of it's TVL") {
                     + USDT_CONTRACT.balanceOf(USDT_VAULT_ADDRESS);
     }
     
-    /// @notice Check if YFI supply is inflated over 1000% over 2 months
-    /// @dev Please note that if the 2 months has passed, the test will automatically pass
-    /// @dev To reset the timer, call the updateSupply() function
+    /// @return if YFI keeps at least 10% of it's original TVL
     function checkTestPasses() public view override returns (bool) {
         return (getBalance() * 100) / originalBalance > 10;
     }
