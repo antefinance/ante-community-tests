@@ -4,9 +4,9 @@ pragma solidity ^0.8.0;
 import "../AnteTest.sol";
 import "../interfaces/IERC20.sol";
 
-/// @title YFI Supply Test
-/// @notice Test to ensure YFI doesn't get hit with a infinite mint exploit
-contract AnteYFITVLTest is AnteTest("YFI doesn't inflate 10x over 2 months") {
+/// @title YFI TVL Test
+/// @notice Test to ensure YFI vaults don't lose more than 90% of it's TVL
+contract AnteYFITVLPlungeTest is AnteTest("YFI doesn't lose 90% of it's TVL") {
 
     address private constant YFI_ADDRESS = 0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e;
     address private constant WETH_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
@@ -47,6 +47,7 @@ contract AnteYFITVLTest is AnteTest("YFI doesn't inflate 10x over 2 months") {
                             + USDT_CONTRACT.balanceOf(USDT_VAULT_ADDRESS);
     }
 
+    /// @return current TVL of YFI vaults
     function getBalance() public view returns (uint256) {
         return YFI_CONTRACT.balanceOf(YFI_VAULT_ADDRESS)
                     + WETH_CONTRACT.balanceOf(WETH_VAULT_ADDRESS)
