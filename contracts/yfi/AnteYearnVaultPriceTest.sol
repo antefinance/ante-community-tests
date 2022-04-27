@@ -24,6 +24,7 @@ contract AnteYearnVaultPriceTest is AnteTest("YFI Vaults price per share increas
         originalPricePerShare = yYFIVault.pricePerShare();
     }
 
+    /// @return current price per share
     function getNewPricePerShare() public view returns (uint256) {
         return yYFIVault.pricePerShare();
     }
