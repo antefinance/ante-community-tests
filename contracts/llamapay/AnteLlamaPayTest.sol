@@ -7,6 +7,7 @@
 // ┃┃ ┃┃┃┃┃┃━┃┗┓┃┃━┫━┏┓━┃┃━━━┃┃┃┃┃┃┃┗┛┗┓┃┃┃┃┃┗━┓┃┃━┫
 // ┗┛ ┗┛┗┛┗┛━┗━┛┗━━┛━┗┛━┗┛━━━┗┛┗┛┗┛┗━━━┛┗┛┗┛┗━━┛┗━━┛
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 // https://.etherscan.io/address/[CONTRACT_ADDRESS]#readContract to check
 // https://.etherscan.io/address/[CONTRACT_ADDRESS]#writeContract to set values
@@ -17,10 +18,10 @@ import {AnteTest} from "../AnteTest.sol";
 import {LlamaPayFactory} from "./interfaces/LlamaPayFactory.sol";
 import {LlamaPay} from "./interfaces/LlamaPay.sol";
 
-/// @title  LlamaPay never goes back in time
+/// @title  LlamaPay never goes back in time test
 /// @notice Ante Test to check that lastPayerUpdate <= block.timestamp holds
 /// may no longer hold after 231,800 A.D.
-contract AnteLlamaPayTest is AnteTest("Ante LlamaPay Test") {
+contract AnteLlamaPayTest is AnteTest("LlamaPay lastPayerUpdate[anyone] ≤ block.timestamp Test") {
     LlamaPayFactory internal factory;
 
     address public tokenAddress;
@@ -47,18 +48,20 @@ contract AnteLlamaPayTest is AnteTest("Ante LlamaPay Test") {
     /// @notice Checks that lastPayerUpdate[payer] <= block.timestamp for a given payer and LlamaPay contract(s)
     ///         Uses the setter functions provided to set the token addresses and payer address to check
     ///         if 0x0 is passed as token address, will check through all LlamaPay contracts in factory
-    ///         otherwise, will check for a the single LlamaPay instance provided
+    ///         otherwise, will check for the single LlamaPay instance provided
     /// @return true if lastPayerUpdate[payer] <= block.timestamp for all LlamaPay contracts checked
     function checkTestPasses() external view override returns (bool) {
         // if a valid token is specified, check payer for specific token llamapay contract
-        if (tokenAddress != address(0)) {
-            return checkSingle(factory.payContracts(tokenAddress));
+
+        (address predictedAddress, bool isDeployed) = factory.getLlamaPayContractByToken(tokenAddress);
+        if (isDeployed) {
+            return checkSingle(predictedAddress);
         }
 
         // otherwise, if token address is 0x0, loop all tokens in llamapay factory
-        for (uint256 i = 0; i < factory.payContractsArrayLength(); i++) {
+        for (uint256 i = 0; i < factory.getLlamaPayContractCount(); i++) {
             // if any llamapay instance fails, fail the test
-            if (checkSingle(factory.payContractsArray(i)) == false) {
+            if (checkSingle(factory.getLlamaPayContractByIndex(i)) == false) {
                 return false;
             }
         }
@@ -73,8 +76,6 @@ contract AnteLlamaPayTest is AnteTest("Ante LlamaPay Test") {
     /// @notice Sets the payer address for the Ante Test to check
     /// @param _payerAddress address of payer to check
     function setPayerAddress(address _payerAddress) external {
-        //check that payer address is valid?
-        require(_payerAddress != address(0), "Invalid payer address");
         // TODO might be more thorough to loop through llamapay contracts and verify that at least one
         // instance of a valid payer mapping exists. but also an invalid payer address doesn't fail
         // the test so no risk of false positive
@@ -88,10 +89,24 @@ contract AnteLlamaPayTest is AnteTest("Ante LlamaPay Test") {
     function setTokenAddress(address _tokenAddress) external {
         //check that token address exists in llamapayfactory list but allow 0x0 (all)
         if (_tokenAddress != address(0)) {
-            require(
-                factory.payContracts(_tokenAddress) != address(0),
-                "LlamaPay contract for given token does not exist"
-            );
+            (, bool isDeployed) = factory.getLlamaPayContractByToken(_tokenAddress);
+            require(isDeployed, "LlamaPay contract for given token does not exist");
+        }
+
+        tokenAddress = _tokenAddress;
+        // also update testedContracts?
+    }
+
+    /// @notice Sets both the token address of the LlamaPay instance and the payer address
+    ///         for the Ante Test to check
+    /// @param _tokenAddress address of token to check LlamaPay instance for. If 0x0 is set,
+    ///         the Ante Test will check all LlamaPay instances
+    /// @param _payerAddress address of payer to check
+    function setTokenAndPayerAddress(address _tokenAddress, address _payerAddress) external {
+        //check that token address exists in llamapayfactory list but allow 0x0 (all)
+        if (_tokenAddress != address(0)) {
+            (, bool isDeployed) = factory.getLlamaPayContractByToken(_tokenAddress);
+            require(isDeployed, "LlamaPay contract for given token does not exist");
         }
 
         tokenAddress = _tokenAddress;

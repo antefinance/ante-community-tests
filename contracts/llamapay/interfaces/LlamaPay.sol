@@ -1,11 +1,13 @@
 //SPDX-License-Identifier: None
-//FROM https://github.com/0xngmi/llamapay/blob/78bf25ebabf16365b65e85b3818c4df12a228b1a/contracts/LlamaPay.sol
+//FROM https://github.com/LlamaPay/llamapay/blob/9b01a5e74229b39f3d782b86fc01ff39d8728dcf/contracts/LlamaPay.sol
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {BoringBatchable} from "./fork/BoringBatchable.sol";
 
 interface Factory {
-    function owner() external returns (address);
+    function parameter() external view returns (address);
 }
 
 interface IERC20WithDecimals {
@@ -16,29 +18,46 @@ interface IERC20WithDecimals {
 // The reason for that is to minimize precision errors caused by integer math on tokens with low decimals (eg: USDC)
 
 // Invariant through the whole contract: lastPayerUpdate[anyone] <= block.timestamp
-// Reason: timestamps can't go back in time (https://github.com/ethereum/go-ethereum/blob/master/consensus/ethash/consensus.go#L274)
+// Reason: timestamps can't go back in time (https://github.com/ethereum/go-ethereum/blob/master/consensus/ethash/consensus.go#L274 and block timestamp definition on ethereum's yellow paper)
 // and we always set lastPayerUpdate[anyone] either to the current block.timestamp or a value lower than it
+// We could use this to optimize subtractions and avoid an unneded safemath check there for some gas savings
+// However this is obscure enough that we are not sure if a future ethereum network upgrade might remove this assertion
+// or if an ethereum fork might remove that code and invalidate the condition, causing our deployment on that chain to be vulnerable
+// This is dangerous because if someone can make a timestamp go back into the past they could steal all the money
+// So we forgo these optimizations and instead enforce this condition.
 
-contract LlamaPay {
+// Another assumption is that all timestamps can fit in uint40, this will be true until year 231,800, so it's a safe assumption
+
+contract LlamaPay is BoringBatchable {
+    using SafeERC20 for IERC20;
+
     struct Payer {
-        uint40 lastPayerUpdate; // we will only hit overflow in year 231,800 so no need to worry
+        uint40 lastPayerUpdate;
         uint216 totalPaidPerSec; // uint216 is enough to hold 1M streams of 3e51 tokens/yr, which is enough
     }
 
     mapping(bytes32 => uint256) public streamToStart;
     mapping(address => Payer) public payers;
     mapping(address => uint256) public balances; // could be packed together with lastPayerUpdate but gains are not high
-    IERC20 public immutable token;
-    address public immutable factory;
-    uint256 public immutable DECIMALS_DIVISOR;
+    IERC20 public token;
+    uint256 public DECIMALS_DIVISOR;
 
     event StreamCreated(address indexed from, address indexed to, uint216 amountPerSec, bytes32 streamId);
     event StreamCancelled(address indexed from, address indexed to, uint216 amountPerSec, bytes32 streamId);
+    event StreamModified(
+        address indexed from,
+        address indexed oldTo,
+        uint216 oldAmountPerSec,
+        bytes32 oldStreamId,
+        address indexed to,
+        uint216 amountPerSec,
+        bytes32 newStreamId
+    );
+    event Withdraw(address indexed from, address indexed to, uint216 amountPerSec, bytes32 streamId, uint256 amount);
 
-    constructor(address _token, address _factory) {
-        token = IERC20(_token);
-        factory = _factory;
-        uint8 tokenDecimals = IERC20WithDecimals(_token).decimals();
+    constructor() {
+        token = IERC20(Factory(msg.sender).parameter());
+        uint8 tokenDecimals = IERC20WithDecimals(address(token)).decimals();
         DECIMALS_DIVISOR = 10**(20 - tokenDecimals);
     }
 
@@ -50,16 +69,16 @@ contract LlamaPay {
         return keccak256(abi.encodePacked(from, to, amountPerSec));
     }
 
-    function createStream(address to, uint216 amountPerSec) public {
-        bytes32 streamId = getStreamId(msg.sender, to, amountPerSec);
+    function _createStream(address to, uint216 amountPerSec) internal returns (bytes32 streamId) {
+        streamId = getStreamId(msg.sender, to, amountPerSec);
         require(amountPerSec > 0, "amountPerSec can't be 0");
         require(streamToStart[streamId] == 0, "stream already exists");
         streamToStart[streamId] = block.timestamp;
 
         Payer storage payer = payers[msg.sender];
         uint256 totalPaid;
+        uint256 delta = block.timestamp - payer.lastPayerUpdate;
         unchecked {
-            uint256 delta = block.timestamp - payer.lastPayerUpdate;
             totalPaid = delta * uint256(payer.totalPaidPerSec);
         }
         balances[msg.sender] -= totalPaid; // implicit check that balance >= totalPaid, can't create a new stream unless there's no debt
@@ -76,6 +95,10 @@ contract LlamaPay {
         // which will always fit in a uint40. Thus the result of the multiplication will always fit inside a uint256 and never overflow
         // This however introduces a new invariant: the only operations that can be done with amountPerSec/totalPaidPerSec are muls against timestamps
         // and we need to make sure they happen in uint256 contexts, not any other
+    }
+
+    function createStream(address to, uint216 amountPerSec) public {
+        bytes32 streamId = _createStream(to, amountPerSec);
         emit StreamCreated(msg.sender, to, amountPerSec, streamId);
     }
 
@@ -114,8 +137,8 @@ contract LlamaPay {
 
         Payer storage payer = payers[from];
         uint256 totalPayerPayment;
+        uint256 payerDelta = block.timestamp - payer.lastPayerUpdate;
         unchecked {
-            uint256 payerDelta = block.timestamp - payer.lastPayerUpdate;
             totalPayerPayment = payerDelta * uint256(payer.totalPaidPerSec);
         }
         uint256 payerBalance = balances[from];
@@ -138,6 +161,7 @@ contract LlamaPay {
             // We push transfers to be done outside this function and at the end of public functions to avoid reentrancy exploits
             amountToTransfer = (delta * uint256(amountPerSec)) / DECIMALS_DIVISOR;
         }
+        emit Withdraw(from, to, amountPerSec, streamId, amountToTransfer);
     }
 
     // Copy of _withdraw that is view-only and returns how much can be withdrawn from a stream, purely for convenience on frontend
@@ -160,8 +184,8 @@ contract LlamaPay {
 
         Payer storage payer = payers[from];
         uint256 totalPayerPayment;
+        uint256 payerDelta = block.timestamp - payer.lastPayerUpdate;
         unchecked {
-            uint256 payerDelta = block.timestamp - payer.lastPayerUpdate;
             totalPayerPayment = payerDelta * uint256(payer.totalPaidPerSec);
         }
         uint256 payerBalance = balances[from];
@@ -186,11 +210,13 @@ contract LlamaPay {
         (uint40 lastUpdate, bytes32 streamId, uint256 amountToTransfer) = _withdraw(from, to, amountPerSec);
         streamToStart[streamId] = lastUpdate;
         payers[from].lastPayerUpdate = lastUpdate;
-        token.transfer(to, amountToTransfer);
+        token.safeTransfer(to, amountToTransfer);
     }
 
-    function cancelStream(address to, uint216 amountPerSec) public {
-        (uint40 lastUpdate, bytes32 streamId, uint256 amountToTransfer) = _withdraw(msg.sender, to, amountPerSec);
+    function _cancelStream(address to, uint216 amountPerSec) internal returns (bytes32 streamId) {
+        uint40 lastUpdate;
+        uint256 amountToTransfer;
+        (lastUpdate, streamId, amountToTransfer) = _withdraw(msg.sender, to, amountPerSec);
         streamToStart[streamId] = 0;
         Payer storage payer = payers[msg.sender];
         unchecked {
@@ -198,8 +224,12 @@ contract LlamaPay {
             payer.totalPaidPerSec -= amountPerSec;
         }
         payer.lastPayerUpdate = lastUpdate;
+        token.safeTransfer(to, amountToTransfer);
+    }
+
+    function cancelStream(address to, uint216 amountPerSec) public {
+        bytes32 streamId = _cancelStream(to, amountPerSec);
         emit StreamCancelled(msg.sender, to, amountPerSec, streamId);
-        token.transfer(to, amountToTransfer);
     }
 
     function modifyStream(
@@ -209,13 +239,14 @@ contract LlamaPay {
         uint216 amountPerSec
     ) external {
         // Can be optimized but I don't think extra complexity is worth it
-        cancelStream(oldTo, oldAmountPerSec);
-        createStream(to, amountPerSec);
+        bytes32 oldStreamId = _cancelStream(oldTo, oldAmountPerSec);
+        bytes32 newStreamId = _createStream(to, amountPerSec);
+        emit StreamModified(msg.sender, oldTo, oldAmountPerSec, oldStreamId, to, amountPerSec, newStreamId);
     }
 
     function deposit(uint256 amount) public {
         balances[msg.sender] += amount * DECIMALS_DIVISOR;
-        token.transferFrom(msg.sender, address(this), amount);
+        token.safeTransferFrom(msg.sender, address(this), amount);
     }
 
     function depositAndCreate(
@@ -227,26 +258,23 @@ contract LlamaPay {
         createStream(to, amountPerSec);
     }
 
-    function withdrawPayer(uint256 amount) external {
+    function withdrawPayer(uint256 amount) public {
         Payer storage payer = payers[msg.sender];
         balances[msg.sender] -= amount; // implicit check that balance > amount
+        uint256 delta = block.timestamp - payer.lastPayerUpdate;
         unchecked {
-            uint256 delta = block.timestamp - payer.lastPayerUpdate;
             require(balances[msg.sender] >= delta * uint256(payer.totalPaidPerSec), "pls no rug");
-            token.transfer(msg.sender, amount / DECIMALS_DIVISOR);
+            token.safeTransfer(msg.sender, amount / DECIMALS_DIVISOR);
         }
     }
 
     function withdrawPayerAll() external {
         Payer storage payer = payers[msg.sender];
-        uint256 totalPaid;
         unchecked {
             uint256 delta = block.timestamp - payer.lastPayerUpdate;
-            totalPaid = delta * uint256(payer.totalPaidPerSec);
-        }
-        balances[msg.sender] -= totalPaid;
-        unchecked {
-            token.transfer(msg.sender, balances[msg.sender] / DECIMALS_DIVISOR);
+            // Just helper function, nothing happens if number is wrong
+            // If there's an overflow it's just equivalent to calling withdrawPayer() directly with a big number
+            withdrawPayer(balances[msg.sender] - delta * uint256(payer.totalPaidPerSec));
         }
     }
 
@@ -255,15 +283,5 @@ contract LlamaPay {
         int256 balance = int256(balances[payerAddress]);
         uint256 delta = block.timestamp - payer.lastPayerUpdate;
         return (balance - int256(delta * uint256(payer.totalPaidPerSec))) / int256(DECIMALS_DIVISOR);
-    }
-
-    // Performs an arbitrary call
-    // This will be under a heavy timelock and only used in case something goes very wrong (eg: with yield engine)
-    function emergencyRug(address to, uint256 amount) external {
-        require(Factory(factory).owner() == msg.sender, "not owner");
-        if (amount == 0) {
-            amount = token.balanceOf(address(this));
-        }
-        token.transfer(to, amount);
     }
 }

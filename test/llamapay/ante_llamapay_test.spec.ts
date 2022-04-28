@@ -28,8 +28,8 @@ describe('AnteLlamaPayTest', function () {
     llamafactory = await llamapayfactory.deploy();
     await llamafactory.deployed();
 
-    await llamafactory.createPayContract('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48');
-    await llamafactory.createPayContract('0xdAC17F958D2ee523a2206206994597C13D831ec7');
+    await llamafactory.createLlamaPayContract('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48');
+    await llamafactory.createLlamaPayContract('0xdAC17F958D2ee523a2206206994597C13D831ec7');
 
     const llamaAddr = llamafactory.address;
 
@@ -43,6 +43,15 @@ describe('AnteLlamaPayTest', function () {
   });
 
   it('should pass', async () => {
+    expect(await test.checkTestPasses()).to.be.true;
+  });
+
+  it('should not allow setting of an invalid token address', async () => {
+    await expect(test.setTokenAddress('0x1A2B73207C883Ce8E51653d6A9cC8a022740cCA4')).to.be.reverted;
+  });
+
+  it('should still pass if invalid payer address passed', async () => {
+    await test.setPayerAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48');
     expect(await test.checkTestPasses()).to.be.true;
   });
 });
