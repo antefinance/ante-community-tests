@@ -18,10 +18,15 @@ import {AnteTest} from "../AnteTest.sol";
 import {LlamaPayFactory} from "./interfaces/LlamaPayFactory.sol";
 import {LlamaPay} from "./interfaces/LlamaPay.sol";
 
-/// @title  LlamaPay never goes back in time test
-/// @notice Ante Test to check that lastPayerUpdate <= block.timestamp holds
-/// may no longer hold after 231,800 A.D.
-contract AnteLlamaPayTest is AnteTest("LlamaPay lastPayerUpdate[anyone] <= block.timestamp Test") {
+/// @title  LlamaPay never goes backwards in time test
+/// @notice Ante Test to check that lastPayerUpdate <= block.timestamp holds for any LlamaPay payer/token
+///         Uses the setter functions provided to set the addresses of the LlamaPay instance and payer address to check
+///         if 0x0 is passed as the LlamaPay address, will check through all LlamaPay contracts in the factory
+///         otherwise, will check for the single LlamaPay instance provided
+///         Note: may no longer hold after 231,800 A.D. due to holding timestamp in uint40
+contract AnteLlamaPayTest is
+    AnteTest("LlamaPay never pays future payments early (lastPayerUpdate[anyone] <= block.timestamp)")
+{
     LlamaPayFactory internal factory;
 
     address public tokenAddress;
@@ -31,15 +36,15 @@ contract AnteLlamaPayTest is AnteTest("LlamaPay lastPayerUpdate[anyone] <= block
         factory = LlamaPayFactory(_llamaPayFactoryAddress);
 
         protocolName = "LlamaPay"; // <3
-        testedContracts = [_llamaPayFactoryAddress];
-        // wonder if could update this when user sets LlamaPay address
+        testedContracts.push(_llamaPayFactoryAddress);
+        testedContracts.push(address(0)); // test all llamapay instances by default
     }
 
     /// @notice checks that lastPayerUpdate <= block.timestamp for a given payer in a given LlamaPay instance
-    /// @param payContractAddress address of specific LlamaPay instance to check
+    /// @param llamaPayContractAddress address of specific LlamaPay instance to check
     /// @return true if lastPayerUpdate[payer] <= block.timestamp
-    function checkSingle(address payContractAddress) public view returns (bool) {
-        (uint40 lastPayerUpdate, ) = LlamaPay(payContractAddress).payers(payerAddress);
+    function checkSingle(address llamaPayContractAddress) public view returns (bool) {
+        (uint40 lastPayerUpdate, ) = LlamaPay(llamaPayContractAddress).payers(payerAddress);
 
         // even if payer is not in the payer list for this LlamaPay instance, will return true (lastPayerUpdate = 0)
         return (lastPayerUpdate <= block.timestamp);
@@ -89,11 +94,12 @@ contract AnteLlamaPayTest is AnteTest("LlamaPay lastPayerUpdate[anyone] <= block
         //check that token address exists in llamapayfactory list but allow 0x0 (all)
         if (_tokenAddress != address(0)) {
             (, bool isDeployed) = factory.getLlamaPayContractByToken(_tokenAddress);
-            require(isDeployed, "LlamaPay contract for given token does not exist");
+            require(isDeployed, "LlamaPay contract for given token does not yet exist");
         }
 
         tokenAddress = _tokenAddress;
-        // TODO also update testedContracts?
+        require(testedContracts.length == 2, "Somehow more contracts were added");
+        testedContracts[1] = _tokenAddress;
     }
 
     /// @notice Sets both the token address of the LlamaPay instance and the payer address
@@ -105,11 +111,12 @@ contract AnteLlamaPayTest is AnteTest("LlamaPay lastPayerUpdate[anyone] <= block
         //check that token address exists in llamapayfactory list but allow 0x0 (all)
         if (_tokenAddress != address(0)) {
             (, bool isDeployed) = factory.getLlamaPayContractByToken(_tokenAddress);
-            require(isDeployed, "LlamaPay contract for given token does not exist");
+            require(isDeployed, "LlamaPay contract for given token does not yet exist");
         }
 
         tokenAddress = _tokenAddress;
         payerAddress = _payerAddress;
-        // TODO also update testedContracts?
+        require(testedContracts.length == 2, "Somehow more contracts were added");
+        testedContracts[1] = _tokenAddress;
     }
 }
