@@ -79,7 +79,6 @@ contract AnteLlamaPayTest is AnteTest("LlamaPay lastPayerUpdate[anyone] <= block
         // TODO might be more thorough to loop through llamapay contracts and verify that at least one
         // instance of a valid payer mapping exists. but also an invalid payer address doesn't fail
         // the test so no risk of false positive
-
         payerAddress = _payerAddress;
     }
 
@@ -94,7 +93,7 @@ contract AnteLlamaPayTest is AnteTest("LlamaPay lastPayerUpdate[anyone] <= block
         }
 
         tokenAddress = _tokenAddress;
-        // also update testedContracts?
+        // TODO also update testedContracts?
     }
 
     /// @notice Sets both the token address of the LlamaPay instance and the payer address
@@ -110,6 +109,7 @@ contract AnteLlamaPayTest is AnteTest("LlamaPay lastPayerUpdate[anyone] <= block
         }
 
         tokenAddress = _tokenAddress;
-        // also update testedContracts?
+        payerAddress = _payerAddress;
+        // TODO also update testedContracts?
     }
 }
