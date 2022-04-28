@@ -21,7 +21,7 @@ import {LlamaPay} from "./interfaces/LlamaPay.sol";
 /// @title  LlamaPay never goes back in time test
 /// @notice Ante Test to check that lastPayerUpdate <= block.timestamp holds
 /// may no longer hold after 231,800 A.D.
-contract AnteLlamaPayTest is AnteTest("LlamaPay lastPayerUpdate[anyone] ≤ block.timestamp Test") {
+contract AnteLlamaPayTest is AnteTest("LlamaPay lastPayerUpdate[anyone] <= block.timestamp Test") {
     LlamaPayFactory internal factory;
 
     address public tokenAddress;
