@@ -30,11 +30,10 @@ describe('AnteYearnVaultPriceTest', function () {
   });
 
   it('should pass', async () => {
-    console.log((await test.getNewPricePerShare()).toString());
     expect(await test.checkTestPasses()).to.be.true;
   });
 
-  it('update can only be called once per 187714 blocks', async () => {
+  it('update can only be called once per 100 blocks', async () => {
     await expect(test.updatePricePerShare()).to.be.revertedWith('Can only update once per preset blocks');
     await evmMineBlocks(100);
     await test.updatePricePerShare();
