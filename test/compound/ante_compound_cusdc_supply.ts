@@ -1,11 +1,11 @@
 import hre from 'hardhat';
 const { waffle } = hre;
 
-import { AnteCompoundcUSDCSupplyTest, AnteCompoundcUSDCSupplyTest__factory } from '../typechain';
-import { evmSnapshot, evmRevert } from './helpers';
+import { AnteCompoundcUSDCSupplyTest, AnteCompoundcUSDCSupplyTest__factory } from '../../typechain';
+import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
 
-describe.only('AnteCompoundcUSDSupplyTest', function () {
+describe('AnteCompoundcUSDSupplyTest', function () {
   let test: AnteCompoundcUSDCSupplyTest;
 
   let globalSnapshotId: string;
