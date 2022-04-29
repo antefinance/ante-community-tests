@@ -35,7 +35,7 @@ describe('AnteYearnWithdrawTest', function () {
     test = await factory.deploy(yUSDC_VAULT, USDC_ADDRESS);
     await test.deployed();
 
-    // Can't find slot of wallet1 so updating every single slot possible
+    // Can't find slot so updating every single slot possible
     // Info about setStorageAt can be found here: https://kndrck.co/posts/local_erc20_bal_mani_w_hh/
     try {
       for(let i = 0; i < 256; i++) {
