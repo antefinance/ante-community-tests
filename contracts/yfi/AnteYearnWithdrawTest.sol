@@ -3,11 +3,7 @@
 pragma solidity >=0.8.0;
 import "../AnteTest.sol";
 import "../interfaces/IERC20.sol";
-
-interface IYearnVault {
-    function withdraw() external;
-    function balanceOf(address account) external view returns (uint256);
-}
+import "../interfaces/IYearnVault.sol";
 
 /// @title Yearn Withdraw Test
 /// @notice Tests to see if you can withdraw from a yearn deposit
@@ -16,7 +12,7 @@ contract AnteYearnWithdrawTest is AnteTest("Makes sure you can withdraw from yea
     address public immutable vault;
     address public immutable token;
 
-    IYearnVault private immutable yearnVault;
+    InterfaceYearnVault private immutable yearnVault;
     IERC20 private immutable tokenContract;
 
     uint256 private constant DAY_IN_SECONDS = 86400;
@@ -34,7 +30,7 @@ contract AnteYearnWithdrawTest is AnteTest("Makes sure you can withdraw from yea
 
         vault = _vault;
         token = _token;
-        yearnVault = IYearnVault(vault);
+        yearnVault = InterfaceYearnVault(vault);
         tokenContract = IERC20(token);
     }
 
@@ -44,8 +40,8 @@ contract AnteYearnWithdrawTest is AnteTest("Makes sure you can withdraw from yea
     /// @dev yearn balance - will be checked to see if value is not zero. If value is zero, test will return true
     /// @dev epoch - used to ensure that some time has passed
     function withdraw() external {
-        require(yearnVault.balanceOf(address(this)) > 0, "You have no tokens to withdraw");
-        require(block.timestamp - withdrawingEpoch > DAY_IN_SECONDS, "You can only withdraw once per day");
+        require(yearnVault.balanceOf(address(this)) > 0, "ERROR: You have no tokens to withdraw");
+        require(block.timestamp - withdrawingEpoch > DAY_IN_SECONDS, "ERROR: You can only withdraw once per day");
         
         tokenBalance = tokenContract.balanceOf(address(this));
         yearnBalance = yearnVault.balanceOf(address(this));

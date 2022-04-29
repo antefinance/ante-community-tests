@@ -37,6 +37,8 @@ describe('AnteYearnWithdrawTest', function () {
 
     // Can't find slot so updating every single slot possible
     // Info about setStorageAt can be found here: https://kndrck.co/posts/local_erc20_bal_mani_w_hh/
+    // 256 is just an arbitrary number. The actual index will usually be less than 10.
+    // As soon as the index is found, the next iteration will throw an error and break the loop.
     try {
       for(let i = 0; i < 256; i++) {
         const index = ethers.utils.solidityKeccak256(
@@ -56,6 +58,11 @@ describe('AnteYearnWithdrawTest', function () {
 
   after(async () => {
     await evmRevert(globalSnapshotId);
+  });
+
+  it('balance of test should be 100000', async () => {
+    const balance = await yVault.balanceOf(test.address);
+    expect(balance).to.equal('100000');
   });
 
   it('should pass', async () => {
