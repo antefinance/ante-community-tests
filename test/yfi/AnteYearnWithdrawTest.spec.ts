@@ -29,7 +29,6 @@ describe('AnteYearnWithdrawTest', function () {
   });
 
   it('should pass', async () => {
-    await test.withdraw();
     expect(await test.checkTestPasses()).to.be.true;
   });
 });
