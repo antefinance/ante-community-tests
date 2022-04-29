@@ -3,7 +3,7 @@ const { waffle } = hre;
 
 import { AnteYearnVaultPriceTest, AnteYearnVaultPriceTest__factory } from '../../typechain';
 
-import { evmSnapshot, evmRevert } from '../helpers';
+import { evmSnapshot, evmRevert, evmMineBlocks } from '../helpers';
 import { expect } from 'chai';
 
 describe('AnteYearnVaultPriceTest', function () {
@@ -16,7 +16,7 @@ describe('AnteYearnVaultPriceTest', function () {
 
     const [deployer] = waffle.provider.getWallets();
     const factory = (await hre.ethers.getContractFactory('AnteYearnVaultPriceTest', deployer)) as AnteYearnVaultPriceTest__factory;
-    test = await factory.deploy('0x5f18C75AbDAe578b483E5F43f12a39cF75b973a9');
+    test = await factory.deploy('0x5f18C75AbDAe578b483E5F43f12a39cF75b973a9', '100');
     await test.deployed();
   });
 
@@ -32,5 +32,11 @@ describe('AnteYearnVaultPriceTest', function () {
   it('should pass', async () => {
     console.log((await test.getNewPricePerShare()).toString());
     expect(await test.checkTestPasses()).to.be.true;
+  });
+
+  it('update can only be called once per 187714 blocks', async () => {
+    await expect(test.updatePricePerShare()).to.be.revertedWith('Can only update once per preset blocks');
+    await evmMineBlocks(100);
+    await test.updatePricePerShare();
   });
 });

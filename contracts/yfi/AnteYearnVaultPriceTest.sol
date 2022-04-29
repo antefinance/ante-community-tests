@@ -11,16 +11,28 @@ interface YFIVault {
 /// @notice Test to ensure YFI vaults are increasing the price per share
 contract AnteYearnVaultPriceTest is AnteTest("YFI Vaults price per share increasing") {
     
+    uint256 private blockTimeout;
+    uint256 private lastUpdatedBlock;
+    uint256 public originalPricePerShare;
+
     address public immutable vault;
-    uint256 public immutable originalPricePerShare;
     YFIVault public immutable yYFIVault;
 
-    constructor (address _vault) {
+    constructor (address _vault, uint256 _blockTimeout) {
         protocolName = "YFI";
         testedContracts = [_vault];
 
         vault = _vault;
         yYFIVault = YFIVault(vault);
+        originalPricePerShare = yYFIVault.pricePerShare();
+
+        lastUpdatedBlock = block.number;
+        blockTimeout = _blockTimeout;
+    }
+
+    /// @notice Update the price per share
+    function updatePricePerShare() public {
+        require(block.number - lastUpdatedBlock > blockTimeout, "Can only update once per preset blocks");
         originalPricePerShare = yYFIVault.pricePerShare();
     }
 
