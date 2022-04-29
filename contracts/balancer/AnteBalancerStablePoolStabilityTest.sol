@@ -33,6 +33,7 @@ contract AnteBalancerStablePoolStabilityTest is AnteTest("Balancer stable pool r
 
     IERC20[] private tokens;
 
+    /// @param _stablePoolID The stable pool ID to test
     constructor(bytes32 _stablePoolID) {
         protocolName = "BalancerV2";
         testedContracts = [BALANCER_VAULT_ADDRESS];
@@ -61,6 +62,9 @@ contract AnteBalancerStablePoolStabilityTest is AnteTest("Balancer stable pool r
         }
     }
 
+    /// @notice In a rare care a challenger may have to call reorder() if the vault returns values in a 
+    /// different order than at deployment.
+    /// @return true if the pool is stable with a 3% tolerance
     function checkTestPasses() external view override returns (bool) {
         uint256 adjustToDecimals = 9999999;
         for(uint8 i = 0; i < tokenDecimals.length; i++) {
@@ -108,6 +112,10 @@ contract AnteBalancerStablePoolStabilityTest is AnteTest("Balancer stable pool r
         return true;
     }
 
+    /// @param totalValue The total value of the pool
+    /// @param share The amount of token in the pool
+    /// @param amountOfTokens the amount of different type of tokens in the pool
+    /// @return true if the ratio is within 3% of the expected ratio
     function ratioValid(uint256 totalValue, uint256 share, uint256 amountOfTokens) public pure returns (bool){
         uint256 expectedRatio = 100 / amountOfTokens;
         uint256 ratio = (100 * share) / totalValue;
