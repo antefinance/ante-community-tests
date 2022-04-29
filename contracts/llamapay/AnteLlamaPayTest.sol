@@ -66,7 +66,7 @@ contract AnteLlamaPayTest is
         // otherwise, if token address is 0x0, loop all tokens in llamapay factory
         for (uint256 i = 0; i < factory.getLlamaPayContractCount(); i++) {
             // if any llamapay instance fails, fail the test
-            if (checkSingle(factory.getLlamaPayContractByIndex(i)) == false) {
+            if (!checkSingle(factory.getLlamaPayContractByIndex(i))) {
                 return false;
             }
         }
