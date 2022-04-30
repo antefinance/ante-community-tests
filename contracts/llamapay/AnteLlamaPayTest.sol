@@ -9,7 +9,9 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-// https://.etherscan.io/address/[CONTRACT_ADDRESS]#readContract to check
+// Uses the setTokenAddress and setPayerAddress to set the addresses of the LlamaPay instance
+// and payer address to check
+// https://.etherscan.io/address/[CONTRACT_ADDRESS]#readContract to check values
 // https://.etherscan.io/address/[CONTRACT_ADDRESS]#writeContract to set values
 
 pragma solidity ^0.8.0;
