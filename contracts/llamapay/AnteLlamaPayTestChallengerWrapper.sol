@@ -34,7 +34,7 @@ interface IAnteLlamaPayTest {
 ///         prevent front-running a challenger that is attempting to verify the
 ///         test. This works by allowing the user to set test parameters and
 ///         verify the test in the same transaction.
-contract AnteLlamaPayTestSingleWrapper is Ownable {
+contract AnteLlamaPayTestChallengerWrapper is Ownable {
     // https://etherscan.io/address/[LLAMAPAY_ANTE_TEST_ADDRESS]
     IAnteLlamaPayTest public immutable test;
 
@@ -45,6 +45,8 @@ contract AnteLlamaPayTestSingleWrapper is Ownable {
         test = IAnteLlamaPayTest(_anteLlamaPayTestAddress);
         pool = IAntePool(_anteLlamaPayPoolAddress);
     }
+
+    receive() external payable {}
 
     /*****************************************************
      * ================ USER INTERFACE ================= *
