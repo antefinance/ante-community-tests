@@ -19,6 +19,9 @@ contract AnteUniswapGetReservesTest is AnteTest("Ensure that getReserves returns
     uint256 private immutable decimals1;
     address private immutable chainLinkOracle;
 
+    uint256 private lastCheckBlock = 0;
+    int256 private lastCheckPercentage = 0;
+
     /// @param _uniswapPair The Uniswap pair to test.
     /// @param _chainLinkOracle price feed to use.
     /// @notice The Chainlink order should be expensive currency -> cheaper currency. 
@@ -36,12 +39,32 @@ contract AnteUniswapGetReservesTest is AnteTest("Ensure that getReserves returns
         decimals1 = IERC20(uniswapPair.token1()).decimals();
     }
 
+    /// @notice Pre-calls the function as a flash loan attack prevention
+    function preCall() public {
+        (uint112 reserve0, uint112 reserve1,) = uniswapPair.getReserves();
+        (, int256 price, , ,) = priceFeed.latestRoundData();
+
+        lastCheckBlock = block.number;
+        lastCheckPercentage = calculatePercentage(reserve0, reserve1, price, decimals0, decimals1);
+    }
+
+    /// @notice Test must be called 2 to 5 block after the preCall (28-70 seconds)
     /// @return true if getReserves returns a reasonable value within 20%
     function checkTestPasses() public view override returns (bool) {
         (uint112 reserve0, uint112 reserve1,) = uniswapPair.getReserves();
         (, int256 price, , ,) = priceFeed.latestRoundData();
 
-        return calculatePercentage(reserve0, reserve1, price, decimals0, decimals1) > 80;
+        // Need to make sure that the preCheck() function was called before this function
+        // If not, then the test reverts to true.
+        if (block.number == 0 || block.number - lastCheckBlock > 5 || block.number - lastCheckBlock < 1 || lastCheckPercentage == 0) {
+            return true;
+        }
+
+        if (lastCheckPercentage < 80 && calculatePercentage(reserve0, reserve1, price, decimals0, decimals1) < 80) {
+            return false;
+        }
+
+        return true;
     }
 
     /// @notice Calculates the percentage difference between the reserves ratio and respective price
@@ -51,7 +74,7 @@ contract AnteUniswapGetReservesTest is AnteTest("Ensure that getReserves returns
     /// @param _decimal0 The decimals of reserve0
     /// @param _decimal1 The decimals of reserve1
     function calculatePercentage(uint112 reserve0, uint112 reserve1, int256 price, uint256 _decimal0, uint256 _decimal1) public pure returns(int256) {
-        
+
         // Get lowest decimal and adjust for decimal difference
         if(_decimal0 < _decimal1) {
             uint256 decimalDifference = _decimal1 - _decimal0;

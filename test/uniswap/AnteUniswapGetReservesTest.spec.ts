@@ -37,6 +37,7 @@ describe('AnteUniswapGetReservesTest', function () {
   });
 
   it('should pass', async () => {
+    await test.preCall();
     expect(await test.checkTestPasses()).to.be.true;
   });
 });
