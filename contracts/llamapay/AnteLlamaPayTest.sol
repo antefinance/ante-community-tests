@@ -9,70 +9,87 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-// Uses the setTokenAddress and setPayerAddress to set the addresses of the LlamaPay instance
-// and payer address to check
+// Uses the setTokenAddress and setPayerAddress to set the addresses of the
+// LlamaPay instance and payer address to check
 // https://.etherscan.io/address/[CONTRACT_ADDRESS]#readContract to check values
 // https://.etherscan.io/address/[CONTRACT_ADDRESS]#writeContract to set values
 
-pragma solidity ^0.8.0;
+pragma solidity ^0.7.0;
 
-import {AnteTest} from "../AnteTest.sol";
-import {LlamaPayFactory} from "./interfaces/LlamaPayFactory.sol";
-import {LlamaPay} from "./interfaces/LlamaPay.sol";
+import "../AnteTest.sol";
+
+interface ILlamaPayFactory {
+    function getLlamaPayContractCount() external view returns (uint256);
+
+    function getLlamaPayContractByIndex(uint256 i) external view returns (address);
+
+    function getLlamaPayContractByToken(address _token) external view returns (address, bool);
+}
+
+interface ILlamaPay {
+    function payers(address _payer) external view returns (uint40, uint216);
+}
 
 /// @title  LlamaPay never goes backwards in time test
-/// @notice Ante Test to check that lastPayerUpdate <= block.timestamp holds for any LlamaPay payer/token
-///         Uses the setter functions provided to set the addresses of the LlamaPay instance and payer address to check
-///         if 0x0 is passed as the LlamaPay address, will check through all LlamaPay contracts in the factory
-///         otherwise, will check for the single LlamaPay instance provided
+/// @notice Ante Test to check that lastPayerUpdate <= block.timestamp holds
+///         for any LlamaPay payer/token. Uses the setter functions provided to
+///         set the addresses of the LlamaPay instance and payer address to
+///         check. If 0x0 is passed as the LlamaPay address, will check through
+///         all LlamaPay contracts in the factory. Otherwise, will check for
+///         the single LlamaPay instance provided
 ///         Note: may no longer hold after 231,800 A.D. due to holding timestamp in uint40
 contract AnteLlamaPayTest is
     AnteTest("LlamaPay never pays future payments early (lastPayerUpdate[anyone] <= block.timestamp)")
 {
-    LlamaPayFactory internal factory;
+    // https://etherscan.io/address/0xde1C04855c2828431ba637675B6929A684f84C7F
+    ILlamaPayFactory internal factory;
 
     address public tokenAddress;
     address public payerAddress;
 
     constructor(address _llamaPayFactoryAddress) {
-        factory = LlamaPayFactory(_llamaPayFactoryAddress);
+        factory = ILlamaPayFactory(_llamaPayFactoryAddress);
 
         protocolName = "LlamaPay"; // <3
         testedContracts.push(_llamaPayFactoryAddress);
-        testedContracts.push(address(0)); // test all llamapay instances by default
+        testedContracts.push(address(0)); // test all LlamaPay instances by default
     }
 
-    /// @notice checks that lastPayerUpdate <= block.timestamp for a given payer in a given LlamaPay instance
-    /// @param llamaPayContractAddress address of specific LlamaPay instance to check
+    /// @notice checks that lastPayerUpdate <= block.timestamp for a given
+    ///         payer in a given LlamaPay instance
+    /// @param llamaPayAddress address of specific LlamaPay instance to check
     /// @return true if lastPayerUpdate[payer] <= block.timestamp
-    function checkSingle(address llamaPayContractAddress) public view returns (bool) {
-        (uint40 lastPayerUpdate, ) = LlamaPay(llamaPayContractAddress).payers(payerAddress);
+    function checkSingle(address llamaPayAddress) internal view returns (bool) {
+        (uint40 lastPayerUpdate, ) = ILlamaPay(llamaPayAddress).payers(payerAddress);
 
-        // even if payer is not in the payer list for this LlamaPay instance, will return true (lastPayerUpdate = 0)
+        // We don't need to worry about checking if the payer exists in the
+        // payer mapping for this LlamaPay instance since 0 < block.timestamp
         return (lastPayerUpdate <= block.timestamp);
     }
 
-    /// @notice Checks that lastPayerUpdate[payer] <= block.timestamp for a given payer and LlamaPay contract(s)
-    ///         Uses the setter functions provided to set the token addresses and payer address to check
-    ///         if 0x0 is passed as token address, will check through all LlamaPay contracts in factory
-    ///         otherwise, will check for the single LlamaPay instance provided
+    /// @notice Checks that lastPayerUpdate[payer] <= block.timestamp for a
+    ///         given payer and LlamaPay contract(s). Uses the setter functions
+    ///         provided to set the token addresses and payer address to check
+    ///         if 0x0 is passed as token address, will check through all
+    ///         LlamaPay contracts in factory. otherwise, will check for the
+    ///         single LlamaPay instance provided
     /// @return true if lastPayerUpdate[payer] <= block.timestamp for all LlamaPay contracts checked
     function checkTestPasses() external view override returns (bool) {
-        // if a valid token is specified, check payer for specific token llamapay contract
-
+        // If a valid token is specified, check payer for specific LlamaPay contract
         (address predictedAddress, bool isDeployed) = factory.getLlamaPayContractByToken(tokenAddress);
         if (isDeployed) {
             return checkSingle(predictedAddress);
         }
 
-        // otherwise, if token address is 0x0, loop all tokens in llamapay factory
+        // Otherwise, if token address is 0x0, loop through all LlamaPay instances
         for (uint256 i = 0; i < factory.getLlamaPayContractCount(); i++) {
-            // if any llamapay instance fails, fail the test
+            // If any LlamaPay instance fails, fail the test
             if (!checkSingle(factory.getLlamaPayContractByIndex(i))) {
                 return false;
             }
         }
 
+        // If an invalid token address is provided, test will still pass
         return true;
     }
 

@@ -11,11 +11,16 @@
 
 // Works with the AnteLlamaPay Test
 
-pragma solidity ^0.8.0;
+pragma solidity ^0.7.0;
 
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {AnteTest} from "../AnteTest.sol";
-import {AntePool} from "../AntePool.sol";
+import "@openzeppelin-contracts-old/contracts/access/Ownable.sol";
+import "../interfaces/IAntePool.sol";
+
+interface IAnteLlamaPayTest {
+    function setTokenAddress(address _tokenAddress) external;
+
+    function setPayerAddress(address _payerAddress) external;
+}
 
 /*****************************************************
  * ============= IMPORTANT USAGE NOTE ============== *
@@ -29,16 +34,16 @@ import {AntePool} from "../AntePool.sol";
 ///         prevent front-running a challenger that is attempting to verify the
 ///         test. This works by allowing the user to set test parameters and
 ///         verify the test in the same transaction.
-contract AnteLlamaPayTestSingleChallengerWrapper is Ownable {
+contract AnteLlamaPayTestSingleWrapper is Ownable {
     // https://etherscan.io/address/[LLAMAPAY_ANTE_TEST_ADDRESS]
-    AnteTest public immutable test;
+    IAnteLlamaPayTest public immutable test;
 
     // https://etherscan.io/address/[LLAMAPAY_ANTE_POOL_ADDRESS]
-    AntePool public immutable pool;
+    IAntePool public immutable pool;
 
     constructor(address _anteLlamaPayTestAddress, address _anteLlamaPayPoolAddress) {
-        test = AnteTest(_anteLlamaPayTestAddress);
-        pool = AntePool(_anteLlamaPayPoolAddress);
+        test = IAnteLlamaPayTest(_anteLlamaPayTestAddress);
+        pool = IAntePool(_anteLlamaPayPoolAddress);
     }
 
     /*****************************************************
@@ -52,13 +57,13 @@ contract AnteLlamaPayTestSingleChallengerWrapper is Ownable {
 
     /// @notice Withdraws `amount` challenge from Ante Pool
     /// @param amount Amount to withdraw from the Ante Pool in wei
-    function unchallenge(uint256 amount) external onlyOwner {
+    function withdrawChallenge(uint256 amount) external onlyOwner {
         pool.unstake(amount, true);
         msg.sender.transfer(address(this).balance);
     }
 
     /// @notice Withdraws all challenged capital from Ante Pool
-    function unChallengeAll() external onlyOwner {
+    function withdrawChallengeAll() external onlyOwner {
         pool.unstakeAll(true);
         msg.sender.transfer(address(this).balance);
     }
@@ -69,7 +74,7 @@ contract AnteLlamaPayTestSingleChallengerWrapper is Ownable {
     /// @param _tokenAddress address of token to check LlamaPay instance for.
     ///        If 0x0 is set, the Ante Test will check all LlamaPay instances
     /// @param _payerAddress address of payer to check
-    function checkTest(address _tokenAddress, address _payerAddress) external onlyOwner {
+    function setParamsAndCheckTest(address _tokenAddress, address _payerAddress) external onlyOwner {
         // set token and payer addresses
         test.setTokenAddress(_tokenAddress);
         test.setPayerAddress(_payerAddress);
@@ -81,44 +86,5 @@ contract AnteLlamaPayTestSingleChallengerWrapper is Ownable {
     function claim() external onlyOwner {
         pool.claim();
         msg.sender.transfer(address(this).balance);
-    }
-
-    /// Note: The staker functions don't require this wrapper because they
-    /// aren't vulnerable to front-running, but they (and other functions) have
-    /// been included below for completeness (i.e. there is nothing you can do
-    /// with the AntePool contract directly that you can't with this wrapper).
-
-    /// @notice Stakes `msg.value` amount into Ante Pool
-    function stake() external payable onlyOwner {
-        pool.stake{value: msg.value}(false);
-    }
-
-    /// @notice Initiates 24 hr unstake period for `amount` staked in Ante Pool
-    /// @param amount Amount to withdraw from the Ante Pool in wei
-    function startUnstake(uint256 amount) external onlyOwner {
-        pool.unstake(amount, false);
-    }
-
-    /// @notice Initiates 24 hr unstake period for all staked capital in Ante Pool
-    function startUnstakeAll() external onlyOwner {
-        pool.unstakeAll(false);
-    }
-
-    /// @notice Withdraws staked capital eligible for withdrawal from Ante Pool
-    ///         (must first call startUnstake or startUnstakeaAll then wait 24 hours)
-    function unstake() external onlyOwner {
-        pool.withdrawStake();
-        msg.sender.transfer(address(this).balance);
-    }
-
-    /// @notice Cancels a pending withdrawal of stake (after startUnstake or
-    ///         startUnstakeAll has been called)
-    function cancelPendingWithdraw() external onlyOwner {
-        pool.cancelPendingWithdraw();
-    }
-
-    /// @notice Updates decay calculations in the Ante Pool
-    function updateDecay() public onlyOwner {
-        pool.updateDecay();
     }
 }
