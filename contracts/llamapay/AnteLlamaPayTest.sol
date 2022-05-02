@@ -120,22 +120,4 @@ contract AnteLlamaPayTest is
         require(testedContracts.length == 2, "Somehow more contracts were added");
         testedContracts[1] = _tokenAddress;
     }
-
-    /// @notice Sets both the token address of the LlamaPay instance and the payer address
-    ///         for the Ante Test to check
-    /// @param _tokenAddress address of token to check LlamaPay instance for. If 0x0 is set,
-    ///         the Ante Test will check all LlamaPay instances
-    /// @param _payerAddress address of payer to check
-    function setTokenAndPayerAddress(address _tokenAddress, address _payerAddress) external {
-        //check that token address exists in llamapayfactory list but allow 0x0 (all)
-        if (_tokenAddress != address(0)) {
-            (, bool isDeployed) = factory.getLlamaPayContractByToken(_tokenAddress);
-            require(isDeployed, "LlamaPay contract for given token does not yet exist");
-        }
-
-        tokenAddress = _tokenAddress;
-        payerAddress = _payerAddress;
-        require(testedContracts.length == 2, "Somehow more contracts were added");
-        testedContracts[1] = _tokenAddress;
-    }
 }
