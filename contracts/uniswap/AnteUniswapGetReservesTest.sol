@@ -48,7 +48,7 @@ contract AnteUniswapGetReservesTest is AnteTest("Ensure that getReserves returns
         lastCheckPercentage = calculatePercentage(reserve0, reserve1, price, decimals0, decimals1);
     }
 
-    /// @notice Test must be called 2 to 5 block after the preCall (28-70 seconds)
+    /// @notice Test must be called 2 to 50 block after the preCall
     /// @return true if getReserves returns a reasonable value within 20%
     function checkTestPasses() public view override returns (bool) {
         (uint112 reserve0, uint112 reserve1,) = uniswapPair.getReserves();
@@ -56,7 +56,7 @@ contract AnteUniswapGetReservesTest is AnteTest("Ensure that getReserves returns
 
         // Need to make sure that the preCheck() function was called before this function
         // If not, then the test reverts to true.
-        if (block.number == 0 || block.number - lastCheckBlock > 5 || block.number - lastCheckBlock < 1 || lastCheckPercentage == 0) {
+        if (block.number == 0 || block.number - lastCheckBlock > 50 || block.number - lastCheckBlock < 1 || lastCheckPercentage == 0) {
             return true;
         }
 
