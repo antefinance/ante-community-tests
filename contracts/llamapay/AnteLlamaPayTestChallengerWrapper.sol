@@ -9,7 +9,15 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-// Works with the AnteLlamaPay Test
+// For usage with AnteLlamaPayTest to allow challenging the test without being
+// vulnerable to frontrunning.
+
+/*****************************************************
+ * ============= IMPORTANT USAGE NOTE ============== *
+ *****************************************************/
+/// In order to simplify the internal logic of the wrapper contract, only a
+/// single user can use each wrapper. Thus, each user attempting to challenge
+/// the LlamaPay Ante Pool should deploy their own instance of this wrapper!
 
 pragma solidity ^0.7.0;
 
@@ -21,13 +29,6 @@ interface IAnteLlamaPayTest {
 
     function setPayerAddress(address _payerAddress) external;
 }
-
-/*****************************************************
- * ============= IMPORTANT USAGE NOTE ============== *
- *****************************************************/
-/// In order to simplify the internal logic of the wrapper contract, only a
-/// single user can use each wrapper. Thus, each user attempting to challenge
-/// the LlamaPay Ante Pool should deploy their own instance of this wrapper!
 
 /// @title  Ante LlamaPay Test Challenger
 /// @notice Wrapper to interact with Ante Pool for AnteLlamaPayTest in order to

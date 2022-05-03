@@ -11,18 +11,11 @@ contract MockLlamaPay {
 
     mapping(address => Payer) public payers;
 
-    event StreamCreated(address indexed from, address indexed to, uint216 amountPerSec, bytes32 streamId);
-
-    constructor() {}
-
     function createStream(address to, uint216 amountPerSec) public {
-        Payer storage payer = payers[msg.sender];
-        payer.lastPayerUpdate = uint40(block.timestamp);
-        payer.totalPaidPerSec += amountPerSec;
+        payers[msg.sender].lastPayerUpdate = uint40(block.timestamp);
     }
 
     function makeFail() public {
-        Payer storage payer = payers[msg.sender];
-        payer.lastPayerUpdate = uint40(block.timestamp + 9001);
+        payers[msg.sender].lastPayerUpdate = uint40(block.timestamp + 9001);
     }
 }

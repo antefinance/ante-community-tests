@@ -13,6 +13,13 @@ contract MockLlamaPayFactory {
 
     function createLlamaPayContract(address _token) external returns (address llamaPayContract) {
         llamaPayContract = address(new MockLlamaPay{salt: bytes32(uint256(uint160(_token)))}());
+
+        // Append the new contract address to the array of deployed contracts
+        uint256 index = getLlamaPayContractCount;
+        getLlamaPayContractByIndex[index] = llamaPayContract;
+        unchecked {
+            getLlamaPayContractCount = index + 1;
+        }
     }
 
     /**
