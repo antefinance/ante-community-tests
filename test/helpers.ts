@@ -52,17 +52,14 @@ export async function calculateGasUsed(txpromise: any): Promise<BigNumber> {
   return txreceipt.effectiveGasPrice.mul(txreceipt.cumulativeGasUsed);
 }
 
-export async function runAsSigner(
-  signerAddr: string,
-  fn: () => Promise<void>
-): Promise<void> {
-    await hre.network.provider.request({
-      method: "hardhat_impersonateAccount",
-      params: [signerAddr],
-    });
-    await fn();
-    await hre.network.provider.request({
-      method: "hardhat_stopImpersonatingAccount",
-      params: [signerAddr],
-    });
+export async function runAsSigner(signerAddr: string, fn: () => Promise<void>): Promise<void> {
+  await hre.network.provider.request({
+    method: 'hardhat_impersonateAccount',
+    params: [signerAddr],
+  });
+  await fn();
+  await hre.network.provider.request({
+    method: 'hardhat_stopImpersonatingAccount',
+    params: [signerAddr],
+  });
 }
