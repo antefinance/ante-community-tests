@@ -2,25 +2,25 @@ import hre from 'hardhat';
 const { waffle } = hre;
 
 import {
-  FallibleAnteLlamaPayTest,
-  FallibleAnteLlamaPayTest__factory,
+  AnteLlamaPayTest,
+  AnteLlamaPayTest__factory,
   AntePoolFactory,
   AntePoolFactory__factory,
   AntePool,
   AnteLlamaPayTestChallengerWrapper,
   AnteLlamaPayTestChallengerWrapper__factory,
-  LlamaPayFactory,
-  LlamaPayFactory__factory,
-  LlamaPay,
+  MockLlamaPayFactory,
+  MockLlamaPayFactory__factory,
+  MockLlamaPay,
 } from '../../typechain';
 
 import { evmSnapshot, evmRevert, blockNumber, blockTimestamp } from '../helpers';
 import { expect } from 'chai';
 
 describe('AnteLlamaPayTestChallengerWrapper', function () {
-  let llamaFactory: LlamaPayFactory;
-  let llama: LlamaPay;
-  let test: FallibleAnteLlamaPayTest;
+  let llamaFactory: MockLlamaPayFactory;
+  let llama: MockLlamaPay;
+  let test: AnteLlamaPayTest;
   let pool: AntePool;
   let poolFactory: AntePoolFactory;
   let wrapper: AnteLlamaPayTestChallengerWrapper;
@@ -38,9 +38,9 @@ describe('AnteLlamaPayTestChallengerWrapper', function () {
 
     // Deploy LlamaPayFactory
     const llamaPayFactory = (await hre.ethers.getContractFactory(
-      'LlamaPayFactory',
+      'MockLlamaPayFactory',
       deployer
-    )) as LlamaPayFactory__factory;
+    )) as MockLlamaPayFactory__factory;
     llamaFactory = await llamaPayFactory.deploy();
     await llamaFactory.deployed();
     const llamaPayFactoryAddr = llamaFactory.address;
@@ -48,7 +48,7 @@ describe('AnteLlamaPayTestChallengerWrapper', function () {
     // create LlamaPay instance and stream
     await llamaFactory.createLlamaPayContract('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'); // USDC
     let response = await llamaFactory.getLlamaPayContractByToken('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48');
-    llama = await hre.ethers.getContractAt('LlamaPay', response.predictedAddress);
+    llama = await hre.ethers.getContractAt('MockLlamaPay', response.predictedAddress);
     llama.createStream('0x1A2B73207C883Ce8E51653d6A9cC8a022740cCA4', 100);
 
     // deploy AntePoolFactory
@@ -60,10 +60,7 @@ describe('AnteLlamaPayTestChallengerWrapper', function () {
     await poolFactory.deployed();
 
     // deploy AnteLlamaPayTest
-    const factory = (await hre.ethers.getContractFactory(
-      'FallibleAnteLlamaPayTest',
-      deployer
-    )) as FallibleAnteLlamaPayTest__factory;
+    const factory = (await hre.ethers.getContractFactory('AnteLlamaPayTest', deployer)) as AnteLlamaPayTest__factory;
     test = await factory.deploy(llamaPayFactoryAddr);
     await test.deployed();
 
@@ -115,25 +112,19 @@ describe('AnteLlamaPayTestChallengerWrapper', function () {
     for (let i = 0; i < 12; i++) {
       await hre.network.provider.send('evm_mine');
     }
-    await wrapper.setParamsAndCheckTest(
-      '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-      '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
-    );
+    await wrapper.setParamsAndCheckTest('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', deployer.address);
     expect(await test.tokenAddress()).to.equal('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48');
-    expect(await test.payerAddress()).to.equal('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48');
+    expect(await test.payerAddress()).to.equal(deployer.address);
     expect(await pool.numTimesVerified()).to.equal(1);
   });
 
   // is able to trigger test failure
   it('can trigger test failure from wrapper', async () => {
     // fail llamapay test
-    await test.toggleFailure();
+    await llama.makeFail();
 
     // check test (should fail)
-    await wrapper.setParamsAndCheckTest(
-      '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-      '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
-    );
+    await wrapper.setParamsAndCheckTest('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', deployer.address);
     expect(await pool.pendingFailure()).to.be.true;
   });
 
