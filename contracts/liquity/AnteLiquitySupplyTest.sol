@@ -25,6 +25,7 @@ contract AnteLiquitySupplyTest is AnteTest("Ensure total supply of LUSD doesn't 
         testedContracts = [activePool, lusd];
     }
 
+    /// @return true if the TVL is > totalSUpply * 1.1
     function checkTestPasses() public view override returns (bool) {
         uint256 balance = activePool.balance;
         uint256 totalSupply = lusdToken.totalSupply();
