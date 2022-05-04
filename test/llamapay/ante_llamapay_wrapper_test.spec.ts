@@ -98,6 +98,11 @@ describe('AnteLlamaPayTestChallengerWrapper', function () {
     expect(await pool.getStoredBalance(wrapper.address, true)).to.equal(HALF_ETH.sub(ONE_BLOCK_DECAY));
   });
 
+  // test wrapper is not able to remove more challenge than exists
+  it('cannot remove more challenge than challenged from LlamaPay test through wrapper', async () => {
+    await expect(wrapper.withdrawChallenge(ONE_ETH)).to.be.reverted;
+  });
+
   // test wrapper is able to remove entire challenge
   it('can remove all challenge from LlamaPay test through wrapper', async () => {
     await wrapper.withdrawChallengeAll();

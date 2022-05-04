@@ -22,7 +22,7 @@
 pragma solidity ^0.7.0;
 
 import "@openzeppelin-contracts-old/contracts/access/Ownable.sol";
-import "../interfaces/IAntePool.sol";
+import "../libraries/ante-v05-core/interfaces/IAntePool.sol";
 
 interface IAnteLlamaPayTest {
     function setTokenAddress(address _tokenAddress) external;
@@ -59,7 +59,7 @@ contract AnteLlamaPayTestChallengerWrapper is Ownable {
     }
 
     /// @notice Withdraws `amount` challenge from Ante Pool
-    /// @param amount Amount to withdraw from the Ante Pool in wei
+    /// @param  amount Amount to withdraw from the Ante Pool in wei
     function withdrawChallenge(uint256 amount) external onlyOwner {
         pool.unstake(amount, true);
         msg.sender.transfer(address(this).balance);
@@ -74,9 +74,9 @@ contract AnteLlamaPayTestChallengerWrapper is Ownable {
     /// @notice Sets the appropriate setter functions in the Ante Test then
     ///         calls the checkTest function on the Ante Pool. This prevents
     ///         frontrunning of the Ante LlamaPay Test.
-    /// @param _tokenAddress address of token to check LlamaPay instance for.
-    ///        If 0x0 is set, the Ante Test will check all LlamaPay instances
-    /// @param _payerAddress address of payer to check
+    /// @param  _tokenAddress address of token to check LlamaPay instance for.
+    ///         If 0x0 is set, the Ante Test will check all LlamaPay instances
+    /// @param  _payerAddress address of payer to check
     function setParamsAndCheckTest(address _tokenAddress, address _payerAddress) external onlyOwner {
         // set token and payer addresses
         test.setTokenAddress(_tokenAddress);

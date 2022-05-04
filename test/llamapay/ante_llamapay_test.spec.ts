@@ -50,9 +50,8 @@ describe('AnteLlamaPayTest', function () {
     await expect(test.setTokenAddress('0x1A2B73207C883Ce8E51653d6A9cC8a022740cCA4')).to.be.reverted;
   });
 
-  it('should allow setting 0x0 as token address', async () => {
-    await test.setTokenAddress('0x0000000000000000000000000000000000000000');
-    expect(await test.tokenAddress()).to.be.equal('0x0000000000000000000000000000000000000000');
+  it('should not allow setting 0x0 as token address', async () => {
+    await expect(test.setTokenAddress('0x0000000000000000000000000000000000000000')).to.be.reverted;
   });
 
   it('should still pass if invalid payer address passed', async () => {
