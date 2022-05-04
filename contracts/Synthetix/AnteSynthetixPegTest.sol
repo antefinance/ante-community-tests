@@ -28,9 +28,10 @@ contract AnteSynthetixPegTest is AnteTest("Synthetix Tokens Stay Pegged Within 3
 
     /// @return true if the peg is within 3%
     function checkTestPasses() public view override returns (bool) {
-        uint256 susd = oneInch.getRate(ADDRESS_SUSD, ADDRESS_USDC, false) / 10e4;
-        uint256 seth = oneInch.getRate(ADDRESS_SETH, ADDRESS_WETH, false) / 10e16;
+        // Last two zeroes.
+        uint256 susd = oneInch.getRate(ADDRESS_SUSD, ADDRESS_USDC, false) / 10e3;
+        uint256 seth = oneInch.getRate(ADDRESS_SETH, ADDRESS_WETH, false) / 10e15;
 
-        return (susd < 13 && susd > 7) && (seth < 13 && seth > 7);
+        return (susd < 103 && susd > 97) && (seth < 103 && seth > 97);
     }
 }
