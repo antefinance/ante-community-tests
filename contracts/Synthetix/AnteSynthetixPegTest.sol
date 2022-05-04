@@ -9,7 +9,8 @@ interface IAggregatorInterface {
 }
 
 /// @title AnteSynthetixPegTest
-/// @notice Ensure that Syntthetix Tokens are Pegged to their correspoding token within 3%
+/// @notice Uses Synthetix' most common synths (sUSDC, sETH) and ensure that they are pegged to
+/// the reserve currencies (USDC, ETH) within 3%
 contract AnteSynthetixPegTest is AnteTest("Synthetix Tokens Stay Pegged Within 3%") {
 
     // https://docs.synthetix.io/addresses/
