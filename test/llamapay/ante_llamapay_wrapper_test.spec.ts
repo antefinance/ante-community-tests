@@ -135,6 +135,7 @@ describe('AnteLlamaPayTestChallengerWrapper', function () {
 
   // if test fails, test wrapper is able to claim funds
   it('can claim funds from failed LlamaPay test through wrapper', async () => {
+    expect(await pool.pendingFailure()).to.be.true;
     const prevBalance = await deployer.getBalance();
     const payout = await pool.getChallengerPayout(wrapper.address);
 

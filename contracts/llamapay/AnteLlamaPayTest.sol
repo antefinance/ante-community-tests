@@ -14,12 +14,13 @@
 // https://.etherscan.io/address/[CONTRACT_ADDRESS]#readContract to check values
 // https://.etherscan.io/address/[CONTRACT_ADDRESS]#writeContract to set values
 
-// NOTE: As of May 2022, a challenger attempting to check the test can
-// potentially be front-run. In order to avoid being front-run,
-// deploy an instance of the AnteLlamaPayTestChallengerWrapper.sol contract
-// using the wallet you intend to challenge/check test with and use that to challenge
+// NOTE: As of May 2022, a challenger attempting to check this test via web app
+// or interacting with the AntePool directly can potentially be front-run. In
+// order to avoid being front-run, a potential challenger should deploy an
+// instance of the AnteLlamaPayTestChallengerWrapper.sol contract and use that
+// to challenge the Ante Pool. Staking functions can be done normally through
+// the web app or directly interacting with the AntePool contract.
 // https://github.com/antefinance/ante-community-tests/blob/main/contracts/llamapay/AnteLlamaPayTestChallengerWrapper.sol
-// staking functions can be done normally through the AntePool contract or via web app UI
 
 pragma solidity ^0.7.0;
 
