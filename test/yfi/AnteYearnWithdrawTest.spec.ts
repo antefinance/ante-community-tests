@@ -1,9 +1,9 @@
 import hre from 'hardhat';
 const { waffle, ethers } = hre;
 
-import { AnteYearnWithdrawTest, AnteYearnWithdrawTest__factory, InterfaceYearnVault } from '../../typechain';
+import { AnteYearnWithdrawTest, AnteYearnWithdrawTest__factory, BasicERC20, InterfaceYearnVault } from '../../typechain';
 
-import { evmSnapshot, evmRevert, evmMineBlocks } from '../helpers';
+import { evmSnapshot, evmRevert, evmMineBlocks, evmIncreaseTime } from '../helpers';
 import { expect } from 'chai';
 import { BigNumber } from 'ethers';
 
@@ -26,11 +26,14 @@ describe('AnteYearnWithdrawTest', function () {
   const yUSDC_VAULT = "0x5f18c75abdae578b483e5f43f12a39cf75b973a9";
 
   let yVault: InterfaceYearnVault;
+  let USDC_CONTRACT: BasicERC20;
 
   before(async () => {
     globalSnapshotId = await evmSnapshot();
     const factory = (await hre.ethers.getContractFactory('AnteYearnWithdrawTest', deployer)) as AnteYearnWithdrawTest__factory;
     yVault = await hre.ethers.getContractAt('InterfaceYearnVault', yUSDC_VAULT, deployer);
+    USDC_CONTRACT = await hre.ethers.getContractAt('BasicERC20', USDC_ADDRESS, deployer);
+
     
     test = await factory.deploy(yUSDC_VAULT, USDC_ADDRESS);
     await test.deployed();
@@ -66,8 +69,13 @@ describe('AnteYearnWithdrawTest', function () {
   });
 
   it('should pass', async () => {
+
     await test.withdraw();
+    await evmIncreaseTime(960); // 16 minutes
     await evmMineBlocks(1);
+
+    // Possibility of earning rewards. So as long as it's 100k or greater, the withdraw was successful
+    expect(await USDC_CONTRACT.balanceOf(test.address)).to.be.gt('99999');
     
     expect(await test.checkTestPasses()).to.be.true;
   });
