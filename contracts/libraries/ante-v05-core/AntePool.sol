@@ -11,8 +11,8 @@
 
 pragma solidity ^0.7.0;
 
-import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/utils/Address.sol";
+import "@openzeppelin-contracts-old/contracts/math/SafeMath.sol";
+import "@openzeppelin-contracts-old/contracts/utils/Address.sol";
 
 import "./interfaces/IAnteTest.sol";
 import "./libraries/IterableSet.sol";
