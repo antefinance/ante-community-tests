@@ -13,7 +13,7 @@ import "../interfaces/IERC20.sol";
 /// Based on three time points; today, 6 months ago, and 1 year ago, the highest variation was
 /// 20%. Based on this, the threshold will be a 25% difference.
 /// Eg (100, 120, 60) will pass and (100, 150, 60) will fail
-contract AnteThreePoolBalanceTest is AnteTest("Ensure that curve keeps a TVL of > 10%") {
+contract AnteCurveUSDThreePoolBalanceTest is AnteTest("Ensure Curve USD 3pool stays balanced within 25%") {
 
     address private constant CURVE_THREE_POOL_ADDRESS = 0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7;
     address private constant USDC_ADDRESS = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
