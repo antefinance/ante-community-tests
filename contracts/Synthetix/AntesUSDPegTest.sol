@@ -8,7 +8,7 @@ import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 /// @title Synthetix USD Peg Test
 /// @notice Ensures SUSD is pegged to USD +/- 2%
-contract AnteSUSDPegTest is AnteTest("SUSD is pegged to USD") {
+contract AnteSUSDPegTest is AnteTest("SUSD is pegged to USD +- 2%") {
     AggregatorV3Interface internal priceFeed;
 
     int256 private preCheckPrice = 0;
@@ -30,7 +30,7 @@ contract AnteSUSDPegTest is AnteTest("SUSD is pegged to USD") {
         preCheckBlock = block.number;
     }
 
-    /// @return true if the test will work properly (ie preCheck() was called 300-400 block prior)
+    /// @return true if the test will work properly (ie preCheck() was called 300 block prior)
     function willTestWork() public view returns(bool) {
         if (preCheckPrice == 0 || preCheckBlock == 0) return false;
         if (block.number - preCheckBlock < 300) return false;
@@ -38,12 +38,11 @@ contract AnteSUSDPegTest is AnteTest("SUSD is pegged to USD") {
         return true;
     }
 
-    /// @notice Must call preCheck() 300-400 blocks prior to calling
+    /// @notice Must call preCheck() 300 blocks prior to calling
     /// @return true the SUSD is pegged to USD +/- 2%
     function checkTestPasses() public view override returns (bool) {
         if (preCheckPrice == 0 || preCheckBlock == 0) return true;
-
-        if ( !( 400 >= block.number - preCheckBlock && 300 <= block.number - preCheckBlock) ) return true;
+        if (block.number - preCheckBlock < 300) return true;
 
         (, int256 price, , , ) = priceFeed.latestRoundData();
         return (98000000 < price && price < 102000000) || (98000000 < preCheckPrice && preCheckPrice < 102000000);
