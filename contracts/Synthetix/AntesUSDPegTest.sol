@@ -17,7 +17,7 @@ contract AnteSUSDPegTest is AnteTest("SUSD is pegged to USD") {
     constructor() {
         protocolName = "Synthetix";
         testedContracts = [0x6B175474E89094C44Da98b954EedeAC495271d0F];
-        priceFeed = AggregatorV3Interface(0x283D433435cFCAbf00263beEF6A362b7cc5ed9f2);
+        priceFeed = AggregatorV3Interface(0xad35Bd71b9aFE6e4bDc266B345c198eaDEf9Ad94);
     }
 
     /// @notice Must be called 300-400 blocks (1hr) blocks before calling checkTestPasses to prevent flash loan attacks
@@ -45,6 +45,6 @@ contract AnteSUSDPegTest is AnteTest("SUSD is pegged to USD") {
         if ( !( 400 >= block.number - preCheckBlock && 300 <= block.number - preCheckBlock) ) return true;
 
         (, int256 price, , , ) = priceFeed.latestRoundData();
-        return (98000000 < price && price < 102000000) && (98000000 < preCheckPrice && preCheckPrice < 102000000);
+        return (98000000 < price && price < 102000000) || (98000000 < preCheckPrice && preCheckPrice < 102000000);
     }
 }
