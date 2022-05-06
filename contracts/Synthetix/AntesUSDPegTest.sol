@@ -33,7 +33,8 @@ contract AnteSUSDPegTest is AnteTest("SUSD is pegged to USD") {
     /// @return true if the test will work properly (ie preCheck() was called 300-400 block prior)
     function willTestWork() public view returns(bool) {
         if (preCheckPrice == 0 || preCheckBlock == 0) return false;
-        if ( !( 400 >= block.number - preCheckBlock && 300 <= block.number - preCheckBlock) ) return false;
+        if (block.number - preCheckBlock < 300) return false;
+
         return true;
     }
 
