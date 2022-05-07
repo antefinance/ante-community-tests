@@ -3,7 +3,7 @@ const { waffle } = hre;
 
 import { AntecvxCRVPegTest, AntecvxCRVPegTest__factory } from '../../typechain';
 
-import { evmSnapshot, evmRevert } from '../helpers';
+import { evmSnapshot, evmRevert, evmMineBlocks } from '../helpers';
 import { expect } from 'chai';
 
 describe('AntecvxCRVPegTest', function () {
@@ -36,6 +36,7 @@ describe('AntecvxCRVPegTest', function () {
   });
 
   it('should pass', async () => {
+    await evmMineBlocks(41);
     expect(await test.checkTestPasses()).to.be.true;
   });
 });
