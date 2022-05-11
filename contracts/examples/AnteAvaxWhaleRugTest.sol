@@ -13,9 +13,9 @@ pragma solidity ^0.8.0;
 
 import {AnteTest} from "../AnteTest.sol";
 
-/// @title Avalanche Whale address doesn't rug test
-/// @notice Ante Test to check if Avalanche whale "rugs" 90% of its AVAX as of deployment
-contract AnteAvaxWhaleRugTest is AnteTest("Avalanche Whale Doesnt Rug 90% of its AVAX") {
+/// @title Avalanche wallet address 0xd497...e49c doesn't rug test
+/// @notice Ante Test to check if Avalanche wallet "rugs" 90% of its AVAX as of deployment
+contract AnteAvaxWhaleRugTest is AnteTest("Avalanche Address 0xd497...e49c Doesnt Rug 90% of its AVAX") {
     // https://snowtrace.io/address/0x0d4975357baf74b76b8de887306afd9b8416e49c
     address public immutable avaxWhaleAddr;
 
