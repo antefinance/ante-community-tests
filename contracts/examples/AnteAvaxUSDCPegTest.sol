@@ -28,6 +28,6 @@ contract AnteAvaxUSDCPegTest is AnteTest("USDC is above 90 cents on the dollar")
 
     function checkTestPasses() public view override returns (bool) {
         (, int256 price, , , ) = priceFeed.latestRoundData();
-        return (((int256(uint256(10**priceFeed.decimals()))) * 9) / 10 < price);
+        return ((10**(int256(uint256(priceFeed.decimals()))) * 9) / 10 < price);
     }
 }
