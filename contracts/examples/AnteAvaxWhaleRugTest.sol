@@ -21,7 +21,7 @@ contract AnteAvaxWhaleRugTest is AnteTest("Avalanche Whale Doesnt Rug 90% of its
 
     uint256 public immutable avaxBalanceAtDeploy;
 
-    /// @param _avaxWhaleAddr address (0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae on avalanche c-chain)
+    /// @param _avaxWhaleAddr address (0x0d4975357baf74b76b8de887306afd9b8416e49c on avalanche c-chain)
     constructor(address _avaxWhaleAddr) {
         protocolName = "AVAX";
         testedContracts = [_avaxWhaleAddr];
