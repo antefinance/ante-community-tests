@@ -36,7 +36,7 @@ interface IAnteLlamaPayTest {
 ///         test. This works by allowing the user to set test parameters and
 ///         verify the test in the same transaction.
 contract AnteLlamaPayTestChallengerWrapper is Ownable {
-    // https://etherscan.io/address/[LLAMAPAY_ANTE_TEST_ADDRESS]
+    // https://etherscan.io/address/0x62ca84def073e6788b4f68e387617e50c8d36ebf
     IAnteLlamaPayTest public immutable test;
 
     // https://etherscan.io/address/[LLAMAPAY_ANTE_POOL_ADDRESS]
