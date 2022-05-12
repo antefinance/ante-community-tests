@@ -3,7 +3,7 @@ const { waffle } = hre;
 
 import { AnteUniswapGetReservesTest, AnteUniswapGetReservesTest__factory } from '../../typechain';
 
-import { evmSnapshot, evmRevert } from '../helpers';
+import { evmSnapshot, evmRevert, evmMineBlocks } from '../helpers';
 import { expect } from 'chai';
 
 describe('AnteUniswapGetReservesTest', function () {
@@ -38,6 +38,7 @@ describe('AnteUniswapGetReservesTest', function () {
 
   it('should pass', async () => {
     await test.preCall();
+    await evmMineBlocks(11);
     expect(await test.checkTestPasses()).to.be.true;
   });
 });
