@@ -25,15 +25,15 @@ describe('AnteUniswapGetReservesTest', function () {
   });
 
   it('should return proper difference', async () => {
-    expect(await test.calculatePercentage('16585796244854', '116598880842818', '100010033', '6', '6')).to.eq('14');
+    expect(await test.calculatePercentage('16585796244854', '116598880842818', '100010033')).to.eq('14');
   });
 
   it('should return proper difference', async () => {
-    expect(await test.calculatePercentage('2', '4', '200000000', '6', '6')).to.eq('100');
+    expect(await test.calculatePercentage('2', '4', '200000000')).to.eq('100');
   });
 
   it('should return proper difference', async () => {
-    expect(await test.calculatePercentage('2', '4', '100000000', '6', '6')).to.eq('50');
+    expect(await test.calculatePercentage('2', '4', '100000000')).to.eq('50');
   });
 
   it('should pass', async () => {
