@@ -78,7 +78,7 @@ contract AnteUniswapGetReservesTest is AnteTest("Ensure that getReserves returns
         int256 reserveRatio = int256(unsignedRatio);
 
         price = price * 100;
-        price = price / 10e7; // Chainlink uses 8 decimals  
+        price = price / 1e8; // Chainlink uses 8 decimals  
 
         return (price * 100) / reserveRatio;
     }
