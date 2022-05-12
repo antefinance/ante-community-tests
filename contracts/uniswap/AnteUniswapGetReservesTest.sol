@@ -51,7 +51,7 @@ contract AnteUniswapGetReservesTest is AnteTest("Ensure that getReserves returns
 
         // Need to make sure that the preCheck() function was called before this function
         // If not, then the test reverts to true.
-        if (block.number == 0 || block.number - lastCheckBlock > 50 || block.number - lastCheckBlock < 1 || lastCheckPercentage == 0) {
+        if (block.number == 0 || block.number - lastCheckBlock < 10 || lastCheckPercentage == 0) {
             return true;
         }
 
