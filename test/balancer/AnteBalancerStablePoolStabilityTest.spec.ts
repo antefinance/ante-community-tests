@@ -45,7 +45,6 @@ describe('AnteBalancerStablePoolStabilityTest', function () {
   
   
   it('should pass', async () => {
-    console.log((await test.ratioValid('100', '33', '3')).toString());
     expect(await test.checkTestPasses()).to.be.true;
   });
 });

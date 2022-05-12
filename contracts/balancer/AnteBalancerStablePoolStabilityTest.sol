@@ -86,7 +86,7 @@ contract AnteBalancerStablePoolStabilityTest is AnteTest("Balancer stable pool r
         // Challenger will have to call the reorder() function
         for (uint8 i = 0; i < _tokens.length; i++) {
             if(tokenAddresses[i] != _tokens[i]) {
-                return true;
+                revert("ERROR: Please call reorder() function");
             }
         }
 
