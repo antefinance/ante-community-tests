@@ -12,7 +12,7 @@ interface IOneInchOracle {
 /// @title Curve Pool CRV x cvxCRV Reserve Balance Test
 /// @notice Ensures that the balance of each asset is no greater than 30% the other's
 /// and the reserve difference is according the the price difference
-contract AnteConvexCRVPoolBalanceTest is AnteTest("Curve stETH Keeps 99% of it's ETH.") {
+contract AnteConvexCRVPoolBalanceTest is AnteTest("cvxCRV/CRV Pool Remains Balanced") {
     // https://curve.fi/factory/22
     address constant private CURVE_POOL = 0x9D0464996170c6B9e75eED71c68B99dDEDf279e8;
 
