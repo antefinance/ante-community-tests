@@ -11,7 +11,7 @@ interface IOneInchOracle {
 /// @title Convex Curve Peg Test
 /// @notice The 1inch Oracle is unable to accurately price the two currencies to each other
 /// to get around this, we use the ETH exchange rate and compare the two.
-contract AntecvxCRVPegTest is AnteTest("Curve stETH Keeps 99% of it's ETH.") {
+contract AntecvxCRVPegTest is AnteTest("Ensure that cvxCRV and CRV maintain peg +/- 5%") {
     IOneInchOracle private oneInchOracle = IOneInchOracle(0x07D91f5fb9Bf7798734C3f606dB065549F6893bb);
 
     address private constant WETH_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
