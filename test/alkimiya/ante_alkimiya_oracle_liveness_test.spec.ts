@@ -3,7 +3,7 @@ const { waffle } = hre;
 
 import { AnteAlkimiyaV1EthOracleLivenessTest, AnteAlkimiyaV1EthOracleLivenessTest__factory } from '../../typechain';
 
-import { evmSnapshot, evmRevert, evmIncreaseTime } from '../helpers';
+import { evmSnapshot, evmRevert, evmIncreaseTime, evmMineBlocks } from '../helpers';
 import { expect } from 'chai';
 
 describe.only('AnteAlkimiyaV1EthOracleLivenessTest', function () {
@@ -32,8 +32,9 @@ describe.only('AnteAlkimiyaV1EthOracleLivenessTest', function () {
   });
 
   it('if advance 72 hrs, test should fail', async () => {
-    // advance time 72 hrs
+    // advance time 72 hrs and 1 block
     await evmIncreaseTime(259200);
-    await expect(test.checkTestPasses()).to.be.false;
+    await evmMineBlocks(1);
+    expect(await test.checkTestPasses()).to.be.false;
   });
 });
