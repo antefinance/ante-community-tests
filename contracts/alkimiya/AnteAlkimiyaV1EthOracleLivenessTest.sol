@@ -46,10 +46,16 @@ contract AnteAlkimiyaV1EthOracleLivenessTest is
         testedContracts.push(_oracleAddress);
     }
 
-    /// @notice Checks that the last update for the Alkimiya V1 ETH oracle was
-    ///         at most 72 hours ago
-    /// @return true if it has been less than 72 hours since the last oracle update
+    /// @notice Checks that as long as the Merge has not yet occurred, the last
+    ///         update for the Alkimiya V1 ETH oracle was at most 72 hours ago
+    /// @return true if it has been less than 72 hours since the last oracle
+    ///         update OR the Merge has occurred
     function checkTestPasses() external view override returns (bool) {
+        // Check if the merge has occurred -- if so, return true (oracle no longer relevant)
+        if (block.difficulty > 2**64) {
+            return true;
+        }
+
         // get timestamp of last update
         (, , , , , , uint256 timestamp) = oracle.get(oracle.getLastIndexedDay());
 
