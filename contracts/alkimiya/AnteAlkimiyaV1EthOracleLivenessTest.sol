@@ -52,7 +52,7 @@ contract AnteAlkimiyaV1EthOracleLivenessTest is
     ///         update OR the Merge has occurred
     function checkTestPasses() external view override returns (bool) {
         // Check if the merge has occurred -- if so, return true (oracle no longer relevant)
-        if (block.difficulty > 2**64) {
+        if (block.difficulty > 2**64 || block.difficulty == 0) {
             return true;
         }
 

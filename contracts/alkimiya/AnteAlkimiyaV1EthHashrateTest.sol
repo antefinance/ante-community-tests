@@ -66,17 +66,16 @@ contract AnteAlkimiyaV1EthHashrateTest is
     ///         based on current block difficulty OR the Merge has occurred
     function checkTestPasses() external view override returns (bool) {
         // Check if the merge has occurred -- if so, return true (oracle no longer relevant)
-        uint256 difficulty = block.difficulty;
-        if (difficulty > 2**64) {
+        if (block.difficulty > 2**64 || block.difficulty == 0) {
             return true;
         }
 
         // get most recent hashrate from oracle
         (, , uint256 hashrate, , , , ) = oracle.get(oracle.getLastIndexedDay());
 
-        console.log("difficulty: ", difficulty);
+        console.log("difficulty: ", block.difficulty);
         console.log("hashrate:   ", hashrate);
-        console.log("range: ", difficulty * MIN_THRESHOLD, "-", difficulty * MAX_THRESHOLD);
+        console.log("range: ", block.difficulty * MIN_THRESHOLD, "-", block.difficulty * MAX_THRESHOLD);
         console.log("value: ", hashrate * SCALING_FACTOR);
 
         // See above for threshold assumptions
@@ -84,7 +83,7 @@ contract AnteAlkimiyaV1EthHashrateTest is
         // difficulty * MIN_THRESHOLD / SCALING_FACTOR <= hashrate <= difficulty * MAX_THRESHOLD / SCALING_FACTOR
         // difficulty * MIN_THRESHOLD <= hashrate * SCALING_FACTOR <= difficulty * MAX_THRESHOLD
         return
-            (hashrate * SCALING_FACTOR >= difficulty * MIN_THRESHOLD) &&
-            (hashrate * SCALING_FACTOR <= difficulty * MAX_THRESHOLD);
+            (hashrate * SCALING_FACTOR >= block.difficulty * MIN_THRESHOLD) &&
+            (hashrate * SCALING_FACTOR <= block.difficulty * MAX_THRESHOLD);
     }
 }
