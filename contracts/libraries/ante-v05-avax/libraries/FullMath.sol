@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity >=0.7.0;
+pragma solidity ^0.7.0;
 
 // taken with <3 from https://github.com/Uniswap/uniswap-v3-core/blob/main/contracts/libraries/FullMath.sol
 // under the MIT license
