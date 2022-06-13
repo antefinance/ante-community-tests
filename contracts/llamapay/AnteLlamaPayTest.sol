@@ -20,7 +20,7 @@
 // instance of the AnteLlamaPayTestChallengerWrapper.sol contract and use that
 // to challenge the Ante Pool. Staking functions can be done normally through
 // the web app or directly interacting with the AntePool contract.
-// https://github.com/antefinance/ante-community-tests/blob/main/contracts/llamapay/AnteLlamaPayTestChallengerWrapper.sol
+// https://github.com/antefinance/ante-community-tests/blob/main/contracts/llamapay/
 
 pragma solidity ^0.7.0;
 
