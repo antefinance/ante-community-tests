@@ -14,7 +14,7 @@ If you are staking the LlamaPay Ante Test, you can interact with the pool the sa
 
 **Challenging**
 
-1. Deploy the [**AnteLlamaPayTestChallengerWrapper**](https://github.com/antefinance/ante-community-tests/blob/main/contracts/llamapay/AnteLlamaPayTestChallengerWrapper.sol) contract with the LlamaPay Ante Test and Ante Pool addresses as arguments; currently:
+1. Deploy the [**AnteLlamaPayTestChallengerWrapper**](https://github.com/antefinance/ante-community-tests/blob/main/contracts/llamapay/AnteLlamaPayTestChallengerWrapper.sol) or [**AnteLlamaPayTestChallengerWrapperAvax**](https://github.com/antefinance/ante-community-tests/blob/main/contracts/llamapay/AnteLlamaPayTestChallengerWrapperAvax.sol) contract depending on the chain with the corresponding LlamaPay Ante Test and Ante Pool addresses as arguments; currently:
 
 | **Network**       | **Ante Test** | **Ante Pool** |
 |:------------------|:--------------|:--------------|
