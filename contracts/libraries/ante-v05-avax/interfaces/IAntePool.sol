@@ -41,12 +41,12 @@ interface IAntePool {
     /// @param amount Amount being claimed in wei
     event ClaimPaid(address indexed claimer, uint256 amount);
 
-    /// @notice Emitted when a staker has withdrawn their stake after the 24 hour wait period
+    /// @notice Emitted when a staker has withdrawn their stake after the 24-hour wait period
     /// @param staker The address of the staker removing their stake
     /// @param amount Amount withdrawn in wei
     event WithdrawStake(address indexed staker, uint256 amount);
 
-    /// @notice Emitted when a staker cancels their withdraw action before the 24 hour wait period
+    /// @notice Emitted when a staker cancels their withdraw action before the 24-hour wait period
     /// @param staker The address of the staker cancelling their withdraw
     /// @param amount Amount cancelled in wei
     event CancelWithdraw(address indexed staker, uint256 amount);
@@ -63,9 +63,9 @@ interface IAntePool {
     /// the invariant validation currently passes
     function initialize(IAnteTest _anteTest) external;
 
-    /// @notice Cancels a withdraw action of a staker before the 24 hour wait period expires
+    /// @notice Cancels a withdraw action of a staker before the 24-hour wait period expires
     /// @dev This is called when a staker has initiated a withdraw stake action but
-    /// then decides to cancel that withdraw before the 24 hour wait period is over
+    /// then decides to cancel that withdraw before the 24-hour wait period is over
     function cancelPendingWithdraw() external;
 
     /// @notice Runs the verification of the invariant of the connected Ante Test
@@ -81,13 +81,21 @@ interface IAntePool {
     /// @param isChallenger Flag for if this is a challenger
     function stake(bool isChallenger) external payable;
 
-    /// @notice Removes a user's stake or challenge from the staker or challenger pool
+    /// @notice For challengers, removes a user's challenge from the challenger pool
+    /// immediately. For stakers, initiates the withdraw process, moving the stake
+    /// into pending withdrawals and starting a 24-hour waiting period.
     /// @param amount Amount being removed in wei
     /// @param isChallenger Flag for if this is a challenger
+    /// @dev During the 24-hour waiting period for stakers, the value is locked to prevent
+    /// users from removing their stake when a challenger is going to verify test
     function unstake(uint256 amount, bool isChallenger) external;
 
-    /// @notice Removes all of a user's stake or challenge from the respective pool
+    /// @notice For challengers, removes all of a user's challenge from the challenger pool
+    /// immediately. For stakers, initiates the withdraw process for their entire stake,
+    /// moving the stake into pending withdrawals and starting a 24-hour waiting period.
     /// @param isChallenger Flag for if this is a challenger
+    /// @dev During the 24-hour waiting period for stakers, the value is locked to prevent
+    /// users from removing their stake when a challenger is going to verify test
     function unstakeAll(bool isChallenger) external;
 
     /// @notice Updates the decay multipliers and amounts for the total staked and challenged pools
@@ -95,9 +103,8 @@ interface IAntePool {
     /// decay amounts and pools accurate
     function updateDecay() external;
 
-    /// @notice Initiates the withdraw process for a staker, starting the 24 hour waiting period
-    /// @dev During the 24 hour waiting period, the value is locked to prevent
-    /// users from removing their stake when a challenger is going to verify test
+    /// @notice Withdraws a user's stake from the staker pool after the 24-hour waiting period has elapsed
+    /// @dev Will revert if the user attempts to withdraw stake within 24 hours of initiating withdrawal.
     function withdrawStake() external;
 
     /// @notice Returns the Ante Test connected to this Ante Pool
