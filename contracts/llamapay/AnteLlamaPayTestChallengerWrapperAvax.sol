@@ -9,7 +9,7 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-// For usage with AnteLlamaPayTest on Ethereum to allow challenging the test
+// For usage with AnteLlamaPayTest on Avalanche to allow challenging the test
 // without being vulnerable to frontrunning.
 
 /*****************************************************
@@ -22,7 +22,7 @@
 pragma solidity ^0.7.0;
 
 import "@openzeppelin-contracts-old/contracts/access/Ownable.sol";
-import "../libraries/ante-v05-core/interfaces/IAntePool.sol";
+import "../libraries/ante-v05-avax/interfaces/IAntePool.sol";
 
 interface IAnteLlamaPayTest {
     function setTokenAddress(address _tokenAddress) external;

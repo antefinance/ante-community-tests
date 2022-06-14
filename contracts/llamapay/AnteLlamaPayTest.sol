@@ -20,7 +20,7 @@
 // instance of the AnteLlamaPayTestChallengerWrapper.sol contract and use that
 // to challenge the Ante Pool. Staking functions can be done normally through
 // the web app or directly interacting with the AntePool contract.
-// https://github.com/antefinance/ante-community-tests/blob/main/contracts/llamapay/AnteLlamaPayTestChallengerWrapper.sol
+// https://github.com/antefinance/ante-community-tests/blob/main/contracts/llamapay/
 
 pragma solidity ^0.7.0;
 
@@ -43,6 +43,8 @@ contract AnteLlamaPayTest is
     AnteTest("LlamaPay never pays future payments early (lastPayerUpdate[anyone] <= block.timestamp)")
 {
     // https://etherscan.io/address/0xde1C04855c2828431ba637675B6929A684f84C7F on Eth Mainnet
+    // https://snowtrace.io/address/0x7d507b4c2d7e54da5731f643506996da8525f4a3 on Avax C-Chain
+    // https://docs.llamapay.io/technical-stuff/contracts for more chains
     ILlamaPayFactory internal factory;
 
     address public tokenAddress;
