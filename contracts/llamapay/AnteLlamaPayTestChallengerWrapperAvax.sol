@@ -36,10 +36,10 @@ interface IAnteLlamaPayTest {
 ///         test. This works by allowing the user to set test parameters and
 ///         verify the test in the same transaction.
 contract AnteLlamaPayTestChallengerWrapper is Ownable {
-    // https://etherscan.io/address/0x4c008a686899F9a745C394A8C42d4a4Cb89F23A5
+    // https://snowtrace.io/address/0x4c008a686899F9a745C394A8C42d4a4Cb89F23A5
     IAnteLlamaPayTest public immutable test;
 
-    // https://etherscan.io/address/0x99eDEcfE4FE9c2d760b30E782eA0E6C87Bd2F3ac
+    // https://snowtrace.io/address/0x99eDEcfE4FE9c2d760b30E782eA0E6C87Bd2F3ac
     IAntePool public immutable pool;
 
     constructor(address _anteLlamaPayTestAddress, address _anteLlamaPayPoolAddress) {
