@@ -16,7 +16,7 @@ import "@openzeppelin-contracts-old/contracts/token/ERC20/IERC20.sol";
 
 /// @title Axie Ronin Bridge doesn't rug test on mainnet
 /// @notice Ante Test to check if Axie Ronin Bridge "rugs" 90% of its value (as of test deployment)
-contract AnteAxieRoninBridgeRugTest is AnteTest("Axie Ronin Bridge Doesnt Rug 90% of its Value") {
+contract AnteAxieRoninBridgeRugTest is AnteTest("Axie Ronin Bridge doesn't rug 90% of its value") {
     address public constant RONIN_BRIDGE = 0x1A2a1c938CE3eC39b6D47113c7955bAa9DD454F2;
 
     IERC20 private constant AXS = IERC20(0xBB0E17EF65F82Ab018d8EDd776e8DD940327B28b);
@@ -40,7 +40,7 @@ contract AnteAxieRoninBridgeRugTest is AnteTest("Axie Ronin Bridge Doesnt Rug 90
         usdcThreshold = (USDC.balanceOf(RONIN_BRIDGE) * THRESHOLD) / 100;
     }
 
-    /// @notice test to check value of ether + top 4 tokens on Ronin Bridge is not rugged
+    /// @notice test to check value of ether + top 3 tokens on Ronin Bridge is not rugged
     /// @return true if bridge has more than 10% of assets from when it was deployed
     function checkTestPasses() external view override returns (bool) {
         return
