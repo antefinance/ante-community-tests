@@ -5,7 +5,6 @@ pragma solidity ^0.8.0;
 import "../AnteTest.sol";
 import "../interfaces/IERC20.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorInterface.sol";
-import "hardhat/console.sol";
 
 // @title Chainlink data feed heartbeat is respected
 // @notice Ensure that Chainlink data feeds update according to declared heartbeats
