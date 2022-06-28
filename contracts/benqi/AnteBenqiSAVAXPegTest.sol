@@ -58,13 +58,9 @@ contract AnteBenqiSAVAXPegTest is AnteTest("sAVAX maintains peg +/- 5% to AVAX")
     }
 
     /// @notice Must be called after 20 blocks after preCheck()
-    /// @return true if the peg is within 4%
+    /// @return true if the peg is within 5%
     function checkTestPasses() external view override returns (bool) {
-        if (preCheckBlock == 0 || preCheckSlip == 0) {
-            return true;
-        }
-
-        if (block.number - preCheckBlock < 20) {
+        if (preCheckBlock == 0 || preCheckSlip == 0 || block.number - preCheckBlock < 20) {
             return true;
         }
 
@@ -76,11 +72,12 @@ contract AnteBenqiSAVAXPegTest is AnteTest("sAVAX maintains peg +/- 5% to AVAX")
 
         uint256 slip = savaxCalculatedPrice / savaxToUsdc;
 
-        // If each slippage test was within 10% of the preCheckSlip, then the test passes
-        if ((slip > 95 && slip < 105) || (preCheckSlip > 95 && preCheckSlip < 105)) {
-            return true;
-        }
+        // If each slippage test was within 5% of the preCheckSlip, then the test passes
+        return (slip > 95 && slip < 105) || (preCheckSlip > 95 && preCheckSlip < 105);
+    }
 
-        return false;
+    /// @return true if the test will work properly (e.g. preCheck() was called 20 blocks prior)
+    function willTestWork() public view returns (bool) {
+        return !(preCheckSlip == 0 || preCheckBlock == 0 || block.number - preCheckBlock < 20);
     }
 }
