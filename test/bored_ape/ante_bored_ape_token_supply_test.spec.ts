@@ -4,16 +4,19 @@ const { waffle } = hre;
 import { BoredApes, AnteBoredApeMaxSupplyTest, AnteBoredApeMaxSupplyTest__factory } from '../../typechain';
 
 import { evmSnapshot, evmRevert, runAsSigner, fundSigner } from '../helpers';
+
 import { expect } from 'chai';
 
 describe('AnteBoredApeMaxSupplyTest', function () {
   let test: AnteBoredApeMaxSupplyTest;
   let bayc: BoredApes;
+
   let globalSnapshotId: string;
 
   before(async () => {
     globalSnapshotId = await evmSnapshot();
     bayc = <BoredApes>await hre.ethers.getContractAt('BoredApes', '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D');
+
     const [deployer] = waffle.provider.getWallets();
     const factory = (await hre.ethers.getContractFactory(
       'AnteBoredApeMaxSupplyTest',

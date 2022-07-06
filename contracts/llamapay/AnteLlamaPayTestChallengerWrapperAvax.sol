@@ -9,7 +9,7 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-// For usage with AnteLlamaPayTest on Ethereum to allow challenging the test
+// For usage with AnteLlamaPayTest on Avalanche to allow challenging the test
 // without being vulnerable to frontrunning.
 
 /*****************************************************
@@ -22,7 +22,7 @@
 pragma solidity ^0.7.0;
 
 import "@openzeppelin-contracts-old/contracts/access/Ownable.sol";
-import "../libraries/ante-v05-core/interfaces/IAntePool.sol";
+import "../libraries/ante-v05-avax/interfaces/IAntePool.sol";
 
 interface IAnteLlamaPayTest {
     function setTokenAddress(address _tokenAddress) external;
@@ -36,10 +36,10 @@ interface IAnteLlamaPayTest {
 ///         test. This works by allowing the user to set test parameters and
 ///         verify the test in the same transaction.
 contract AnteLlamaPayTestChallengerWrapper is Ownable {
-    // https://etherscan.io/address/0x62ca84def073e6788b4f68e387617e50c8d36ebf
+    // https://snowtrace.io/address/0x4c008a686899F9a745C394A8C42d4a4Cb89F23A5
     IAnteLlamaPayTest public immutable test;
 
-    // https://etherscan.io/address/0x18fCb9704D596Ac3cf912F3Bd390579b8c22684F
+    // https://snowtrace.io/address/0x99eDEcfE4FE9c2d760b30E782eA0E6C87Bd2F3ac
     IAntePool public immutable pool;
 
     constructor(address _anteLlamaPayTestAddress, address _anteLlamaPayPoolAddress) {
