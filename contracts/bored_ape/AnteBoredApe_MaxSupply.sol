@@ -5,6 +5,8 @@ pragma solidity ^0.8.0;
 import "../AnteTest.sol";
 
 interface BoredApes {
+    function reserveApes() external;
+
     //TODO: silence linter (variable must be mixedCase)
     function MAX_APES() external view returns (uint256);
 
