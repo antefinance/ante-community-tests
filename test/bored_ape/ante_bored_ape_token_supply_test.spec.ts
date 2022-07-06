@@ -3,7 +3,7 @@ const { waffle } = hre;
 
 import { BoredApes, AnteBoredApeMaxSupplyTest, AnteBoredApeMaxSupplyTest__factory } from '../../typechain';
 
-import { evmSnapshot, evmRevert, runAsSigner } from '../helpers';
+import { evmSnapshot, evmRevert, runAsSigner, fundSigner } from '../helpers';
 import { expect } from 'chai';
 
 describe('AnteBoredApeMaxSupplyTest', function () {
@@ -13,12 +13,7 @@ describe('AnteBoredApeMaxSupplyTest', function () {
 
   before(async () => {
     globalSnapshotId = await evmSnapshot();
-    bayc = <BoredApes>(
-      await hre.ethers.getContractAt(
-        '@openzeppelin/contracts/token/ERC721/IERC721.sol:IERC721',
-        '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'
-      )
-    );
+    bayc = <BoredApes>await hre.ethers.getContractAt('BoredApes', '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D');
     const [deployer] = waffle.provider.getWallets();
     const factory = (await hre.ethers.getContractFactory(
       'AnteBoredApeMaxSupplyTest',
@@ -41,7 +36,7 @@ describe('AnteBoredApeMaxSupplyTest', function () {
 
     await runAsSigner(BAYC_DEPLOYER_ADDRESS, async () => {
       const yugaLabs = await hre.ethers.getSigner(BAYC_DEPLOYER_ADDRESS);
-
+      await fundSigner(BAYC_DEPLOYER_ADDRESS);
       // mint 30 new apes for yuga, bringing total above MAX
       await bayc.connect(yugaLabs).reserveApes();
     });
