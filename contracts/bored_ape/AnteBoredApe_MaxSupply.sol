@@ -29,6 +29,6 @@ contract AnteBoredApeMaxSupplyTest is AnteTest("Ensure that BAYC token supply is
 
     /// @return if the BAYC supply <= max tokens (10,000)
     function checkTestPasses() public view override returns (bool) {
-        return (BAYC_CONTRACT.totalSupply() < BAYC_CONTRACT.MAX_APES());
+        return (BAYC_CONTRACT.totalSupply() <= BAYC_CONTRACT.MAX_APES());
     }
 }
