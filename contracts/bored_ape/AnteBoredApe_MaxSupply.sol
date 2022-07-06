@@ -4,10 +4,9 @@ pragma solidity ^0.8.0;
 
 import "../AnteTest.sol";
 
-//TODO: can this extend IERC721Enumerable to inherit totalSupply() implicitly?
 interface BoredApes {
     //TODO: silence linter (variable must be mixedCase)
-    uint256 public MAX_APES;
+    function MAX_APES() external view returns (uint256);
 
     function totalSupply() external view returns (uint256);
 }
