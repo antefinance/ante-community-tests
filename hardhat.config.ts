@@ -30,6 +30,18 @@ const config: HardhatUserConfig = {
         mnemonic: process.env.MNEMONIC || '',
       },
     },
+    avalanche: {
+      url: 'https://api.avax.network/ext/bc/C/rpc',
+      gasPrice: 225000000000,
+      chainId: 43114,
+      accounts: [process.env.MAINNET_PRIVATE_KEY || ''],
+    },
+    avalancheFujiTestnet: {
+      url: 'https://api.avax-test.network/ext/bc/C/rpc',
+      gasPrice: 225000000000,
+      chainId: 43113,
+      accounts: [process.env.TESTNET_PRIVATE_KEY || ''],
+    },
     hardhat: {
       forking: {
         url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
