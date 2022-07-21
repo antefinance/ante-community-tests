@@ -37,6 +37,10 @@ export async function evmIncreaseTime(seconds: number) {
   await hre.network.provider.send('evm_increaseTime', [seconds]);
 }
 
+export async function evmSetNextBlockTimestamp(timestamp: number) {
+  await hre.network.provider.send('evm_setNextBlockTimestamp', [timestamp]);
+}
+
 export async function evmMineBlocks(numBlocks: number) {
   for (let i = 0; i < numBlocks; i++) {
     await hre.network.provider.send('evm_mine');
