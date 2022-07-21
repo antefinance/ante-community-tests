@@ -2,15 +2,15 @@ import hre from 'hardhat';
 const { waffle } = hre;
 
 import {
-  AnteAlkimiyaV2EthOracleLivenessTestAvax,
-  AnteAlkimiyaV2EthOracleLivenessTestAvax__factory,
+  AnteAlkimiyaV2BTCOracleLivenessTestAvax,
+  AnteAlkimiyaV2BTCOracleLivenessTestAvax__factory,
 } from '../../typechain';
 
 import { evmSnapshot, evmRevert, evmIncreaseTime, evmMineBlocks } from '../helpers';
 import { expect } from 'chai';
 
-describe.only('AnteAlkimiyaV2EthOracleLivenessTest', function () {
-  let test: AnteAlkimiyaV2EthOracleLivenessTestAvax;
+describe.only('AnteAlkimiyaV2BTCOracleLivenessTest', function () {
+  let test: AnteAlkimiyaV2BTCOracleLivenessTestAvax;
 
   let globalSnapshotId: string;
 
@@ -19,10 +19,10 @@ describe.only('AnteAlkimiyaV2EthOracleLivenessTest', function () {
 
     const [deployer] = waffle.provider.getWallets();
     const factory = (await hre.ethers.getContractFactory(
-      'AnteAlkimiyaV2EthOracleLivenessTest',
+      'AnteAlkimiyaV2BTCOracleLivenessTest',
       deployer
-    )) as AnteAlkimiyaV2EthOracleLivenessTestAvax__factory;
-    test = await factory.deploy('0xEfEacDD1008a9887cC26469D54D07b3aA87501cC');
+    )) as AnteAlkimiyaV2BTCOracleLivenessTestAvax__factory;
+    test = await factory.deploy('0x444a5880EbDaaaa14F942b6F71b39ffe8d4cEF93');
     await test.deployed();
   });
 

@@ -36,7 +36,7 @@ interface IOracle {
 contract AnteAlkimiyaV2EthOracleLivenessTestAvax is
     AnteTest("Alkimiya V2 ETH oracle never goes >72 hrs without an update")
 {
-    // https://snowtrace.io/address/ADDRESS on Avax C-Chain
+    // https://snowtrace.io/address/0xEfEacDD1008a9887cC26469D54D07b3aA87501cC on Avax Fuji testnet
     IOracle internal oracle;
 
     constructor(address _oracleAddress) {
