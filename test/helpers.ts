@@ -63,3 +63,11 @@ export async function runAsSigner(signerAddr: string, fn: () => Promise<void>): 
     params: [signerAddr],
   });
 }
+
+export async function fundSigner(signerAddr: string) {
+  const ETH_BAL = hre.ethers.utils.parseEther('10000000000');
+  await hre.network.provider.request({
+    method: 'hardhat_setBalance',
+    params: [signerAddr, hre.ethers.utils.hexStripZeros(ETH_BAL.toHexString())],
+  });
+}

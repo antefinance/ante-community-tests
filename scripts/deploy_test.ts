@@ -5,9 +5,9 @@ const main = async () => {
   const [deployer] = await hre.ethers.getSigners();
 
   // name of the contract for Ante Test
-  const testName = 'AnteEthDevRugTest';
+  const testName = 'AnteAvaxWhaleRugTest';
   // array of constructor arguments for Ante Test
-  const args = ['0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae'] as const;
+  const args = ['0x55aEd0ce035883626e536254dda2F23a5b5D977f'] as const;
 
   console.log(
     'Deploying Ante Test',

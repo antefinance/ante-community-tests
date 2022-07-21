@@ -1,13 +1,13 @@
 import hre from 'hardhat';
 const { waffle } = hre;
 
-import { AnteChainlinkUpdateTimeTest, AnteChainlinkUpdateTimeTest__factory } from '../../typechain';
+import { AnteAvaxUSDCPegTest, AnteAvaxUSDCPegTest__factory } from '../../typechain';
 
 import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
 
-describe('AnteChainlinkUpdateTimeTest', function () {
-  let test: AnteChainlinkUpdateTimeTest;
+describe('AnteAvaxUSDCPegTest', function () {
+  let test: AnteAvaxUSDCPegTest;
 
   let globalSnapshotId: string;
 
@@ -16,13 +16,10 @@ describe('AnteChainlinkUpdateTimeTest', function () {
 
     const [deployer] = waffle.provider.getWallets();
     const factory = (await hre.ethers.getContractFactory(
-      'AnteChainlinkUpdateTimeTest',
+      'AnteAvaxUSDCPegTest',
       deployer
-    )) as AnteChainlinkUpdateTimeTest__factory;
-    test = await factory.deploy([
-      '0x833D8Eb16D306ed1FbB5D7A2E019e106B960965A',
-      '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419',
-    ]);
+    )) as AnteAvaxUSDCPegTest__factory;
+    test = await factory.deploy('0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e');
     await test.deployed();
   });
 
