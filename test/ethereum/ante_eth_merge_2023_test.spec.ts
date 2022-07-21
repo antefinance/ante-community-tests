@@ -31,15 +31,17 @@ describe.only('AnteEthMerge2023Test', function () {
     expect(await test.checkTestPasses()).to.be.true;
   });
 
+  // TODO Hardhat doesn't support setting block difficulty but this case should be tested as well
+  /*
   it('if block difficulty > 2**64 in 2022, should pass', async () => {
-    // TODO increase block difficulty
+    // hypothetical await evmSetBlockDifficulty(2**64);
     await evmMineBlocks(1);
     expect(await test.checkTestPasses()).to.be.true;
   });
+  */
 
   it('if 2023 and block difficulty < 2**64 and > 0, should fail', async () => {
-    // TODO decrease block difficulty
-    await evmSetNextBlockTimestamp(1672531200);
+    await evmSetNextBlockTimestamp(1672531200); // 2023-01-01 00:00:00 GMT
     await evmMineBlocks(1);
     expect(await test.checkTestPasses()).to.be.false;
   });
