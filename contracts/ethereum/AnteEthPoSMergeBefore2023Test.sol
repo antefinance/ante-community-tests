@@ -13,9 +13,9 @@ pragma solidity ^0.7.0;
 
 import "../libraries/ante-v05-core/AnteTest.sol";
 
-/// @title  The Ethereum Merge happens before 2023
+/// @title  Ethereum PoS Merge happens before 2023
 /// @notice Ante Test to check if The Merge has happened before 2023
-contract AnteEthMerge2023Test is AnteTest("The Ethereum Merge happens before 2023-01-01") {
+contract AnteEthPosMergeBefore2023Test is AnteTest("The Merge (Ethereum PoS) happens before 2023-01-01") {
     constructor() {
         protocolName = "Ethereum";
     }
