@@ -1,13 +1,13 @@
 import hre from 'hardhat';
 const { waffle } = hre;
 
-import { AnteEthMerge2023Test, AnteEthMerge2023Test__factory } from '../../typechain';
+import { AnteEthPoSMergeBefore2022Dec01Test, AnteEthPoSMergeBefore2022Dec01Test__factory } from '../../typechain';
 
 import { evmSnapshot, evmRevert, evmSetNextBlockTimestamp, evmMineBlocks } from '../helpers';
 import { expect } from 'chai';
 
-describe.only('AnteEthMerge2023Test', function () {
-  let test: AnteEthMerge2023Test;
+describe.only('AnteEthPoSMergeBefore2022Dec01Test', function () {
+  let test: AnteEthPoSMergeBefore2022Dec01Test;
 
   let globalSnapshotId: string;
 
@@ -16,9 +16,9 @@ describe.only('AnteEthMerge2023Test', function () {
 
     const [deployer] = waffle.provider.getWallets();
     const factory = (await hre.ethers.getContractFactory(
-      'AnteEthMerge2023Test',
+      'AnteEthPoSMergeBefore2022Dec01Test',
       deployer
-    )) as AnteEthMerge2023Test__factory;
+    )) as AnteEthPoSMergeBefore2022Dec01Test__factory;
     test = await factory.deploy();
     await test.deployed();
   });
@@ -40,8 +40,8 @@ describe.only('AnteEthMerge2023Test', function () {
   });
   */
 
-  it('if 2023 and block difficulty < 2**64 and > 0, should fail', async () => {
-    await evmSetNextBlockTimestamp(1672531200); // 2023-01-01 00:00:00 GMT
+  it('if 2022-12-01 12:00:23 UTC and block difficulty < 2**64 and > 0, should fail', async () => {
+    await evmSetNextBlockTimestamp(1669896023); // 2022-12-01 12:00:23 UTC
     await evmMineBlocks(1);
     expect(await test.checkTestPasses()).to.be.false;
   });
