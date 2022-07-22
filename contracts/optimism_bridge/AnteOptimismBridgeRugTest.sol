@@ -4,7 +4,6 @@ pragma solidity ^0.8.0;
 
 import {AnteTest} from "../AnteTest.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "hardhat/console.sol";
 
 /// @title Optimism Bridge doesn't rug test on mainnet
 /// @notice Ante Test to check if Optimism Bridge "rugs" 90% of its value (as of test deployment)
