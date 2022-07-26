@@ -37,6 +37,10 @@ export async function evmIncreaseTime(seconds: number) {
   await hre.network.provider.send('evm_increaseTime', [seconds]);
 }
 
+export async function evmSetNextBlockTimestamp(timestamp: number) {
+  await hre.network.provider.send('evm_setNextBlockTimestamp', [timestamp]);
+}
+
 export async function evmMineBlocks(numBlocks: number) {
   for (let i = 0; i < numBlocks; i++) {
     await hre.network.provider.send('evm_mine');
@@ -52,17 +56,22 @@ export async function calculateGasUsed(txpromise: any): Promise<BigNumber> {
   return txreceipt.effectiveGasPrice.mul(txreceipt.cumulativeGasUsed);
 }
 
-export async function runAsSigner(
-  signerAddr: string,
-  fn: () => Promise<void>
-): Promise<void> {
-    await hre.network.provider.request({
-      method: "hardhat_impersonateAccount",
-      params: [signerAddr],
-    });
-    await fn();
-    await hre.network.provider.request({
-      method: "hardhat_stopImpersonatingAccount",
-      params: [signerAddr],
-    });
+export async function runAsSigner(signerAddr: string, fn: () => Promise<void>): Promise<void> {
+  await hre.network.provider.request({
+    method: 'hardhat_impersonateAccount',
+    params: [signerAddr],
+  });
+  await fn();
+  await hre.network.provider.request({
+    method: 'hardhat_stopImpersonatingAccount',
+    params: [signerAddr],
+  });
+}
+
+export async function fundSigner(signerAddr: string) {
+  const ETH_BAL = hre.ethers.utils.parseEther('10000000000');
+  await hre.network.provider.request({
+    method: 'hardhat_setBalance',
+    params: [signerAddr, hre.ethers.utils.hexStripZeros(ETH_BAL.toHexString())],
+  });
 }
