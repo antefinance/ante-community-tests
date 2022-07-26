@@ -15,8 +15,14 @@ describe('AnteUniswapGetReservesTest', function () {
     globalSnapshotId = await evmSnapshot();
 
     const [deployer] = waffle.provider.getWallets();
-    const factory = (await hre.ethers.getContractFactory('AnteUniswapGetReservesTest', deployer)) as AnteUniswapGetReservesTest__factory;
-    test = await factory.deploy('0xB4e16d0168e52d35CaCD2c6185b44281Ec28C9Dc', '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419');
+    const factory = (await hre.ethers.getContractFactory(
+      'AnteUniswapGetReservesTest',
+      deployer
+    )) as AnteUniswapGetReservesTest__factory;
+    test = await factory.deploy(
+      '0xB4e16d0168e52d35CaCD2c6185b44281Ec28C9Dc',
+      '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419'
+    );
     await test.deployed();
   });
 

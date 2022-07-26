@@ -8,7 +8,6 @@ import "../interfaces/IYearnVault.sol";
 /// @title Yearn Withdraw Test
 /// @notice Tests to see if you can withdraw from a yearn deposit
 contract AnteYearnWithdrawTest is AnteTest("Makes sure you can withdraw from yearn") {
-
     address public immutable vault;
     address public immutable token;
 
@@ -42,7 +41,7 @@ contract AnteYearnWithdrawTest is AnteTest("Makes sure you can withdraw from yea
     function withdraw() external {
         require(yearnVault.balanceOf(address(this)) > 0, "ERROR: You have no tokens to withdraw");
         require(block.timestamp - withdrawingEpoch > DAY_IN_SECONDS, "ERROR: You can only withdraw once per day");
-        
+
         tokenBalance = tokenContract.balanceOf(address(this));
         yearnBalance = yearnVault.balanceOf(address(this));
         withdrawingEpoch = block.timestamp;
@@ -54,17 +53,17 @@ contract AnteYearnWithdrawTest is AnteTest("Makes sure you can withdraw from yea
     /// @dev Must wait for 15 minutes after calling withdraw()
     /// @return if tokens have been withdrawn
     function checkTestPasses() public view override returns (bool) {
-        // If yearn balance is zero, that means that either withdraw() was never called or 
+        // If yearn balance is zero, that means that either withdraw() was never called or
         // when it was called, the contract didn't own anything in the vault.
-        if(yearnBalance == 0) {
+        if (yearnBalance == 0) {
             return true;
         }
 
         // It may take some time to process transactions from the yearn vault back to the stablecoin contract
-        if(block.timestamp - withdrawingEpoch < FIFTEEEN_MINUTES_IN_SECONDS) {
+        if (block.timestamp - withdrawingEpoch < FIFTEEEN_MINUTES_IN_SECONDS) {
             return true;
         }
 
-        return(tokenContract.balanceOf(address(this)) > tokenBalance);
+        return (tokenContract.balanceOf(address(this)) > tokenBalance);
     }
 }

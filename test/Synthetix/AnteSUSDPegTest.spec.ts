@@ -35,14 +35,14 @@ describe('AnteSUSDPegTest', function () {
   });
 
   it('preCheck functions as expected', async () => {
-    await expect(test.preCheck()).to.be.revertedWith("Precheck can only be called every 800 blocks");
+    await expect(test.preCheck()).to.be.revertedWith('Precheck can only be called every 800 blocks');
     await evmMineBlocks(501); // Combined with blocks from previous test, equals 801
-    
+
     await test.preCheck();
     await evmMineBlocks(300);
   });
 
   it('should pass', async () => {
-    expect((await test.checkTestPasses())).to.be.true;
+    expect(await test.checkTestPasses()).to.be.true;
   });
 });

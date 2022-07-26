@@ -19,6 +19,6 @@ contract AnteOpynPlungeTest is AnteTest("Opyn Balance is greater than 15% the or
 
     /// @return if the TVL is at least 15% the original TVL
     function checkTestPasses() public view override returns (bool) {
-        return (100 * OPYN_ADDRESS.balance / oldBalance > 15);
+        return ((100 * OPYN_ADDRESS.balance) / oldBalance > 15);
     }
 }

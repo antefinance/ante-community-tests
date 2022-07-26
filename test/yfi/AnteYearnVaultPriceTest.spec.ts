@@ -15,7 +15,10 @@ describe('AnteYearnVaultPriceTest', function () {
     globalSnapshotId = await evmSnapshot();
 
     const [deployer] = waffle.provider.getWallets();
-    const factory = (await hre.ethers.getContractFactory('AnteYearnVaultPriceTest', deployer)) as AnteYearnVaultPriceTest__factory;
+    const factory = (await hre.ethers.getContractFactory(
+      'AnteYearnVaultPriceTest',
+      deployer
+    )) as AnteYearnVaultPriceTest__factory;
     test = await factory.deploy('0x5f18C75AbDAe578b483E5F43f12a39cF75b973a9', '100');
     await test.deployed();
   });

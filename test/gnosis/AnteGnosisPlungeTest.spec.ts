@@ -15,7 +15,10 @@ describe('GnosisTVLPlungeTest', function () {
     globalSnapshotId = await evmSnapshot();
 
     const [deployer] = waffle.provider.getWallets();
-    const factory = (await hre.ethers.getContractFactory('GnosisTVLPlungeTest', deployer)) as GnosisTVLPlungeTest__factory;
+    const factory = (await hre.ethers.getContractFactory(
+      'GnosisTVLPlungeTest',
+      deployer
+    )) as GnosisTVLPlungeTest__factory;
     test = await factory.deploy();
     await test.deployed();
   });

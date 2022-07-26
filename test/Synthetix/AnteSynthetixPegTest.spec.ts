@@ -15,7 +15,10 @@ describe('AnteSynthetixPegTest', function () {
     globalSnapshotId = await evmSnapshot();
 
     const [deployer] = waffle.provider.getWallets();
-    const factory = (await hre.ethers.getContractFactory('AnteSynthetixPegTest', deployer)) as AnteSynthetixPegTest__factory;
+    const factory = (await hre.ethers.getContractFactory(
+      'AnteSynthetixPegTest',
+      deployer
+    )) as AnteSynthetixPegTest__factory;
     test = await factory.deploy();
     await test.deployed();
   });
@@ -27,4 +30,4 @@ describe('AnteSynthetixPegTest', function () {
   it('should pass', async () => {
     expect(await test.checkTestPasses()).to.be.true;
   });
-}); 
+});

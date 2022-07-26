@@ -1,7 +1,10 @@
 import hre from 'hardhat';
 const { waffle } = hre;
 
-import { AnteUniswapUSDCETHUSDTETHPoolTVLDifference, AnteUniswapUSDCETHUSDTETHPoolTVLDifference__factory } from '../../typechain';
+import {
+  AnteUniswapUSDCETHUSDTETHPoolTVLDifference,
+  AnteUniswapUSDCETHUSDTETHPoolTVLDifference__factory,
+} from '../../typechain';
 
 import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
@@ -16,7 +19,10 @@ describe('AnteUniswapUSDCETHUSDTETHPoolTVLDifference', function () {
     globalSnapshotId = await evmSnapshot();
 
     const [deployer] = waffle.provider.getWallets();
-    const factory = (await hre.ethers.getContractFactory('AnteUniswapUSDCETHUSDTETHPoolTVLDifference', deployer)) as AnteUniswapUSDCETHUSDTETHPoolTVLDifference__factory;
+    const factory = (await hre.ethers.getContractFactory(
+      'AnteUniswapUSDCETHUSDTETHPoolTVLDifference',
+      deployer
+    )) as AnteUniswapUSDCETHUSDTETHPoolTVLDifference__factory;
     test = await factory.deploy();
     await test.deployed();
   });

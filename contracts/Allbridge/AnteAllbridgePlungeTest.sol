@@ -27,17 +27,17 @@ contract AnteAllbridgePlungeTest is AnteTest(" Allbridge mainnet bridge doesn't 
     uint256 public constant PERCENT_DROP_THRESHOLD = 15;
 
     uint256 public immutable etherBalanceAtDeploy;
-    
+
     constructor() {
         protocolName = "Allbridge";
         testedContracts = [allbridgeBridgeAddr];
-        
+
         etherBalanceAtDeploy = allbridgeBridgeAddr.balance;
 
-        threshold = etherBalanceAtDeploy * (PERCENT_DROP_THRESHOLD / 100); 
+        threshold = etherBalanceAtDeploy * (PERCENT_DROP_THRESHOLD / 100);
     }
-    
-    /// @notice test to check balance of eth 
+
+    /// @notice test to check balance of eth
     /// @return true if bridge doesn't drop under 15% of the balance at the time of deployment
     function checkTestPasses() external view override returns (bool) {
         return (allbridgeBridgeAddr.balance > threshold);

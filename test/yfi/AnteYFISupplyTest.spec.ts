@@ -25,7 +25,7 @@ describe('AnteYFISupplyTest', function () {
   });
 
   it('should pass', async () => {
-    expect((await test.checkTestPasses())).to.be.true;
+    expect(await test.checkTestPasses()).to.be.true;
   });
 
   it('should update last checked time', async () => {
@@ -41,6 +41,6 @@ describe('AnteYFISupplyTest', function () {
   });
 
   it('should not allow update if less than 1 month has passed', async () => {
-    expect(test.updateSupply()).to.be.revertedWith("Can only be updated once per month");
+    expect(test.updateSupply()).to.be.revertedWith('Can only be updated once per month');
   });
 });

@@ -16,7 +16,10 @@ describe('AnteBalancerStablePoolStabilityTest', function () {
     globalSnapshotId = await evmSnapshot();
 
     const [deployer] = waffle.provider.getWallets();
-    const factory = (await hre.ethers.getContractFactory('AnteBalancerStablePoolStabilityTest', deployer)) as AnteBalancerStablePoolStabilityTest__factory;
+    const factory = (await hre.ethers.getContractFactory(
+      'AnteBalancerStablePoolStabilityTest',
+      deployer
+    )) as AnteBalancerStablePoolStabilityTest__factory;
     test = await factory.deploy('0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063');
     await test.deployed();
   });
@@ -36,14 +39,13 @@ describe('AnteBalancerStablePoolStabilityTest', function () {
   });
 
   it('ratioValid should return false ', async () => {
-    expect(await test.ratioValid('100', '37', '3')).to.be.false
+    expect(await test.ratioValid('100', '37', '3')).to.be.false;
     expect(await test.ratioValid('100', '29', '3')).to.be.false;
 
     expect(await test.ratioValid('160', '47', '4')).to.be.false;
     expect(await test.ratioValid('160', '34', '4')).to.be.false;
   });
-  
-  
+
   it('should pass', async () => {
     expect(await test.checkTestPasses()).to.be.true;
   });

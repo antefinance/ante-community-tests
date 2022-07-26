@@ -11,7 +11,7 @@
 
 pragma solidity ^0.8.0;
 
-import {AnteTest} from "../AnteTest.sol";
+import {AnteTest} from "../../AnteTest.sol";
 import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
 /// @title  Cobie doesn't rug Do-Algod-DCR escrow wallet

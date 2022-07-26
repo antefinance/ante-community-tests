@@ -9,7 +9,6 @@ import "../interfaces/IERC20.sol";
 // @notice resulting in TVL differences not being extremely different.
 // @notice If TVL of USDC is 10x greater than USDT. Something is not right.
 contract StargateYieldFarmDifference is AnteTest("Stargate yield farms have a TVL difference of < 90%") {
-
     address constant USDT_STARGATE = 0x38EA452219524Bb87e18dE1C24D3bB59510BD783;
     address constant USDC_STARGATE = 0xdf0770dF86a8034b3EFEf0A1Bb3c889B8332FF56;
 
@@ -22,12 +21,12 @@ contract StargateYieldFarmDifference is AnteTest("Stargate yield farms have a TV
     }
 
     // @return the current tvl
-    function getBalances() public view returns(uint256, uint256) {
+    function getBalances() public view returns (uint256, uint256) {
         uint256 x = USDT.balanceOf(USDT_STARGATE);
         uint256 y = USDC.balanceOf(USDC_STARGATE);
 
         // y should always be larger than x
-        if(y < x) {
+        if (y < x) {
             (x, y) = (y, x);
         }
         return (x, y);
@@ -38,4 +37,4 @@ contract StargateYieldFarmDifference is AnteTest("Stargate yield farms have a TV
         (uint256 x, uint256 y) = getBalances();
         return (y / x < 10);
     }
-} 
+}

@@ -15,7 +15,10 @@ describe('AnteYFITVLPlungeTest', function () {
     globalSnapshotId = await evmSnapshot();
 
     const [deployer] = waffle.provider.getWallets();
-    const factory = (await hre.ethers.getContractFactory('AnteYFITVLPlungeTest', deployer)) as AnteYFITVLPlungeTest__factory;
+    const factory = (await hre.ethers.getContractFactory(
+      'AnteYFITVLPlungeTest',
+      deployer
+    )) as AnteYFITVLPlungeTest__factory;
     test = await factory.deploy();
     await test.deployed();
   });
@@ -25,11 +28,11 @@ describe('AnteYFITVLPlungeTest', function () {
   });
 
   it('should pass', async () => {
-    expect((await test.checkTestPasses())).to.be.true;
+    expect(await test.checkTestPasses()).to.be.true;
   });
 
   it('balance should be something real', async () => {
-    expect(await test.getBalance()).to.be.gt(111111); 
+    expect(await test.getBalance()).to.be.gt(111111);
     expect(await test.originalBalance()).to.be.gt(111111);
-  })
+  });
 });

@@ -12,7 +12,7 @@ contract AnteSUSDPegTest is AnteTest("SUSD is pegged to USD +- 2%") {
     AggregatorV3Interface internal priceFeed;
 
     int256 private preCheckPrice = 0;
-    uint private preCheckBlock = 0;
+    uint256 private preCheckBlock = 0;
 
     constructor() {
         protocolName = "Synthetix";
@@ -25,13 +25,13 @@ contract AnteSUSDPegTest is AnteTest("SUSD is pegged to USD +- 2%") {
     /// @notice within 1 hour.
     /// @dev Can only be called once 800 blocks to prevent spam reloading
     function preCheck() public {
-        require (block.number - preCheckBlock > 800, "Precheck can only be called every 800 blocks");
+        require(block.number - preCheckBlock > 800, "Precheck can only be called every 800 blocks");
         (, preCheckPrice, , , ) = priceFeed.latestRoundData();
         preCheckBlock = block.number;
     }
 
     /// @return true if the test will work properly (ie preCheck() was called 300 block prior)
-    function willTestWork() public view returns(bool) {
+    function willTestWork() public view returns (bool) {
         if (preCheckPrice == 0 || preCheckBlock == 0) return false;
         if (block.number - preCheckBlock < 300) return false;
 

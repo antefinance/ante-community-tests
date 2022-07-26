@@ -16,7 +16,10 @@ describe('AnteLSPCollateralTest', function () {
     globalSnapshotId = await evmSnapshot();
 
     const [deployer] = waffle.provider.getWallets();
-    const factory = (await hre.ethers.getContractFactory('AnteLSPCollateralTest', deployer)) as AnteLSPCollateralTest__factory;
+    const factory = (await hre.ethers.getContractFactory(
+      'AnteLSPCollateralTest',
+      deployer
+    )) as AnteLSPCollateralTest__factory;
     test = await factory.deploy('0xE38f290eAC1f83A960c461100b0c7a231B9Cae16');
     await test.deployed();
   });

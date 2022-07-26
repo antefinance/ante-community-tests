@@ -25,8 +25,8 @@ contract AnteChainlinkUpdateTimeTest is AnteTest("Chainlink datafeeds update at 
         protocolName = "Chainlink";
         testedContracts = _datafeeds;
         datafeeds = _datafeeds;
-        
-        for(uint16 i = 0; i < datafeeds.length; i++) {
+
+        for (uint16 i = 0; i < datafeeds.length; i++) {
             chainlink.push(AggregatorV3Interface(datafeeds[i]));
         }
     }
@@ -36,8 +36,8 @@ contract AnteChainlinkUpdateTimeTest is AnteTest("Chainlink datafeeds update at 
         uint256 currentTimeStamp = block.timestamp;
         uint256 lastUpdate = 0;
 
-        for(uint16 i = 0; i < chainlink.length; i++) {
-            (, , ,  lastUpdate, ) = chainlink[i].latestRoundData();
+        for (uint16 i = 0; i < chainlink.length; i++) {
+            (, , , lastUpdate, ) = chainlink[i].latestRoundData();
             if (currentTimeStamp - lastUpdate > ONE_DAY) {
                 return false;
             }

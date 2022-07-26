@@ -15,7 +15,10 @@ describe('AnteCurveUSDThreePoolBalanceTest', function () {
     globalSnapshotId = await evmSnapshot();
 
     const [deployer] = waffle.provider.getWallets();
-    const factory = (await hre.ethers.getContractFactory('AnteCurveUSDThreePoolBalanceTest', deployer)) as AnteCurveUSDThreePoolBalanceTest__factory;
+    const factory = (await hre.ethers.getContractFactory(
+      'AnteCurveUSDThreePoolBalanceTest',
+      deployer
+    )) as AnteCurveUSDThreePoolBalanceTest__factory;
     test = await factory.deploy();
     await test.deployed();
   });

@@ -7,15 +7,17 @@ import "../interfaces/IERC20.sol";
 
 interface LongShortPair {
     function longToken() external view returns (address);
+
     function shortToken() external view returns (address);
+
     function collateralToken() external view returns (address);
+
     function collateralPerPair() external view returns (uint256);
 }
 
 /// @title AnteLSPCollateralTest
 /// @notice Ensure that issued tokens are less than or equal to LSP collateral * collateral per pair
 contract AnteLSPCollateralTest is AnteTest("Ensure that Long Short Pair has enough collateral") {
-
     LongShortPair private immutable contractLSP;
     address private immutable addressLSP;
     address private immutable addressToken;
@@ -28,7 +30,7 @@ contract AnteLSPCollateralTest is AnteTest("Ensure that Long Short Pair has enou
     IERC20 private immutable contractShort;
 
     /// @param _addressLSP The address of the Long Short Pair
-    constructor (address _addressLSP) {
+    constructor(address _addressLSP) {
         protocolName = "UMA";
         testedContracts = [_addressLSP];
 
@@ -44,7 +46,7 @@ contract AnteLSPCollateralTest is AnteTest("Ensure that Long Short Pair has enou
         addressToken = contractLSP.collateralToken();
         contractToken = IERC20(addressToken);
     }
-    
+
     /// @return if the LSP collateral >= issued tokens
     function checkTestPasses() public view override returns (bool) {
         // insert logic here to check the My Protocol invariant
@@ -53,11 +55,12 @@ contract AnteLSPCollateralTest is AnteTest("Ensure that Long Short Pair has enou
 
         uint256 longSupply = contractLong.totalSupply();
         uint256 shortSupply = contractShort.totalSupply();
-        uint256 decimals = 10 ** contractToken.decimals();
+        uint256 decimals = 10**contractToken.decimals();
 
         // The reason one side is multiplied by 10e18 is because when multiplying by collateralPerPair
         // The side is increaased by the collateral (eg 1.5) times 10e18
-        return (collateral * decimals >= longSupply * collateralPerPair) 
-                && (collateral * decimals >= shortSupply * collateralPerPair);
+        return
+            (collateral * decimals >= longSupply * collateralPerPair) &&
+            (collateral * decimals >= shortSupply * collateralPerPair);
     }
 }

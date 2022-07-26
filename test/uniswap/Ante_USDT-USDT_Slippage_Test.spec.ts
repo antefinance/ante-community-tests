@@ -27,5 +27,4 @@ describe('AnteUSDCUSDTPeg', function () {
   it('should pass', async () => {
     expect(await test.checkTestPasses()).to.be.true;
   });
-  
 });

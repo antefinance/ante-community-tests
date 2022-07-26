@@ -17,7 +17,6 @@ struct WalletTest {
 /// @title  AnteDumpTest
 /// @notice Ensures a wallet doens't dump x amount of tokens over y time
 contract AnteDumpTest is AnteTest("Ensure a set of wallets doesn't dump their associated tokens") {
-    
     WalletTest[] private walletTests;
     uint8 public immutable thresholdPercent;
 
@@ -36,8 +35,13 @@ contract AnteDumpTest is AnteTest("Ensure a set of wallets doesn't dump their as
     /// @param _timeValid the time that a wallet condition is valid
     /// @dev When passing in a list, each wallet address will correspond to the token at the same index
     /// @dev Eg [USDC, DAI] | [WALLET1, WALLET2] - WALLET1 will own USDC and WALLET2 will own DAI
-    constructor(address[] memory  _tokenAddress, address[] memory _monitorWallet, uint8 _thresholdPercent, uint256 _timeValid, address _admin) {
-
+    constructor(
+        address[] memory _tokenAddress,
+        address[] memory _monitorWallet,
+        uint8 _thresholdPercent,
+        uint256 _timeValid,
+        address _admin
+    ) {
         protocolName = "Ante";
         testedContracts = _tokenAddress;
 
@@ -46,7 +50,7 @@ contract AnteDumpTest is AnteTest("Ensure a set of wallets doesn't dump their as
         admin = _admin;
         owner = msg.sender;
 
-        for(uint256 i = 0; i < _monitorWallet.length; i++) {
+        for (uint256 i = 0; i < _monitorWallet.length; i++) {
             IERC20 token = IERC20(_tokenAddress[i]);
 
             WalletTest memory walletTest;
@@ -70,7 +74,11 @@ contract AnteDumpTest is AnteTest("Ensure a set of wallets doesn't dump their as
     /// @param _wallet the wallet to add
     /// @param _token the token address to monitor for said wallet
     /// @param _timeValid the time that a wallet condition is valid
-    function addWallet(address _wallet, address _token, uint256 _timeValid) public onlyAdmin{
+    function addWallet(
+        address _wallet,
+        address _token,
+        uint256 _timeValid
+    ) public onlyAdmin {
         IERC20 token = IERC20(_token);
 
         WalletTest memory walletTest;
@@ -81,7 +89,6 @@ contract AnteDumpTest is AnteTest("Ensure a set of wallets doesn't dump their as
         walletTest.timeRegistered = block.timestamp;
         walletTest.timeValid = _timeValid;
         walletTest.expiry = block.timestamp + _timeValid;
-
 
         walletTests.push(walletTest);
     }
@@ -95,11 +102,15 @@ contract AnteDumpTest is AnteTest("Ensure a set of wallets doesn't dump their as
     /// @param timeValid the time that a wallet condition is valid
     /// @param timeStamp the current block timestamp
     /// @return allowedPErcent the percent threshold adjusted for time
-    function getAllowedPercentThreshold(uint256 timeRegistered, uint256 timeValid, uint256 timeStamp) public view returns (uint256) {
+    function getAllowedPercentThreshold(
+        uint256 timeRegistered,
+        uint256 timeValid,
+        uint256 timeStamp
+    ) public view returns (uint256) {
         uint256 timeSinceRegistered = timeStamp - timeRegistered;
         uint256 timeRemaining = timeValid - timeSinceRegistered;
 
-        uint256 allowedPercent = timeRemaining * thresholdPercent / timeValid;
+        uint256 allowedPercent = (timeRemaining * thresholdPercent) / timeValid;
 
         return allowedPercent;
     }
@@ -108,8 +119,8 @@ contract AnteDumpTest is AnteTest("Ensure a set of wallets doesn't dump their as
     function checkTestPasses() public view override returns (bool) {
         uint256 currentTime = block.timestamp;
 
-        for(uint256 i = 0; i < walletTests.length; i++) {
-            if(currentTime > walletTests[i].expiry) {
+        for (uint256 i = 0; i < walletTests.length; i++) {
+            if (currentTime > walletTests[i].expiry) {
                 continue;
             }
             IERC20 token = IERC20(walletTests[i].token);
@@ -117,9 +128,13 @@ contract AnteDumpTest is AnteTest("Ensure a set of wallets doesn't dump their as
             uint256 oldBalance = walletTests[i].amount;
             uint256 newBalance = token.balanceOf(walletTests[i].wallet);
 
-            uint256 timeAdjustedPercent = getAllowedPercentThreshold(walletTests[i].timeRegistered, walletTests[i].timeValid, currentTime);
+            uint256 timeAdjustedPercent = getAllowedPercentThreshold(
+                walletTests[i].timeRegistered,
+                walletTests[i].timeValid,
+                currentTime
+            );
 
-            if(newBalance < oldBalance * timeAdjustedPercent / 100) {
+            if (newBalance < (oldBalance * timeAdjustedPercent) / 100) {
                 return false;
             }
         }

@@ -23,17 +23,16 @@ describe('AnteDumpTest', function () {
     globalSnapshotId = await evmSnapshot();
 
     const [deployer] = waffle.provider.getWallets();
-    
+
     const factory = (await hre.ethers.getContractFactory('AnteDumpTest', deployer)) as AnteDumpTest__factory;
     const testTokenFactory = (await hre.ethers.getContractFactory('BasicERC20', deployer)) as BasicERC20__factory;
-    
+
     TEST_TOKEN = await testTokenFactory.connect(owner).deploy();
     await TEST_TOKEN.deployed();
     await TEST_TOKEN.connect(owner).mint('1000000000000000000000000', wallet1.address);
 
     test = await factory.deploy([TEST_TOKEN.address], [wallet1.address], '50', YEAR_IN_SECONDS_STR, admin.address);
     await test.deployed();
-
   });
 
   after(async () => {
@@ -57,7 +56,7 @@ describe('AnteDumpTest', function () {
   it('should pass', async () => {
     await TEST_TOKEN.connect(wallet1).transfer(burnWallet.address, '500000000000000000000000');
 
-    expect((await test.checkTestPasses())).to.be.true;
+    expect(await test.checkTestPasses()).to.be.true;
   });
 
   it('should fail then pass after 1 week elapsed time', async () => {
@@ -65,11 +64,11 @@ describe('AnteDumpTest', function () {
     await test.connect(admin).addWallet(wallet2.address, TEST_TOKEN.address, YEAR_IN_SECONDS);
     await TEST_TOKEN.connect(wallet2).transfer(burnWallet.address, '520000000000000000000000');
 
-    expect((await test.checkTestPasses())).to.be.false;
+    expect(await test.checkTestPasses()).to.be.false;
 
     await evmIncreaseTime(ONE_DAY_IN_SECONDS * 8);
     await evmMineBlocks(1);
-    expect((await test.checkTestPasses())).to.be.true;
+    expect(await test.checkTestPasses()).to.be.true;
   });
 
   it('should pass with a threshold of 25%', async () => {
@@ -81,7 +80,7 @@ describe('AnteDumpTest', function () {
     await evmMineBlocks(1);
 
     await TEST_TOKEN.connect(wallet3).transfer(burnWallet.address, '24000000000000000000000');
-    expect((await test.checkTestPasses())).to.be.true;  
+    expect(await test.checkTestPasses()).to.be.true;
   });
 
   // Test addWallet function
@@ -90,7 +89,7 @@ describe('AnteDumpTest', function () {
 
     const oldWalletsLength = (await test.getWallets()).toString().length;
     await test.connect(admin).addWallet(wallet4.address, TEST_TOKEN.address, YEAR_IN_SECONDS_STR);
-    
+
     const newWallets = (await test.getWallets()).toString();
     const newPair = newWallets.substring(oldWalletsLength + 1, newWallets.length).split(',');
 
@@ -102,12 +101,16 @@ describe('AnteDumpTest', function () {
     expect(true).to.be.true;
   });
 
-  it('should revert when adding a wallet without admin acount', async() => {
-    await expect(test.connect(wallet1).addWallet(wallet4.address, TEST_TOKEN.address, YEAR_IN_SECONDS_STR)).to.be.revertedWith('ANTE: Must be an admin or owner');
+  it('should revert when adding a wallet without admin acount', async () => {
+    await expect(
+      test.connect(wallet1).addWallet(wallet4.address, TEST_TOKEN.address, YEAR_IN_SECONDS_STR)
+    ).to.be.revertedWith('ANTE: Must be an admin or owner');
   });
 
   it('should change admin account', async () => {
-    await expect(test.connect(admin2).addWallet(wallet4.address, TEST_TOKEN.address, YEAR_IN_SECONDS_STR)).to.be.revertedWith('ANTE: Must be an admin or owner');
+    await expect(
+      test.connect(admin2).addWallet(wallet4.address, TEST_TOKEN.address, YEAR_IN_SECONDS_STR)
+    ).to.be.revertedWith('ANTE: Must be an admin or owner');
     await test.connect(admin).changeAdmin(admin2.address);
     await test.connect(admin2).addWallet(wallet4.address, TEST_TOKEN.address, YEAR_IN_SECONDS_STR);
   });

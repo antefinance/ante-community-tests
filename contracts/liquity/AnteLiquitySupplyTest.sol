@@ -9,11 +9,9 @@ import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 /// @title AnteLiquitySupplyTest
 /// @notice Ensure that the dollar value of the Liquity Active pool exceeds 1.1x the total supply of LUSD
 contract AnteLiquitySupplyTest is AnteTest("Ensure total supply of LUSD doesn't exceed TVL of the Active Pool") {
-    
-
     // https://data.chain.link/ethereum/mainnet/crypto-usd/eth-usd
     AggregatorV3Interface private ethPriceFeed = AggregatorV3Interface(0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419);
-    
+
     // https://docs.liquity.org/documentation/resources
     address private lusd = 0x5f98805A4E8be255a32880FDeC7F6728C6568bA0;
     address private activePool = 0xDf9Eb223bAFBE5c5271415C75aeCD68C21fE3D7F;
@@ -30,7 +28,7 @@ contract AnteLiquitySupplyTest is AnteTest("Ensure total supply of LUSD doesn't 
         uint256 balance = activePool.balance;
         uint256 totalSupply = lusdToken.totalSupply();
 
-        (, int256 price, , ,) = ethPriceFeed.latestRoundData();
+        (, int256 price, , , ) = ethPriceFeed.latestRoundData();
         price = price / 1e8; // Remove 8 decimals
 
         uint256 balanceInUSD = balance * uint256(price);

@@ -15,7 +15,10 @@ describe('AnteUSDTUSTSlippage', function () {
     globalSnapshotId = await evmSnapshot();
 
     const [deployer] = waffle.provider.getWallets();
-    const factory = (await hre.ethers.getContractFactory('AnteUSDTUSTSlippage', deployer)) as AnteUSDTUSTSlippage__factory;
+    const factory = (await hre.ethers.getContractFactory(
+      'AnteUSDTUSTSlippage',
+      deployer
+    )) as AnteUSDTUSTSlippage__factory;
     test = await factory.deploy();
     await test.deployed();
   });

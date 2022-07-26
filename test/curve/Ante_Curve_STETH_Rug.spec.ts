@@ -15,7 +15,10 @@ describe('AnteSTETHCurveRugTest', function () {
     globalSnapshotId = await evmSnapshot();
 
     const [deployer] = waffle.provider.getWallets();
-    const factory = (await hre.ethers.getContractFactory('AnteSTETHCurveRugTest', deployer)) as AnteSTETHCurveRugTest__factory;
+    const factory = (await hre.ethers.getContractFactory(
+      'AnteSTETHCurveRugTest',
+      deployer
+    )) as AnteSTETHCurveRugTest__factory;
     test = await factory.deploy();
     await test.deployed();
   });

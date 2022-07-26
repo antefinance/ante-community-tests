@@ -5,7 +5,11 @@ pragma solidity ^0.8.0;
 import "../AnteTest.sol";
 
 interface IOneInchOracle {
-    function getRate(address srcToken, address dstToken, bool useWrapper) external view returns(uint256);
+    function getRate(
+        address srcToken,
+        address dstToken,
+        bool useWrapper
+    ) external view returns (uint256);
 }
 
 /// @title Convex Curve Peg Test
@@ -41,11 +45,11 @@ contract AntecvxCRVPegTest is AnteTest("Ensure that cvxCRV and CRV maintain peg 
         uint256 crvToETH = oneInchOracle.getRate(CURVE_ADDRESS, WETH_ADDRESS, false);
         uint256 cvxCRVToETH = oneInchOracle.getRate(CVX_CURVE_ADDRESS, WETH_ADDRESS, false);
 
-        if(preCheckBlock == 0 || preCheckSlip == 0) {
+        if (preCheckBlock == 0 || preCheckSlip == 0) {
             return true;
         }
 
-        if (block.number - preCheckBlock < 20 ) {
+        if (block.number - preCheckBlock < 20) {
             return true;
         }
 
@@ -57,5 +61,5 @@ contract AntecvxCRVPegTest is AnteTest("Ensure that cvxCRV and CRV maintain peg 
         }
 
         return false;
-    }   
+    }
 }

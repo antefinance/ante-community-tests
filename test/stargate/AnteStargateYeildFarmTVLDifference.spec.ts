@@ -15,7 +15,10 @@ describe('StargateYieldFarmDifferenceTest', function () {
     globalSnapshotId = await evmSnapshot();
 
     const [deployer] = waffle.provider.getWallets();
-    const factory = (await hre.ethers.getContractFactory('StargateYieldFarmDifference', deployer)) as StargateYieldFarmDifference__factory;
+    const factory = (await hre.ethers.getContractFactory(
+      'StargateYieldFarmDifference',
+      deployer
+    )) as StargateYieldFarmDifference__factory;
     test = await factory.deploy();
     await test.deployed();
   });

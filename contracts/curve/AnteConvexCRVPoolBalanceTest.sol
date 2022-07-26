@@ -3,10 +3,10 @@
 pragma solidity ^0.8.0;
 
 import "../AnteTest.sol";
-import "../interfaces/IERC20.sol";  
+import "../interfaces/IERC20.sol";
 
 interface IOneInchOracle {
-    function getRateToEth(address srcToken, bool useWrapper) external view returns(uint256);
+    function getRateToEth(address srcToken, bool useWrapper) external view returns (uint256);
 }
 
 /// @title Curve Pool CRV x cvxCRV Reserve Balance Test
@@ -14,7 +14,7 @@ interface IOneInchOracle {
 /// and the reserve difference is according the the price difference
 contract AnteConvexCRVPoolBalanceTest is AnteTest("cvxCRV/CRV Pool Remains Balanced") {
     // https://curve.fi/factory/22
-    address constant private CURVE_POOL = 0x9D0464996170c6B9e75eED71c68B99dDEDf279e8;
+    address private constant CURVE_POOL = 0x9D0464996170c6B9e75eED71c68B99dDEDf279e8;
 
     address private constant WETH_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     address private constant CURVE_ADDRESS = 0xD533a949740bb3306d119CC777fa900bA034cd52;
@@ -79,16 +79,20 @@ contract AnteConvexCRVPoolBalanceTest is AnteTest("cvxCRV/CRV Pool Remains Balan
         uint256 valueToken1 = oneInchOracle.getRateToEth(token1, false);
         uint256 valueToken2 = oneInchOracle.getRateToEth(token2, false);
 
-        if(decimalsToken1 > decimalsToken2) {
+        if (decimalsToken1 > decimalsToken2) {
             decimalDifference = decimalsToken1 - decimalsToken2;
-            valueToken1 = valueToken1 / (10 ** decimalDifference);
+            valueToken1 = valueToken1 / (10**decimalDifference);
         } else {
             decimalDifference = decimalsToken2 - decimalsToken1;
-            valueToken2 = valueToken2 / (10 ** decimalDifference);
+            valueToken2 = valueToken2 / (10**decimalDifference);
         }
 
-        if (valueToken1 == valueToken2) { return address(0); }
-        if (valueToken1 > valueToken2)  { return token1; } 
+        if (valueToken1 == valueToken2) {
+            return address(0);
+        }
+        if (valueToken1 > valueToken2) {
+            return token1;
+        }
 
         return token2;
     }
