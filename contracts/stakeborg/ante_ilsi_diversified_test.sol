@@ -35,24 +35,6 @@ interface IOracle {
     function read() external view returns (uint256);
 }
 
-/**
- * @title IOracleAdapter
- * @author Set Protocol
- *
- * Interface for calling an oracle adapter.
- */
-interface IOracleAdapter {
-    /**
-     * Function for retrieving a price that requires sourcing data from outside protocols to calculate.
-     *
-     * @param  _assetOne    First asset in pair
-     * @param  _assetTwo    Second asset in pair
-     * @return                  Boolean indicating if oracle exists
-     * @return              Current price of asset represented in uint256
-     */
-    function getPrice(address _assetOne, address _assetTwo) external view returns (bool, uint256);
-}
-
 interface IPriceOracle {
     function oracles(address assetOne, address assetTwo) external view returns (IOracle);
 }
@@ -82,10 +64,10 @@ interface IUniswapV3Factory {
     ) external view returns (address pool);
 }
 
-/// @title  ILSI token has more than 3 tokens and none has a +50% position
+/// @title  ILSI has more than 3 tokens and none has a +50% position
 /// @notice Ante Test to check that the components of ILSI are more than 3 and
 /// none of the positions represent more than 50%
-contract AnteILSIDiversifiedTest is AnteTest("ILSI token has more than 3 tokens and none has a +50% position") {
+contract AnteILSIDiversifiedTest is AnteTest("ILSI has more than 3 tokens and none has a +50% position") {
     address public constant QUOTE_ASSET = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48; // USDC address
     address public constant WETH_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2; // WETH address
     address public constant ILSI_ADDRESS = 0x0acC0FEE1D86D2cD5AF372615bf59b298D50cd69;
@@ -96,6 +78,12 @@ contract AnteILSIDiversifiedTest is AnteTest("ILSI token has more than 3 tokens 
     IUniswapV3Factory public uniswapFactory;
     FeedRegistryInterface internal registry;
 
+    uint256 public constant FAILURE_BLOCK_DELAY = 50400; // ~ 7 days assuming 12 seconds / block
+    uint256 public noPriceBlock;
+    uint256 public preCheckBlock;
+    uint256 public lastCheckAllocation;
+    uint256 public lastCheckPositions;
+
     constructor() {
         // Chainlink Feed Registry mainnet
         registry = FeedRegistryInterface(0x47Fb2585D2C56Fe188D0E6ec628a38b74fCeeeDf);
@@ -105,11 +93,65 @@ contract AnteILSIDiversifiedTest is AnteTest("ILSI token has more than 3 tokens 
         testedContracts = [ILSI_ADDRESS];
     }
 
+    /// @notice Used to prevent a failed test because of a missing price feed
+    /// And allow protocol some time to provide a way for retrieving prices.
+    function preCheck() external {
+        // Reset the block number, in case preCheck test passes
+        noPriceBlock = 0;
+
+        (bool success, uint256 allocation, uint256 positions) = _getMaxAllocation();
+
+        if (!success) {
+            noPriceBlock = block.number;
+        }
+
+        lastCheckAllocation = allocation;
+        lastCheckPositions = positions;
+        preCheckBlock = block.number;
+    }
+
     /// @notice Checks the number of components and each component position
     /// @return true if components count is greater than 3 and none has a +50% position
     function checkTestPasses() external view override returns (bool) {
-        Position[] memory positions = ilsi.getPositions();
+        // Need to make sure that the preCheck() function was called before this function
+        // If not, then the test defaults to true.
+        // Precheck should be done at least 20 blocks before the test is checked
+        if (preCheckBlock == 0 || block.number - preCheckBlock < 20) {
+            return true;
+        }
 
+        (bool success, , ) = _getMaxAllocation();
+
+        // If noPriceBlock is set and we have returned with success
+        // It means the protocol has meanwhile provided a price feed for the
+        // underlying asset
+        // You must execute preCheck again if you still think the test will fail
+        if (success && noPriceBlock > 0) {
+            return true;
+        }
+
+        // If price was not found in the latest X blocks, fail the test
+        // This forces the protocol to ensure they provide an on-chain
+        // way to retrive all the underlying assets values
+        // If a price was added meanwhile, the protocol MUST call preCheck on
+        // their own in order to revalidate the existence of a price feed
+        if (noPriceBlock > 0 && noPriceBlock + FAILURE_BLOCK_DELAY < block.number) {
+            return false;
+        }
+
+        return lastCheckPositions > 3 && lastCheckAllocation < 50;
+    }
+
+    function _getMaxAllocation()
+        internal
+        view
+        returns (
+            bool, /*success*/
+            uint256, /*percentage*/
+            uint256 /*positions*/
+        )
+    {
+        Position[] memory positions = ilsi.getPositions();
         // Prices are retrieved with 1e8 precision as such,
         // the computed tokenValue and maxValue will have a 1e18 * 1e8 precision
         uint256 price;
@@ -135,13 +177,8 @@ contract AnteILSIDiversifiedTest is AnteTest("ILSI token has more than 3 tokens 
 
             // We were unable to retrieve the price from one of the assets
             // as such we are unable to properly test the allocation
-            // TODO: Prevent malicious behaviour reaching this if statement
             if (!priceFound) {
-                // Maybe if price is not found, store the block number.
-                // If after X blocks the price is still not found, fail the test.
-                // This forces the protocol to ensure they provide an on-chain
-                // way to retrive all the underlying assets values
-                return positions.length > 3;
+                return (false, 0, positions.length);
             }
 
             // Bring all units to the same precision
@@ -157,7 +194,7 @@ contract AnteILSIDiversifiedTest is AnteTest("ILSI token has more than 3 tokens 
             tokenValue += allocationValue;
         }
 
-        return positions.length > 3 && (maxValue * 100) / tokenValue < 50;
+        return (true, (maxValue * 100) / tokenValue, positions.length);
     }
 
     function _getPriceFromChainlink(address base) internal view returns (bool, uint256) {

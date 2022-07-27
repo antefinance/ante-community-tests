@@ -3,7 +3,7 @@ const { waffle } = hre;
 
 import { AnteILSIDiversifiedTest, AnteILSIDiversifiedTest__factory } from '../../typechain';
 
-import { evmSnapshot, evmRevert } from '../helpers';
+import { evmSnapshot, evmRevert, evmMineBlocks } from '../helpers';
 import { expect } from 'chai';
 
 describe('AnteILSIDiversifiedTest', function () {
@@ -25,6 +25,21 @@ describe('AnteILSIDiversifiedTest', function () {
 
   after(async () => {
     await evmRevert(globalSnapshotId);
+  });
+
+  it('preCheck works as expected', async () => {
+    expect(await test.preCheckBlock()).to.eq('0');
+    expect(await test.lastCheckAllocation()).to.eq('0');
+    expect(await test.lastCheckPositions()).to.eq('0');
+
+    await test.preCheck();
+
+    const currentBlock = await waffle.provider.getBlockNumber();
+    expect(await test.preCheckBlock()).to.be.gt((currentBlock - 1).toString());
+    expect(await test.lastCheckAllocation()).to.be.gt('1');
+    expect(await test.lastCheckPositions()).to.be.gt('1');
+
+    await evmMineBlocks(30);
   });
 
   it('should pass', async () => {
