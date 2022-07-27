@@ -27,6 +27,10 @@ describe('AnteILSIDiversifiedTest', function () {
     await evmRevert(globalSnapshotId);
   });
 
+  it('test before preCheck should pass', async () => {
+    expect(await test.checkTestPasses()).to.be.true;
+  });
+
   it('preCheck works as expected', async () => {
     expect(await test.preCheckBlock()).to.eq('0');
     expect(await test.lastCheckAllocation()).to.eq('0');
