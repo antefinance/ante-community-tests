@@ -9,7 +9,7 @@ import "./IActivePool.sol";
 import "./IYetiController.sol";
 
 /// @title AnteYetiFinanceSupplyTest
-/// @notice Ensure that the dollar value of the Liquity Active pool exceeds 1.1x the total supply of YUSD
+/// @notice Ensure that the dollar value of the Yeti Finance Active pool exceeds 1.1x the total supply of YUSD
 contract AnteYetiFinanceSupplyTest is AnteTest("Ensure total supply of YUSD doesn't exceed Active Pool backing") {
     using FixedPointMathLib for uint256;
 
