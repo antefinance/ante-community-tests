@@ -7,6 +7,7 @@
     "@nomiclabs/hardhat-ethers": "^2.0.2",
     "@nomiclabs/hardhat-etherscan": "^2.1.6",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "@nomiclabs/hardhat-web3": "^2.0.0",
     "@openzeppelin-contracts-old/contracts": "npm:@openzeppelin/contracts@^3.4.1",
     "@openzeppelin-contracts-old/contracts-upgradeable": "npm:@openzeppelin/contracts-upgradeable@^3.4.1",
     "@openzeppelin/contracts": "^4.4.2",
@@ -37,7 +38,8 @@
     "pretty-quick": "^3.1.1",
     "ts-node": "^10.2.0",
     "typechain": "^5.1.2",
-    "typescript": "^4.3.5"
+    "typescript": "^4.3.5",
+    "web3": "^1.7.4"
   },
   "dependencies": {
     "hardhat-abi-exporter": "^2.2.1",
