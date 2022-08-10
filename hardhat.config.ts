@@ -14,7 +14,7 @@ const config: HardhatUserConfig = {
     localhost: {
       forking: {
         url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
-        blockNumber: 14677216,
+        blockNumber: 15300000,
       },
       url: 'http://localhost:8545',
     },
@@ -40,12 +40,17 @@ const config: HardhatUserConfig = {
       url: 'https://api.avax-test.network/ext/bc/C/rpc',
       gasPrice: 225000000000,
       chainId: 43113,
-      accounts: [process.env.TESTNET_PRIVATE_KEY || ''],
+      accounts: {
+        mnemonic: process.env.TESTNET_MNEMONIC || '',
+      },
     },
     hardhat: {
       forking: {
+        // Ethereum
         url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
-        blockNumber: 14794153,
+        blockNumber: 15300000,
+        // Avalanche
+        // url: 'https://api.avax.network/ext/bc/C/rpc',
       },
     },
   },
