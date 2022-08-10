@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-import {AnteTest} from "../libraries/ante-v05-avax/AnteTest.sol";
+import {AnteTest} from "../AnteTest.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 // @title  Stargate Stablecoin TVL Plunge Test (Avalanche)
