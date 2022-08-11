@@ -6,7 +6,7 @@ import {AnteTest} from "../AnteTest.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
-// @title  Stargate Stablecoin TVL Plunge Test (Ethereum)
+// @title  Stargate TVL Plunge Test (Ethereum)
 // @notice Ante Test to check that assets in Stargate pools on Ethereum
 //         (currently USDT, USDC, ETH) do not plunge by 90% from the time of
 //         test deploy
