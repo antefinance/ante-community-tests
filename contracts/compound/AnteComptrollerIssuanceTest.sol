@@ -13,7 +13,7 @@ pragma solidity ^0.7.0;
 
 import "../AnteTest.sol";
 import "../interfaces/IERC20.sol";
-import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin-contracts-old/contracts/math/SafeMath.sol";
 
 /// @title Compound comptroller issuance rate is not too fast
 /// @notice Ante Test to check the decrease in the balance of COMP in the comptroller  doesn't exceed threshold

@@ -11,7 +11,7 @@
 
 pragma solidity ^0.7.0;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin-contracts-old/contracts/token/ERC20/ERC20.sol";
 import "../AnteTest.sol";
 
 /// @title Ante Test to check USDC supply never exceeds M2 (as of May 2021)
