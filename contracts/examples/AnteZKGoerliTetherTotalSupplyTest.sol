@@ -13,7 +13,7 @@ pragma solidity ^0.7.0;
 
 import "../AnteTest.sol";
 import "./libraries/MathLib.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin-contracts-old/contracts/token/ERC20/ERC20.sol";
 
 /// @title Ante Test to check USDT supply has never exceeded M2 (as of Aug 2022) on GOERLI ONLY
 /// @dev As of 2022-08-18, est. M2 monetary supply is ~$21.645 Trillion USD
@@ -21,7 +21,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 /// We represent the threshold as 21.645 Trillion * (10 ** usdt Decimals)
 /// Or, more simply, 21.645 Trillion = 21,645 Billion
 ///
-/// Q: How does this zk Ante Test work?
+/// Q: How does this ZK Ante Test work?
 /// A: Smart Contracts that run on EVM have a natural limitation that they cannot look
 /// backward (in history) beyond a small number of blocks to inspect historic values.
 /// Thus, most mainnet Ethereum Ante Tests need to be verified at a block height where
@@ -64,6 +64,8 @@ contract AnteZKGoerliTetherTotalSupplyTest is AnteTest("Goerli Tether Total Hist
     address public immutable goerliUsdtAddr;
     uint256 public immutable thresholdSupply;
 
+    uint32 public immutable storageSlotTotalSupply;
+
     ERC20 public goerliUsdtToken;
 
     uint256 public claimIdx;
@@ -73,18 +75,23 @@ contract AnteZKGoerliTetherTotalSupplyTest is AnteTest("Goerli Tether Total Hist
     constructor() {
         protocolName = "Tether";
 
-	goerliZkaAddr = 0x4136cf04d70216b6f2b86d755f49b95e11fe93cb;
-	goerliUsdtAddr = 0x509ee0d083ddf8ac028f2a56731412edd63223b9;
-	goerliUsdtToken = ERC20(goerliUsdtAddr);
-	
-	thresholdSupply = 21645 * (1000 * 1000 * 1000) * (10**usdtToken.decimals());
+        address tempGoerliUsdtAddr = 0x509Ee0d083DdF8AC028f2a56731412edD63223B9;
+	    goerliZkaAddr = 0x4136cF04D70216b6F2B86D755F49B95E11Fe93cB;
+	    goerliUsdtAddr = tempGoerliUsdtAddr;
+	    goerliUsdtToken = ERC20(tempGoerliUsdtAddr);
 
-	testedContracts.push(goerliUsdtAddr);
+        // storage slot for USDT total supply
+        storageSlotTotalSupply = 1;
+	
+	    thresholdSupply = 21645 * (1000 * 1000 * 1000) * (10**goerliUsdtToken.decimals());
+
+	    testedContracts.push(tempGoerliUsdtAddr);
     }
 
     function checkTestPasses() public view override returns (bool) {
         bytes32 claimHash = IZKAttestor(goerliZkaAddr).slotAttestations(claimIdx);
-	require(claimHash == keccak256(abi.encodePacked(claimBlockNumber, goerliUsdtAddr, 1, claimTotalSupply)), "Invalid claim hash");
+	require(claimHash == keccak256(abi.encodePacked(claimBlockNumber, goerliUsdtAddr, 
+		storageSlotTotalSupply, claimTotalSupply)), "Invalid claim hash");
 
 	return (claimTotalSupply <= thresholdSupply);
     }
