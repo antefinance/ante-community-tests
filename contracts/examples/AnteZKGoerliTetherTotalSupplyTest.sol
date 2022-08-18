@@ -32,7 +32,7 @@ import "@openzeppelin-contracts-old/contracts/token/ERC20/ERC20.sol";
 /// that a particular storage slot held a specific value at a specific block height.
 /// This is done with the zkAttestor tool, which stores a zkSNARK proof that can be checked on-chain.
 /// Thus, instead of checking if the guarantee holds in the current block, this zk Ante Test can
-/// show if a guarantee has EVER been false in the past. 
+/// show if a guarantee has EVER been false in the past.
 ///
 /// Q: How does one use this zk Ante Test?
 ///
@@ -40,26 +40,23 @@ import "@openzeppelin-contracts-old/contracts/token/ERC20/ERC20.sol";
 /// The output of the research is a tuple.
 /// The verifier then needs to use zkAttestor to generate a zkSNARK proof (that is stored),
 /// which is a claim that at a certain block height, the value of a storage slot of a certain address
-/// was indeed VALUE, along with an index. This test checks that said VALUE would mean the 
+/// was indeed VALUE, along with an index. This test checks that said VALUE would mean the
 /// zk Ante Test fails (eg USDT supply was above M2), and that said zkSNARK lives at the index stored on
 /// zkAttestor. (The zk Ante Test reverts if the claim is unverified.)
 ///
 /// If the claim is valid (ie zkAttestor holds a proof that the value at that slot at that height),
 /// then the zk Ante Test's checkTestPasses function will return False, which is an Ante Test failure.
 interface IZKAttestor {
-    event SlotAttestationEvent(uint32 blockNumber,
-                               address addr,
-                               uint256 slot,
-                               uint256 slotValue);
-			       
-    function slotAttestations(uint256 i) external view returns (bytes32);		       
+    event SlotAttestationEvent(uint32 blockNumber, address addr, uint256 slot, uint256 slotValue);
+
+    function slotAttestations(uint256 i) external view returns (bytes32);
 }
 
 /// @notice Ante Test to check that the total USDT Goerli supply has never exceeded M2
 contract AnteZKGoerliTetherTotalSupplyTest is AnteTest("Goerli Tether Total Historic Supply Test under M2") {
     using SafeMath for uint256;
     using Math for uint256;
-    
+
     address public immutable goerliZkaAddr;
     address public immutable goerliUSDTAddr;
     uint256 public immutable thresholdSupply;
@@ -76,29 +73,36 @@ contract AnteZKGoerliTetherTotalSupplyTest is AnteTest("Goerli Tether Total Hist
         protocolName = "Tether";
 
         address tempGoerliUSDTAddr = 0x509Ee0d083DdF8AC028f2a56731412edD63223B9;
-	    goerliZkaAddr = 0x4136cF04D70216b6F2B86D755F49B95E11Fe93cB;
-	    goerliUSDTAddr = tempGoerliUSDTAddr;
-	    goerliUSDTToken = ERC20(tempGoerliUSDTAddr);
+        goerliZkaAddr = 0x4136cF04D70216b6F2B86D755F49B95E11Fe93cB;
+        goerliUSDTAddr = tempGoerliUSDTAddr;
+        goerliUSDTToken = ERC20(tempGoerliUSDTAddr);
 
         // storage slot for USDT total supply
         storageSlotTotalSupply = 1;
-	
-	    thresholdSupply = 21645 * (1000 * 1000 * 1000) * (10**goerliUSDTToken.decimals());
 
-	    testedContracts.push(tempGoerliUSDTAddr);
+        thresholdSupply = 21645 * (1000 * 1000 * 1000) * (10**goerliUSDTToken.decimals());
+
+        testedContracts.push(tempGoerliUSDTAddr);
     }
 
     function checkTestPasses() public view override returns (bool) {
         bytes32 claimHash = IZKAttestor(goerliZkaAddr).slotAttestations(claimIdx);
-	require(claimHash == keccak256(abi.encodePacked(claimBlockNumber, goerliUSDTAddr, 
-		storageSlotTotalSupply, claimTotalSupply)), "Invalid claim hash");
+        require(
+            claimHash ==
+                keccak256(abi.encodePacked(claimBlockNumber, goerliUSDTAddr, storageSlotTotalSupply, claimTotalSupply)),
+            "Invalid claim hash"
+        );
 
-	return (claimTotalSupply <= thresholdSupply);
+        return (claimTotalSupply <= thresholdSupply);
     }
 
-    function setClaim(uint256 _claimIdx, uint32 _claimBlockNumber, uint256 _claimTotalSupply) external {
+    function setClaim(
+        uint256 _claimIdx,
+        uint32 _claimBlockNumber,
+        uint256 _claimTotalSupply
+    ) external {
         claimIdx = _claimIdx;
         claimBlockNumber = _claimBlockNumber;
-	claimTotalSupply = _claimTotalSupply;
+        claimTotalSupply = _claimTotalSupply;
     }
 }
