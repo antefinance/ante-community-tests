@@ -79,6 +79,7 @@ contract AnteZKGoerliTetherTotalSupplyTest is AnteTest("Goerli Tether Total Hist
 
         // storage slot for USDT total supply
         storageSlotTotalSupply = 1;
+        claimTotalSupply = 0;
 
         thresholdSupply = 21645 * (1000 * 1000 * 1000) * (10**goerliUSDTToken.decimals());
 
@@ -86,6 +87,9 @@ contract AnteZKGoerliTetherTotalSupplyTest is AnteTest("Goerli Tether Total Hist
     }
 
     function checkTestPasses() public view override returns (bool) {
+        if (claimTotalSupply <= thresholdSupply) {
+            return true;
+        }
         bytes32 claimHash = IZKAttestor(goerliZkaAddr).slotAttestations(claimIdx);
         require(
             claimHash ==
