@@ -77,7 +77,7 @@ contract AnteZKGoerliTetherTotalSupplyTest is AnteTest("Goerli Tether Total Hist
 	goerliUsdtAddr = 0x509ee0d083ddf8ac028f2a56731412edd63223b9;
 	goerliUsdtToken = ERC20(goerliUsdtAddr);
 	
-	thresholdSupply = 20100 * (1000 * 1000 * 1000) * (10**usdtToken.decimals());
+	thresholdSupply = 21645 * (1000 * 1000 * 1000) * (10**usdtToken.decimals());
 
 	testedContracts.push(goerliUsdtAddr);
     }
