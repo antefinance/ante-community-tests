@@ -16,7 +16,8 @@ contract AntePolygonBridgeRugTest is AnteTest("EOA Polygon Bridge Doesnt Rug 90%
     address public constant maticAddr = 0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0;
     // https://etherscan.io/address/0xd26114cd6EE289AccF82350c8d8487fedB8A0C07
     address public constant omgAddr = 0xd26114cd6EE289AccF82350c8d8487fedB8A0C07;
-
+    // https://etherscan.io/address/0xa0c68c638235ee32657e8f720a23cec1bfc77c77
+    address public constant eoaPolygonBridgeAddr = 0xa0c68c638235ee32657e8f720a23cec1bfc77c77;
     IERC20 public usdcToken;
     IERC20 public omgToken;
     IERC20 public maticToken;
