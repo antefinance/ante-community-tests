@@ -18,7 +18,7 @@ import "@openzeppelin-contracts-old/contracts/token/ERC20/ERC20.sol";
 /// @title Ante Test to check USDT supply has never exceeded M2 (as of Aug 2022) on GOERLI ONLY
 /// @dev As of 2022-08-18, est. M2 monetary supply is ~$21.645 Trillion USD
 /// From https://www.federalreserve.gov/releases/h6/current/default.htm
-/// We represent the threshold as 21.645 Trillion * (10 ** usdt Decimals)
+/// We represent the threshold as 21.645 Trillion * (10 ** USDT Decimals)
 /// Or, more simply, 21.645 Trillion = 21,645 Billion
 ///
 /// Q: How does this ZK Ante Test work?
@@ -61,12 +61,12 @@ contract AnteZKGoerliTetherTotalSupplyTest is AnteTest("Goerli Tether Total Hist
     using Math for uint256;
     
     address public immutable goerliZkaAddr;
-    address public immutable goerliUsdtAddr;
+    address public immutable goerliUSDTAddr;
     uint256 public immutable thresholdSupply;
 
     uint32 public immutable storageSlotTotalSupply;
 
-    ERC20 public goerliUsdtToken;
+    ERC20 public goerliUSDTToken;
 
     uint256 public claimIdx;
     uint32 public claimBlockNumber;
@@ -75,22 +75,22 @@ contract AnteZKGoerliTetherTotalSupplyTest is AnteTest("Goerli Tether Total Hist
     constructor() {
         protocolName = "Tether";
 
-        address tempGoerliUsdtAddr = 0x509Ee0d083DdF8AC028f2a56731412edD63223B9;
+        address tempGoerliUSDTAddr = 0x509Ee0d083DdF8AC028f2a56731412edD63223B9;
 	    goerliZkaAddr = 0x4136cF04D70216b6F2B86D755F49B95E11Fe93cB;
-	    goerliUsdtAddr = tempGoerliUsdtAddr;
-	    goerliUsdtToken = ERC20(tempGoerliUsdtAddr);
+	    goerliUSDTAddr = tempGoerliUSDTAddr;
+	    goerliUSDTToken = ERC20(tempGoerliUSDTAddr);
 
         // storage slot for USDT total supply
         storageSlotTotalSupply = 1;
 	
-	    thresholdSupply = 21645 * (1000 * 1000 * 1000) * (10**goerliUsdtToken.decimals());
+	    thresholdSupply = 21645 * (1000 * 1000 * 1000) * (10**goerliUSDTToken.decimals());
 
-	    testedContracts.push(tempGoerliUsdtAddr);
+	    testedContracts.push(tempGoerliUSDTAddr);
     }
 
     function checkTestPasses() public view override returns (bool) {
         bytes32 claimHash = IZKAttestor(goerliZkaAddr).slotAttestations(claimIdx);
-	require(claimHash == keccak256(abi.encodePacked(claimBlockNumber, goerliUsdtAddr, 
+	require(claimHash == keccak256(abi.encodePacked(claimBlockNumber, goerliUSDTAddr, 
 		storageSlotTotalSupply, claimTotalSupply)), "Invalid claim hash");
 
 	return (claimTotalSupply <= thresholdSupply);
