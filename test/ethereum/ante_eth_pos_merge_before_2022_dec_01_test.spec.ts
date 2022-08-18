@@ -6,7 +6,7 @@ import { AnteEthPoSMergeBefore2022Dec01Test, AnteEthPoSMergeBefore2022Dec01Test_
 import { evmSnapshot, evmRevert, evmSetNextBlockTimestamp, evmMineBlocks } from '../helpers';
 import { expect } from 'chai';
 
-describe.only('AnteEthPoSMergeBefore2022Dec01Test', function () {
+describe('AnteEthPoSMergeBefore2022Dec01Test', function () {
   let test: AnteEthPoSMergeBefore2022Dec01Test;
 
   let globalSnapshotId: string;

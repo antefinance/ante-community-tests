@@ -1,26 +1,23 @@
 import hre from 'hardhat';
 const { waffle } = hre;
 
-import {
-  AnteStargateEthereumStableTVLPlungeTest,
-  AnteStargateEthereumStableTVLPlungeTest__factory,
-} from '../../typechain';
+import { AnteStargateAvalancheTVLPlungeTest, AnteStargateAvalancheTVLPlungeTest__factory } from '../../typechain';
 
 import { evmSnapshot, evmRevert, fundSigner, runAsSigner } from '../helpers';
 import { expect } from 'chai';
 import { BigNumber, Contract } from 'ethers';
 
-describe('AnteStargateEthereumStableTVLPlungeTest', function () {
-  let test: AnteStargateEthereumStableTVLPlungeTest;
+describe('AnteStargateAvalancheTVLPlungeTest', function () {
+  let test: AnteStargateAvalancheTVLPlungeTest;
   let usdt: Contract;
   let usdc: Contract;
 
   let globalSnapshotId: string;
 
-  const usdtAddr = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
-  const usdcAddr = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
-  const sgUSDTPoolAddr = '0x38EA452219524Bb87e18dE1C24D3bB59510BD783';
-  const sgUSDCPoolAddr = '0xdf0770dF86a8034b3EFEf0A1Bb3c889B8332FF56';
+  const usdtAddr = '0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7';
+  const usdcAddr = '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E';
+  const sgUSDTPoolAddr = '0x29e38769f23701A2e4A8Ef0492e19dA4604Be62c';
+  const sgUSDCPoolAddr = '0x1205f31718499dBf1fCa446663B532Ef87481fe1';
   const targetAddr = '0x1A2B73207C883Ce8E51653d6A9cC8a022740cCA4';
 
   let startUSDTBalance: BigNumber;
@@ -33,9 +30,9 @@ describe('AnteStargateEthereumStableTVLPlungeTest', function () {
 
     // Deploy Ante Test
     const factory = (await hre.ethers.getContractFactory(
-      'AnteStargateEthereumStableTVLPlungeTest',
+      'AnteStargateAvalancheTVLPlungeTest',
       deployer
-    )) as AnteStargateEthereumStableTVLPlungeTest__factory;
+    )) as AnteStargateAvalancheTVLPlungeTest__factory;
     test = await factory.deploy();
     await test.deployed();
 
