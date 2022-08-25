@@ -30,12 +30,18 @@ const config: HardhatUserConfig = {
         mnemonic: process.env.MNEMONIC || '',
       },
     },
+    goerli: {
+      url: `https://goerli.infura.io/v3/${process.env.INFURA_KEY}`,
+      accounts: {
+        mnemonic: process.env.MNEMONIC || '',
+      },
+    },
     avalanche: {
       url: 'https://api.avax.network/ext/bc/C/rpc',
       gasPrice: 225000000000,
       chainId: 43114,
       accounts: {
-	mnemonic: process.env.MNEMONIC || '',
+        mnemonic: process.env.MNEMONIC || '',
       },
     },
     avalancheFujiTestnet: {
@@ -43,13 +49,26 @@ const config: HardhatUserConfig = {
       gasPrice: 225000000000,
       chainId: 43113,
       accounts: {
-	mnemonic: process.env.MNEMONIC || '',
-     },
+        mnemonic: process.env.MNEMONIC || '',
+      },
+    },
+    polygon: {
+      url: 'https://polygon-rpc.com',
+      chainId: 137,
+      accounts: {
+        mnemonic: process.env.MNEMONIC || '',
+      },
+    },
+    mumbai: {
+      url: 'https://rpc-mumbai.maticvigil.com/',
+      chainId: 80001,
+      accounts: {
+        mnemonic: process.env.MNEMONIC || '',
+      },
     },
     hardhat: {
       forking: {
-        url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
-        blockNumber: 14794153,
+        url: `https://polygon-rpc.com`,
       },
     },
   },
