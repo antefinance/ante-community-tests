@@ -54,6 +54,7 @@ const config: HardhatUserConfig = {
     },
     polygon: {
       url: 'https://polygon-rpc.com',
+      gasPrice: 225000000000,
       chainId: 137,
       accounts: {
         mnemonic: process.env.MNEMONIC || '',
@@ -61,6 +62,7 @@ const config: HardhatUserConfig = {
     },
     mumbai: {
       url: 'https://rpc-mumbai.maticvigil.com/',
+      gasPrice: 225000000000,
       chainId: 80001,
       accounts: {
         mnemonic: process.env.MNEMONIC || '',
