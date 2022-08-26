@@ -34,7 +34,9 @@ const config: HardhatUserConfig = {
       url: 'https://api.avax.network/ext/bc/C/rpc',
       gasPrice: 225000000000,
       chainId: 43114,
-      accounts: [process.env.MAINNET_PRIVATE_KEY || ''],
+      accounts: {
+	mnemonic: process.env.MNEMONIC || '',
+      },
     },
     avalancheFujiTestnet: {
       url: 'https://api.avax-test.network/ext/bc/C/rpc',
