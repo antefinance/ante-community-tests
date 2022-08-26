@@ -14,7 +14,7 @@ const config: HardhatUserConfig = {
     localhost: {
       forking: {
         url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
-        blockNumber: 14677216,
+        blockNumber: 15300000,
       },
       url: 'http://localhost:8545',
     },
@@ -70,7 +70,13 @@ const config: HardhatUserConfig = {
     },
     hardhat: {
       forking: {
-        url: `https://polygon-rpc.com`,
+        // Ethereum
+        url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
+        blockNumber: 15300000,
+        // Avalanche
+        // url: 'https://api.avax.network/ext/bc/C/rpc',
+        // Polygon
+        // url :'https://polygon-rcp.com',
       },
     },
   },

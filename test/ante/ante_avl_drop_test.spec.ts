@@ -19,7 +19,7 @@ import { evmSnapshot, evmRevert, evmMineBlocks, evmIncreaseTime } from '../helpe
 import { expect } from 'chai';
 import * as constants from '../constants';
 
-describe.only('AnteAVLDropTest', function () {
+describe('AnteAVLDropTest', function () {
   let test: AnteAVLDropTest;
 
   let snapshotId: string;
