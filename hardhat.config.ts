@@ -76,7 +76,7 @@ const config: HardhatUserConfig = {
         // Avalanche
         // url: 'https://api.avax.network/ext/bc/C/rpc',
         // Polygon
-        // url :'https://polygon-rcp.com',
+        // url :'https://polygon-rpc.com',
       },
     },
   },
