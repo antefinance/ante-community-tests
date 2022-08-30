@@ -7,7 +7,7 @@ import { evmSnapshot, evmRevert, fundSigner, runAsSigner } from '../helpers';
 import { expect } from 'chai';
 import { BigNumber, Contract } from 'ethers';
 
-describe.only('AnteStargateBSCTVLPlungeTest', function () {
+describe('AnteStargateBSCTVLPlungeTest', function () {
   let test: AnteStargateBSCTVLPlungeTest;
   let usdt: Contract;
   let busd: Contract;
@@ -29,16 +29,12 @@ describe.only('AnteStargateBSCTVLPlungeTest', function () {
     const [deployer] = waffle.provider.getWallets();
 
     // Deploy Ante Test
-    console.log('attempting to deploy ante test');
     const factory = (await hre.ethers.getContractFactory(
       'AnteStargateBSCTVLPlungeTest',
       deployer
     )) as AnteStargateBSCTVLPlungeTest__factory;
-    console.log('got da factory');
     test = await factory.deploy();
-    console.log('factory deployed');
     await test.deployed();
-    console.log('test deployed');
 
     // Get balances on deploy
     usdt = await hre.ethers.getContractAt('contracts/interfaces/IERC20.sol:IERC20', usdtAddr, deployer);
