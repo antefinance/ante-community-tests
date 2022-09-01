@@ -60,7 +60,7 @@ const config: HardhatUserConfig = {
         mnemonic: process.env.MNEMONIC || '',
       },
     },
-    mumbai: {
+    polygonMumbai: {
       url: 'https://rpc-mumbai.maticvigil.com/',
       gasPrice: 225000000000,
       chainId: 80001,
@@ -68,15 +68,33 @@ const config: HardhatUserConfig = {
         mnemonic: process.env.MNEMONIC || '',
       },
     },
+    bsc: {
+      url: 'https://bsc-dataseed1.binance.org/',
+      chainId: 56,
+      gasPrice: 20000000000,
+      accounts: {
+        mnemonic: process.env.MNEMONIC || '',
+      },
+    },
+    bscTestnet: {
+      url: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
+      chainId: 97,
+      gasPrice: 20000000000,
+      accounts: {
+        mnemonic: process.env.MNEMONIC || '',
+      },
+    },
     hardhat: {
       forking: {
         // Ethereum
-        url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
-        blockNumber: 15300000,
+        // url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
+        // blockNumber: 15300000,
         // Avalanche
         // url: 'https://api.avax.network/ext/bc/C/rpc',
         // Polygon
         // url :'https://polygon-rpc.com',
+        // BSC
+        url: 'https://bsc-dataseed.binance.org/',
       },
     },
   },
