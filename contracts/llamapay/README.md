@@ -24,6 +24,8 @@ If you are staking the LlamaPay Ante Test, you can interact with the pool the sa
 | Ethereum Rinkeby  | [0x2eFAe77c5287e1Fea56EA13C91561FBa4730256c](https://rinkeby.etherscan.io/address/0x2efae77c5287e1fea56ea13c91561fba4730256c) | [0x8B29C1f916DD7d537D8438dF3A70f642eCf6794B](https://rinkeby.etherscan.io/address/0x8B29C1f916DD7d537D8438dF3A70f642eCf6794B) |
 | Avalanche C-Chain | [0x4c008a686899F9a745C394A8C42d4a4Cb89F23A5](https://snowtrace.io/address/0x4c008a686899F9a745C394A8C42d4a4Cb89F23A5)         | [0x99eDEcfE4FE9c2d760b30E782eA0E6C87Bd2F3ac](https://snowtrace.io/address/0x99eDEcfE4FE9c2d760b30E782eA0E6C87Bd2F3ac)         |
 | Avalanche Fuji    | Coming soon!                                                                                                                  | Coming soon!                                                                                                                  |
+| Polygon Mainnet   | [0xC3dCEf82A8C38C20DA9feb8bB1d03E9c9D842da3](https://polygonscan.com/address/0xC3dCEf82A8C38C20DA9feb8bB1d03E9c9D842da3) | [0x2992EA84A041F5042CA0062d2E09178A589aEdcb](https://polygonscan.com/address/0x2992EA84A041F5042CA0062d2E09178A589aEdcb) |
+| Binance Smart Chain | | |
 
 2. Use the `challenge()` wrapper function to interact with the Ante Pool (e.g. via Etherscan or other preferred method)
 3. To withdraw challenged funds, use the `withdrawChallenge()` or `withdrawChallengeAll()` wrapper functions
