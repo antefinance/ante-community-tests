@@ -7,7 +7,7 @@ import { evmSnapshot, evmRevert, fundSigner, runAsSigner } from '../helpers';
 import { expect } from 'chai';
 import { BigNumber, Contract } from 'ethers';
 
-describe.only('AnteStargateFantomTVLPlungeTest', function () {
+describe('AnteStargateFantomTVLPlungeTest', function () {
   let test: AnteStargateFantomTVLPlungeTest;
   let usdc: Contract;
 
