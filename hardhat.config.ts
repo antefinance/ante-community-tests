@@ -84,6 +84,20 @@ const config: HardhatUserConfig = {
         mnemonic: process.env.MNEMONIC || '',
       },
     },
+    fantom: {
+      url: 'https://rpc.fantom.network',
+      chainId: 250,
+      accounts: {
+        mnemonic: process.env.MNEMONIC || '',
+      },
+    },
+    fantomTestnet: {
+      url: 'https://rpc.testnet.fantom.network',
+      chainId: 4002,
+      accounts: {
+        mnemonic: process.env.MNEMONIC || '',
+      },
+    },
     hardhat: {
       forking: {
         // Ethereum
@@ -94,7 +108,9 @@ const config: HardhatUserConfig = {
         // Polygon
         // url :'https://polygon-rpc.com',
         // BSC
-        url: 'https://bsc-dataseed.binance.org/',
+        // url: 'https://bsc-dataseed.binance.org/',
+        // Fantom
+        url: 'https://rpc.fantom.network',
       },
     },
   },
