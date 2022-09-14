@@ -13,8 +13,9 @@ const config: HardhatUserConfig = {
   networks: {
     localhost: {
       forking: {
-        url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
-        blockNumber: 15300000,
+        url: `https://arb-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_ARBITRUM_KEY}`,
+        //url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
+        //blockNumber: 15300000,
       },
       url: 'http://localhost:8545',
     },
@@ -98,6 +99,18 @@ const config: HardhatUserConfig = {
         mnemonic: process.env.MNEMONIC || '',
       },
     },
+    arbitrum: {
+      url: `https://arbitrum-mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
+      chainId: 42161,
+      accounts: [process.env.MAINNET_PRIVATE_KEY || ''],
+    },
+    arbitrumGoerli: {
+      url: `https://arbitrum-goerli.infura.io/v3/${process.env.INFURA_KEY}`,
+      chainId: 421613,
+      accounts: {
+        mnemonic: process.env.MNEMONIC || '',
+      },
+    },
     hardhat: {
       forking: {
         // Ethereum
@@ -110,7 +123,11 @@ const config: HardhatUserConfig = {
         // BSC
         // url: 'https://bsc-dataseed.binance.org/',
         // Fantom
-        url: 'https://rpc.fantom.network',
+        // url: 'https://rpc.fantom.network',
+        // Arbitrum
+        //url: 'https://arb1.arbitrum.io/rpc',
+        url: `https://arbitrum-mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
+        //url: `https://arb-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_ARBITRUM_KEY}`,
       },
     },
   },
