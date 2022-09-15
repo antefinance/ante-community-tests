@@ -13,9 +13,8 @@ const config: HardhatUserConfig = {
   networks: {
     localhost: {
       forking: {
-        url: `https://arb-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_ARBITRUM_KEY}`,
-        //url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
-        //blockNumber: 15300000,
+        url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
+        blockNumber: 15300000,
       },
       url: 'http://localhost:8545',
     },
