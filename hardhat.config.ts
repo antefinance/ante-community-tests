@@ -101,7 +101,7 @@ const config: HardhatUserConfig = {
     hardhat: {
       forking: {
         // Ethereum
-        // url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
+        url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
         // blockNumber: 15300000,
         // Avalanche
         // url: 'https://api.avax.network/ext/bc/C/rpc',
@@ -110,7 +110,7 @@ const config: HardhatUserConfig = {
         // BSC
         // url: 'https://bsc-dataseed.binance.org/',
         // Fantom
-        url: 'https://rpc.fantom.network',
+        // url: 'https://rpc.fantom.network',
       },
     },
   },
