@@ -9,6 +9,32 @@ import '@typechain/hardhat';
 import '@nomiclabs/hardhat-waffle';
 import '@nomiclabs/hardhat-etherscan';
 
+interface ForkingNetworkRPC {
+  mainnet: { url: string };
+  avalanche: { url: string };
+  polygon: { url: string };
+  bsc: { url: string };
+  fantom: { url: string };
+}
+
+const forkingRPC: ForkingNetworkRPC = {
+  mainnet: {
+    url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
+  },
+  avalanche: {
+    url: 'https://api.avax.network/ext/bc/C/rpc',
+  },
+  polygon: {
+    url: 'https://polygon-rpc.com',
+  },
+  bsc: {
+    url: 'https://bsc-dataseed.binance.org/',
+  },
+  fantom: {
+    url: 'https://rpc.fantom.network',
+  },
+};
+
 const config: HardhatUserConfig = {
   networks: {
     localhost: {
@@ -100,17 +126,7 @@ const config: HardhatUserConfig = {
     },
     hardhat: {
       forking: {
-        // Ethereum
-        url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
-        // blockNumber: 15300000,
-        // Avalanche
-        // url: 'https://api.avax.network/ext/bc/C/rpc',
-        // Polygon
-        // url :'https://polygon-rpc.com',
-        // BSC
-        // url: 'https://bsc-dataseed.binance.org/',
-        // Fantom
-        // url: 'https://rpc.fantom.network',
+        url: forkingRPC[process.env.NETWORK as keyof ForkingNetworkRPC].url,
       },
     },
   },
