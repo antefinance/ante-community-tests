@@ -49,10 +49,12 @@ Write an ante test for your desired protocol and put it in a file called `./cont
 
 **(Optional)** you can also write some unit tests that check whether or not your AnteTest works. These unit tests should be placed in a file called `./test/[PROTOCOL_NAME]/[YOUR_TEST_NAME].spec.ts`
 
+Make sure that your `.env` file has the field `NETWORK` filled in with the network you intend to test on.
+
 Then run the following command:
 
 ```
-npm run test
+npx hardhat test test/[PROTOCOL_NAME]/[YOUR_TEST_NAME].spec.ts
 ```
 
 This command runs your unit tests against a forked version of the ethereum mainnet. Once you've verified everything is working properly, it's time to deploy your ante test to testnet and then mainnet!
