@@ -7,15 +7,15 @@ import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IER
 
 // ==INSTRUCTIONS==
 // TODO 1. Rename the contract and file in the form Ante[Target][Token]BalanceAbove[Threshold]Test
-// TODO 2. Update target protocol, target address, token, and balance threshold (marked with TODO)
-// TODO 3. Replace instances of [TOKEN], [TARGET], and [THRESHOLD] as needed
+// TODO 2. Update target protocol, tokenholder address, token, and balance threshold (marked with TODO)
+// TODO 3. Replace instances of [TOKEN], [HOLDER], and [THRESHOLD] as needed
 
-/// @title Checks $[TOKEN] balance in [TARGET] remains >= [THRESHOLD]
+/// @title Checks $[TOKEN] balance in [HOLDER] remains >= [THRESHOLD]
 /// @notice Ante Test to check
-contract AnteTokenBalanceTestTemplate is AnteTest("[TARGET] [TOKEN] balance remains >= [THRESHOLD]") {
-    // TODO update target address and block explorer link
+contract AnteTokenBalanceTestTemplate is AnteTest("[HOLDER] [TOKEN] balance remains >= [THRESHOLD]") {
+    // TODO update tokenholder address and block explorer link
     // https://etherscan.io/address/0xdaeada3d210d2f45874724beea03c7d4bbd41674
-    address public constant TARGET_ADDRESS = 0xDAEada3d210D2f45874724BeEa03C7d4BBD41674;
+    address public constant HOLDER_ADDRESS = 0xDAEada3d210D2f45874724BeEa03C7d4BBD41674;
 
     // TODO update token address and block explorer link
     // https://etherscan.io/address/0x6123B0049F904d730dB3C36a31167D9d4121fA6B
@@ -31,12 +31,12 @@ contract AnteTokenBalanceTestTemplate is AnteTest("[TARGET] [TOKEN] balance rema
         // TODO replace "Protocol" with target protocol/wallet/etc.
         protocolName = "Protocol";
 
-        testedContracts = [address(TOKEN), TARGET_ADDRESS];
+        testedContracts = [address(TOKEN), HOLDER_ADDRESS];
     }
 
-    /// @notice test to check if $[TOKEN] balance in [TARGET] is >= [THRESHOLD]
-    /// @return true if $[TOKEN] balance in [TARGET] is >= [THRESHOLD]
+    /// @notice test to check if $[TOKEN] balance in [HOLDER] is >= [THRESHOLD]
+    /// @return true if $[TOKEN] balance in [HOLDER] is >= [THRESHOLD]
     function checkTestPasses() public view override returns (bool) {
-        return (TOKEN.balanceOf(TARGET_ADDRESS) >= thresholdBalance);
+        return (TOKEN.balanceOf(HOLDER_ADDRESS) >= thresholdBalance);
     }
 }
