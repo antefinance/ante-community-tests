@@ -18,8 +18,8 @@ contract AnteTestBlankTemplate is AnteTest("Description of what the test checks"
         // TODO replace "Protocol" with target protocol/wallet/etc.
         protocolName = "Protocol";
 
-        // TODO add contracts being tested
-        testedContracts = [];
+        // TODO replace 0x0 with any contracts being tested
+        testedContracts = [address(0)];
     }
 
     /// @notice test to check if $[TOKEN] balance in [TARGET] is >= [THRESHOLD]
