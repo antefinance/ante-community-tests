@@ -6,14 +6,8 @@ import "../AnteTest.sol";
 import "../interfaces/IERC20.sol";
 
 /// @title Curve 3Pool Balance Test
-/// @notice Ensure that at least 2 of three tokens are balanced within 25% of each other
-/// @dev At different times, there will be different trading volume for each pair
-/// based on interest. For example, 1 year ago, USDT was balanced within 15% of the others
-/// and now it only makes up half compared to another token in the pool.
-/// Based on three time points; today, 6 months ago, and 1 year ago, the highest variation was
-/// 20%. Based on this, the threshold will be a 25% difference.
-/// Eg (100, 120, 60) will pass and (100, 150, 60) will fail
-contract USDThreePoolValueTest is AnteTest("Ensure Curve USD 3pool stays balanced within 25%") {
+/// @notice Ensure that at sum of three tokens are greater than 10M
+contract AnteUSDThreePoolValueTest is AnteTest("Ensure Curve USD 3pool three tokens sum stays above 10M") {
     address private constant CURVE_THREE_POOL_ADDRESS = 0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7;
     address private constant USDC_ADDRESS = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
     address private constant USDT_ADDRESS = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
@@ -28,7 +22,7 @@ contract USDThreePoolValueTest is AnteTest("Ensure Curve USD 3pool stays balance
         protocolName = "Curve";
     }
 
-    /// @return if one pair is balanced within 25% of the other
+    /// @return true if sum of three toeksn are above 10M
     function checkTestPasses() public view override returns (bool) {
         return
             isSafe(
@@ -42,7 +36,7 @@ contract USDThreePoolValueTest is AnteTest("Ensure Curve USD 3pool stays balance
     /// @param usdc The amount of USDC in the pool
     /// @param usdt The amount of USDT in the pool
     /// @param dai The amount of DAI in the pool
-    /// @return true if at least one of the pairs are balanced within 25% of each other
+    /// @return true if sum of the three tokens are above 10M
     function isSafe(
         uint256 usdc,
         uint256 usdt,
