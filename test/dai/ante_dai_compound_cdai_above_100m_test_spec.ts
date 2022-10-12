@@ -1,13 +1,13 @@
 import hre from 'hardhat';
 const { waffle } = hre;
 
-import { AnteDAICompoundcDAIAbove100MTest, AnteDAICompoundcDAIAbove100MTest__factory } from '../../typechain';
+import { AnteDaiCompoundcDaiAbove100MTest, AnteDaiCompoundcDaiAbove100MTest__factory } from '../../typechain';
 
 import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
 
-describe('AnteDAICompoundcDAIAbove100MTest', function () {
-  let test: AnteDAICompoundcDAIAbove100MTest;
+describe('AnteDaiCompoundcDaiAbove100MTest', function () {
+  let test: AnteDaiCompoundcDaiAbove100MTest;
 
   let globalSnapshotId: string;
 
@@ -16,9 +16,9 @@ describe('AnteDAICompoundcDAIAbove100MTest', function () {
 
     const [deployer] = waffle.provider.getWallets();
     const factory = (await hre.ethers.getContractFactory(
-      'AnteDAICompoundcDAIAbove100MTest',
+      'AnteDaiCompoundcDaiAbove100MTest',
       deployer
-    )) as AnteDAICompoundcDAIAbove100MTest__factory;
+    )) as AnteDaiCompoundcDaiAbove100MTest__factory;
     test = await factory.deploy();
     await test.deployed();
   });
