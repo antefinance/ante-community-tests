@@ -6,9 +6,9 @@ import "../AnteTest.sol";
 import "@openzeppelin-contracts-old/contracts/token/ERC20/IERC20.sol";
 
 /// @title AcrossBridgeTest
-/// @notice Ante Test to check if Across Optimistic "rugs" 80% of its value (as of test deployment)
+/// @notice Ante Test to check if Across Optimistic "rugs" 70% of its value (as of test deployment)
 
-contract AnteAcrossBridgeTest is AnteTest("Across Bridge does not RUG its 80 % of its value ") {
+contract AnteAcrossOptimisticBridgeTest is AnteTest("Across Bridge does not RUG its 70 % of its value ") {
     // Contracts
     // https://docs.across.to/v2/developers/contract-addresses/mainnet-chain-id-1
 
@@ -44,7 +44,7 @@ contract AnteAcrossBridgeTest is AnteTest("Across Bridge does not RUG its 80 % o
         usdcThreshold = (USDC.balanceOf(hubPoolAddr) * THRESHOLD) / 100;
     }
 
-    /// @notice test to check value of ether + top 3 tokens on Across Bridge
+    /// @notice test to check value of top 3 tokens on Across Bridge
     /// @return true if bridge has more than 30% of assets from when it was deployed
     function checkTestPasses() external view override returns (bool) {
         return

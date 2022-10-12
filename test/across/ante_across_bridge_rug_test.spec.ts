@@ -1,13 +1,13 @@
 import hre from 'hardhat';
 const { waffle } = hre;
 
-import { AnteAcrossBridgeTest__factory, AnteAcrossBridgeTest } from '../../typechain';
+import { AnteAcrossOptimisticBridgeTest__factory, AnteAcrossOptimisticBridgeTest } from '../../typechain';
 
 import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
 
-describe('AnteAcrossBridgeTest', function () {
-  let test: AnteAcrossBridgeTest;
+describe('AnteAcrossOptimisticBridgeTest', function () {
+  let test: AnteAcrossOptimisticBridgeTest;
 
   let globalSnapshotId: string;
 
@@ -16,9 +16,9 @@ describe('AnteAcrossBridgeTest', function () {
 
     const [deployer] = waffle.provider.getWallets();
     const factory = (await hre.ethers.getContractFactory(
-      'AnteAcrossBridgeTest',
+      'AnteAcrossOptimisticBridgeTest',
       deployer
-    )) as AnteAcrossBridgeTest__factory;
+    )) as AnteAcrossOptimisticBridgeTest__factory;
     test = await factory.deploy();
     await test.deployed();
   });
