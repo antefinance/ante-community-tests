@@ -8,7 +8,7 @@ import { expect } from 'chai';
 import { BigNumber, Contract } from 'ethers';
 
 describe('AnteAnoncatOverpopulationTest', function () {
-  let test: AnteAnoncatOverpopulationTest; // TODO replace
+  let test: AnteAnoncatOverpopulationTest;
   let token: Contract;
 
   let globalSnapshotId: string;
