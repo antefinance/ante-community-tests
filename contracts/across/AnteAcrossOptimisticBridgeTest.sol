@@ -6,18 +6,17 @@ import "../AnteTest.sol";
 import "@openzeppelin-contracts-old/contracts/token/ERC20/IERC20.sol";
 
 /// @title AcrossBridgeTest
-/// @notice Ante Test to check if Across Optimistic "rugs" 70% of its value (as of test deployment)
+/// @notice Ante Test to check if Across Optimistic "rugs" 70% of its top 3 toekens (as of test deployment)
 
-contract AnteAcrossOptimisticBridgeTest is AnteTest("Across Bridge does not RUG its 70 % of its value") {
+contract AnteAcrossOptimisticBridgeTest is AnteTest("Across Bridge does not rug 70% of its top 3 tokens") {
     // Contracts
     // https://docs.across.to/v2/developers/contract-addresses/mainnet-chain-id-1
-
-    // HubPool Address: The  main contract Holds Assets
+    // HubPool Address: The main contract that holds assets
     address public constant hubPoolAddr = 0xc186fA914353c44b2E33eBE05f21846F1048bEda;
 
     // Pool Assetss
 
-    // Lets 3 Major Assets:  WETH WBTC USDC
+    // Lets use 3 Major Assets: WETH WBTC USDC
     // WETH:  https://etherscan.io/address/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
     address public constant wethAddr = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     // WBTC:  https://etherscan.io/address/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599
