@@ -6,7 +6,7 @@ import "../AnteTest.sol";
 import "@openzeppelin-contracts-old/contracts/token/ERC20/IERC20.sol";
 
 /// @title AcrossBridgeTest
-/// @notice Ante Test to check if Across Optimistic "rugs" 70% of its top 3 toekens (as of test deployment)
+/// @notice Ante Test to check if Across Optimistic "rugs" 70% of its top 3 tokens (as of test deployment)
 
 contract AnteAcrossOptimisticBridgeTest is AnteTest("Across Bridge does not rug 70% of its top 3 tokens") {
     // Contracts
