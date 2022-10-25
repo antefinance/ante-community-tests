@@ -11,6 +11,7 @@ import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 // TODO 3. Replace instances of [TOKEN], [HOLDER], and [THRESHOLD] as needed
 
 /// @title Checks that [HOLDER] holds at least [THRESHOLD] [NFT]s
+/// @author Put your ETH address here
 /// @notice Ante Test to check
 contract AnteNFTBalanceTestTemplate is AnteTest("[TARGET] [TOKEN] balance remains >= [THRESHOLD]") {
     // TODO update holder address and block explorer link
