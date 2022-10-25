@@ -32,7 +32,7 @@ contract AntePoHTest is AnteTest("Description of what the test checks") {
     }
 
     /// This is known to be frontrunnable
-    function setPreImage(string _preimage) public {
+    function setPreImage(string memory _preimage) public {
         preimage = _preimage;
     }
 }
