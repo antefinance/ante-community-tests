@@ -10,6 +10,7 @@ import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IER
 // TODO 2. Update checkTestPasses with pass/fail logic
 
 /// @title This should succinctly explain what the Ante Test checks
+/// @author Put your ETH address here
 /// @notice Ante Test to check _____
 contract AnteTestBlankTemplate is AnteTest("Description of what the test checks") {
     // Here is where any variables you might use can be declared, e.g. token addresses
@@ -22,10 +23,10 @@ contract AnteTestBlankTemplate is AnteTest("Description of what the test checks"
         testedContracts = [address(0)];
     }
 
-    /// @notice test to check if $[TOKEN] balance in [TARGET] is >= [THRESHOLD]
-    /// @return true if $[TOKEN] balance in [TARGET] is >= [THRESHOLD]
+    /// @notice test to check ___________
+    /// @return true if [test pass condition]
     function checkTestPasses() public view override returns (bool) {
-        // Here is where the test logic lives!
+        // Here is where your test logic goes!
         return (true);
     }
 }
