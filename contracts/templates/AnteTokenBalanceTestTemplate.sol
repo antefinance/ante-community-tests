@@ -11,7 +11,9 @@ import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IER
 // TODO 3. Replace instances of [TOKEN], [HOLDER], and [THRESHOLD] as needed
 
 /// @title Checks $[TOKEN] balance in [HOLDER] remains >= [THRESHOLD]
+/// @author Put your ETH address here
 /// @notice Ante Test to check
+// TODO Change AnteTokenBalanceTestTemplate to the filename of the test,
 contract AnteTokenBalanceTestTemplate is AnteTest("[HOLDER] [TOKEN] balance remains >= [THRESHOLD]") {
     // TODO update tokenholder address and block explorer link
     // https://etherscan.io/address/0xdaeada3d210d2f45874724beea03c7d4bbd41674

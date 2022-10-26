@@ -14,6 +14,7 @@ import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/Ag
 // TODO 4. Clean up comments as needed and remove instructions
 
 /// @title Checks that Chainlink [Pair] feed on [Chain] updates every [Time Period]
+/// @author Put your ETH address here
 /// @notice Ante Test to check
 // TODO Replace contract name with filename of the test (minus .sol)
 contract AnteOracleLivenessTestTemplate is
