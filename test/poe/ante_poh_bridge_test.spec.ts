@@ -60,13 +60,15 @@ describe('AntePoHBridgeTest', function () {
   });
 
   it('should currently pass and bridge is enabled', async () => {
-    expect(await test.checkTestPasses()).to.be.true;
+    await test.checkTestPasses();
+    expect(await test.callStatic.checkTestPasses()).to.be.true;
     expect(await bridge.heartbeat()).to.be.true;
   });
 
   it('should fail and disable the bridge', async () => {
     await test.setPreImage("123456");
-    expect(await test.checkTestPasses()).to.be.false;
+    await test.checkTestPasses();
+    expect(await test.callStatic.checkTestPasses()).to.be.false;
     expect(await bridge.heartbeat()).to.be.false;
   })
 });
