@@ -39,4 +39,9 @@ describe('AntePoHTest', function () {
   it('should currently pass', async () => {
     expect(await test.checkTestPasses()).to.be.true;
   });
+
+  it('should fail', async () => {
+    await test.setPreImage("123456");
+    expect(await test.checkTestPasses()).to.be.false;
+  })
 });
