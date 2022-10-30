@@ -16,7 +16,6 @@ contract TokenBridge {
     WETH private token;
     address private owner;
 
-    uint public eth_reserves = 0;
     bool public live = false;
 
     constructor(address _tokenAddr) {
@@ -47,12 +46,11 @@ contract TokenBridge {
     function deposit() external payable {
         require(live, "Deposits currently disabled");
         require(msg.value > 0, "Need ETH to bridge");
-        eth_reserves += msg.value;
         token.mint(msg.sender, msg.value);
     }
 
     function withdraw(uint amount) external payable {
-        require(amount <= eth_reserves, "Amount of ETH withdrawn must not be more than reserve");
+        require(amount <= address(this).balance, "Amount of ETH withdrawn must not be more than reserve");
         token.transferFrom(msg.sender, address(this), amount);
         (bool sent, bytes memory data) = msg.sender.call{value: amount}("");
         require(sent, "Failed to send ETH");
