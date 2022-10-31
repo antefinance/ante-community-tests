@@ -1,11 +1,6 @@
-// =================== CS251 DEX Project =================== // 
-//        @authors: Simon Tao '22, Mathew Hogan '22          //
-// ========================================================= //    
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-// Please check out the OpenZeppelin contracts for ERC20 tokens!
-// Links can be found in the the respective solidity files
 import './erc20.sol';
 
 contract WETH is ERC20 {
