@@ -25,6 +25,8 @@ contract TokenBridge {
 
     function setAnteTest(address _anteTestAddr) public {
         require(msg.sender == owner);
+        require(anteTestAddr == address(0));
+        require(_anteTestAddr != address(0));
         anteTestAddr = _anteTestAddr;
         anteTest = AntePoHTest(_anteTestAddr);
     }
@@ -51,6 +53,7 @@ contract TokenBridge {
 
     function withdraw(uint amount) external payable {
         require(amount <= address(this).balance, "Amount of ETH withdrawn must not be more than reserve");
+        require(token.balanceOf(msg.sender) >= amount, "User does not have enough tokens to redeem");
         token.transferFrom(msg.sender, address(this), amount);
         (bool sent, bytes memory data) = msg.sender.call{value: amount}("");
         require(sent, "Failed to send ETH");
