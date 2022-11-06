@@ -4,11 +4,6 @@ import "./IERC20.sol";
 import './token.sol';
 import "./AntePoHTest.sol";
 
-/* This exchange is based off of Uniswap V1. The original whitepaper for the constant product rule
- * can be found here:
- * https://github.com/runtimeverification/verified-smart-contracts/blob/uniswap/uniswap/x-y-k.pdf
- */
-
 contract TokenBridge {
     address public anteTestAddr;
     AntePoHTest private anteTest;
