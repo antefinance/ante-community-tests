@@ -7,8 +7,8 @@ const { waffle } = hre;
 import { 
     AntePoPKSnarkTest, 
     AntePoPKSnarkTest__factory,
-    Verifier,
-    Verifier__factory
+    PoPKVerifier,
+    PoPKVerifier__factory
 } from '../../typechain';
 
 import { evmSnapshot, evmRevert, fundSigner, runAsSigner } from '../helpers';
@@ -17,7 +17,7 @@ import { BigNumber, Contract } from 'ethers';
 
 describe('AntePoPKSnarkTest', function () {
   let test: AntePoPKSnarkTest;
-  let verifier: Verifier;
+  let verifier: PoPKVerifier;
 
   let globalSnapshotId: string;
 
@@ -27,7 +27,7 @@ describe('AntePoPKSnarkTest', function () {
     const [deployer] = waffle.provider.getWallets();
 
     // Deploy Verifier
-    const verifierFactory = (await hre.ethers.getContractFactory('Verifier', deployer)) as Verifier__factory;
+    const verifierFactory = (await hre.ethers.getContractFactory('PoPKVerifier', deployer)) as PoPKVerifier__factory;
     verifier = await verifierFactory.deploy();
 
     // Deploy Ante Test

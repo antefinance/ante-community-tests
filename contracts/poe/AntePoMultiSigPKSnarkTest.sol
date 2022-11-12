@@ -3,7 +3,7 @@
 pragma solidity ^0.8.0;
 
 import {AnteTest} from "../AnteTest.sol";
-import "./AntePoPKSnarkVerifier.sol";
+import "./AntePoMultiSigPKSnarkVerifier.sol";
 
 // ==INSTRUCTIONS==
 // TODO 1. Rename the contract and file in the form Ante[DescriptiveNameInCamelCase]Test
@@ -11,15 +11,17 @@ import "./AntePoPKSnarkVerifier.sol";
 
 /// @title This should succinctly explain what the Ante Test checks
 /// @notice Ante Test to check _____
-contract AntePoPKSnarkTest is AnteTest("Nobody knows the private key to this public address") {
-    // This is the public address that this AnteTest was written for
-    address public testAddress = 0x66c777464c62F125760f80254257ed8DFccB2921;
-    PoPKVerifier private verifier;
+contract AntePoMultiSigPKSnarkTest is AnteTest("Nobody knows a private key for one of these addresses") {
+    // These are the public addresses that this AnteTest was written for
+    address public testAddress1 = 0x66c777464c62F125760f80254257ed8DFccB2921;
+    address public testAddress2 = 0x09f1eF9171202A72d0854D421244b2361509dCEd;
+    address public testAddress3 = 0x3CF58a049f731E5F278304CAF98B4699129e6A1D;
+    PoMultiSigPKVerifier private verifier;
     address private verifierAddress;
     uint[2] a;
     uint[2][2] b;
     uint[2] c;
-    uint[1] input;
+    uint[5] input;
 
     constructor(address _verifierAddress) {
         // TODO replace "Protocol" with target protocol/wallet/etc.
@@ -29,7 +31,7 @@ contract AntePoPKSnarkTest is AnteTest("Nobody knows the private key to this pub
         testedContracts = [address(0)];
 
         verifierAddress = _verifierAddress;
-        verifier = PoPKVerifier(verifierAddress);
+        verifier = PoMultiSigPKVerifier(verifierAddress);
     }
 
     /// @notice test to check if $[TOKEN] balance in [TARGET] is >= [THRESHOLD]
@@ -44,7 +46,7 @@ contract AntePoPKSnarkTest is AnteTest("Nobody knows the private key to this pub
         uint[2] memory _a,
         uint[2][2] memory _b,
         uint[2] memory _c,
-        uint[1] memory _input
+        uint[5] memory _input
     ) public {
         a = _a;
         b = _b;
