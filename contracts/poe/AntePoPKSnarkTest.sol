@@ -3,6 +3,7 @@
 pragma solidity ^0.8.0;
 
 import {AnteTest} from "../AnteTest.sol";
+import "./AntePoPKSnarkVerifier.sol";
 
 // ==INSTRUCTIONS==
 // TODO 1. Rename the contract and file in the form Ante[DescriptiveNameInCamelCase]Test
@@ -10,28 +11,42 @@ import {AnteTest} from "../AnteTest.sol";
 
 /// @title This should succinctly explain what the Ante Test checks
 /// @notice Ante Test to check _____
-contract AntePoHTest is AnteTest("Nobody knows the pre-image of this hash") {
-    // Here is where any variables you might use can be declared, e.g. token addresses
-    string public preimage; // The pre-image is 123456
-    bytes32 public testHash = 0xc888c9ce9e098d5864d3ded6ebcc140a12142263bace3a23a36f9905f12bd64a;
+contract AntePoPKSnarkTest is AnteTest("Nobody knows the private key to this public address") {
+    // This is the public address that this AnteTest was written for
+    address public testAddress = 0x66c777464c62F125760f80254257ed8DFccB2921;
+    Verifier private verifier;
+    uint[2] a;
+    uint[2][2] b;
+    uint[2] c;
+    uint[1] input;
 
-    constructor() {
+    constructor(Verifier _verifier) {
         // TODO replace "Protocol" with target protocol/wallet/etc.
         protocolName = "Protocol";
 
         // TODO replace 0x0 with any contracts being tested
         testedContracts = [address(0)];
+
+        verifier = _verifier;
     }
 
     /// @notice test to check if $[TOKEN] balance in [TARGET] is >= [THRESHOLD]
     /// @return true if $[TOKEN] balance in [TARGET] is >= [THRESHOLD]
     function checkTestPasses() public view override returns (bool) {
         // Here is where the test logic lives!
-        return keccak256(abi.encodePacked(preimage)) != testHash;
+        return !verifier.verifyProof(a, b, c, input);
     }
 
     /// This is known to be frontrunnable
-    function setPreImage(string memory _preimage) public {
-        preimage = _preimage;
+    function setCalldata(
+        uint[2] memory _a,
+        uint[2][2] memory _b,
+        uint[2] memory _c,
+        uint[1] memory _input
+    ) public {
+        a = _a;
+        b = _b;
+        c = _c;
+        input = _input;
     }
 }

@@ -41,6 +41,15 @@ describe('AntePoPKTest', function () {
     const signature = await testWallet.signMessage(messageHashBinary);
     await test.set(signature);
     expect(await test.checkTestPasses()).to.be.true;
+  });
+
+  it('should still pass if incorrect message is signed', async () => {
+    const testWallet = new Wallet("0xf9ad1bc6470713365953b2375dcbca1059e469132b968e154525653f6824200c");
+    const messageHash = utils.solidityKeccak256(["string"], ["Something else"]);
+    const messageHashBinary = utils.arrayify(messageHash);
+    const signature = await testWallet.signMessage(messageHashBinary);
+    await test.set(signature);
+    expect(await test.checkTestPasses()).to.be.true;
   })
 
   it('should fail', async () => {
@@ -50,5 +59,5 @@ describe('AntePoPKTest', function () {
     const signature = await testWallet.signMessage(messageHashBinary);
     await test.set(signature);
     expect(await test.checkTestPasses()).to.be.false;
-  })
+  });
 });
