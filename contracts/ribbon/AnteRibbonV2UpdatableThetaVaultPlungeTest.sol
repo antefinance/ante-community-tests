@@ -24,9 +24,9 @@ contract AnteRibbonV2UpdatableThetaVaultPlungeTest is Ownable, AnteTest("RibbonV
     /// @notice Emitted when test owner updates test vaults/thresholds
     /// @param vault The address of vault
     /// @param threshold new failure threshold
-    event AnteTestUpdated(address indexed vault, uint256 threshold);
+    event AnteRibbonTestUpdated(address indexed vault, uint256 threshold);
 
-    // currently active RibbonV2 theta vaults
+    // major active RibbonV2 theta vaults
     IRibbonThetaVault[] public thetaVaults = [
         IRibbonThetaVault(0x53773E034d9784153471813dacAFF53dBBB78E8c), // T-STETH-C vault
         IRibbonThetaVault(0x25751853Eab4D0eB3652B5eB6ecB102A2789644B), // T-ETH-C vault
@@ -48,6 +48,8 @@ contract AnteRibbonV2UpdatableThetaVaultPlungeTest is Ownable, AnteTest("RibbonV
 
     /// @notice minimum time between test updates by owner
     uint256 public constant UPDATE_TIMELOCK = 86400; // 1 day
+    uint256 public constant REMOVE_TIMELOCK = 604800; // 7 days
+    uint256 public constant MAX_VAULTS = 20; // to guard against block stuffing
 
     constructor() {
         protocolName = "Ribbon";
@@ -63,6 +65,7 @@ contract AnteRibbonV2UpdatableThetaVaultPlungeTest is Ownable, AnteTest("RibbonV
     /// @param _vault Ribbon V2 Theta Vault address to add
     function addVault(address _vault) public onlyOwner {
         require(block.timestamp > lastUpdated + UPDATE_TIMELOCK, "Need to wait 1 day between updates!");
+        require(thetaVaults.length < MAX_VAULTS, "Maximum number of tested vaults reached!");
 
         // Assume that owner does not add an invalid or duplicate vault
         // (in which case if either threshold fails the whole test fails)
@@ -74,7 +77,19 @@ contract AnteRibbonV2UpdatableThetaVaultPlungeTest is Ownable, AnteTest("RibbonV
         testedContracts.push(address(vault));
         lastUpdated = block.timestamp;
 
-        emit AnteTestUpdated(address(vault), threshold);
+        emit AnteRibbonTestUpdated(address(vault), threshold);
+    }
+
+    function sunsetVault(uint256 index) public onlyOwner {
+        require(block.timestamp > lastUpdated + REMOVE_TIMELOCK, "Need 7 days to sunset vault");
+        require(index < thetaVaults.length, "Index out of bounds");
+        // require vault is not already failing
+        require(calculateAssetBalance(thetaVaults[index]) >= thresholds[index], "vault already failing");
+
+        thresholds[index] = 0;
+        lastUpdated = block.timestamp;
+
+        emit AnteRibbonTestUpdated(address(thetaVaults[index]), 0);
     }
 
     /// @notice Reset TVL failure threshold for a single vault to 10% of
@@ -87,7 +102,7 @@ contract AnteRibbonV2UpdatableThetaVaultPlungeTest is Ownable, AnteTest("RibbonV
         thresholds[index] = (calculateAssetBalance(thetaVaults[index]) * PERCENT_DROP_THRESHOLD) / 100;
         lastUpdated = block.timestamp;
 
-        emit AnteTestUpdated(address(thetaVaults[index]), thresholds[index]);
+        emit AnteRibbonTestUpdated(address(thetaVaults[index]), thresholds[index]);
     }
 
     /// @notice computes balance of underlying asset in a given Ribbon Theta Vault
