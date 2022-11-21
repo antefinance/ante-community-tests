@@ -8,6 +8,7 @@ import 'hardhat-gas-reporter';
 import '@typechain/hardhat';
 import '@nomiclabs/hardhat-waffle';
 import '@nomiclabs/hardhat-etherscan';
+import '@nomiclabs/hardhat-web3';
 
 interface ForkingNetworkRPC {
   mainnet: { url: string };
