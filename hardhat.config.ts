@@ -15,6 +15,8 @@ interface ForkingNetworkRPC {
   polygon: { url: string };
   bsc: { url: string };
   fantom: { url: string };
+  arbitrumOne: { url: string };
+  optimisticEthereum: { url: string };
 }
 
 const forkingRPC: ForkingNetworkRPC = {
@@ -32,6 +34,12 @@ const forkingRPC: ForkingNetworkRPC = {
   },
   fantom: {
     url: 'https://rpc.fantom.network',
+  },
+  arbitrumOne: {
+    url: 'https://arb1.arbitrum.io/rpc',
+  },
+  optimisticEthereum: {
+    url: 'https://mainnet.optimism.io',
   },
 };
 
@@ -122,6 +130,34 @@ const config: HardhatUserConfig = {
       chainId: 4002,
       accounts: {
         mnemonic: process.env.MNEMONIC || '',
+      },
+    },
+    arbitrumOne: {
+      url: 'https://arb1.arbitrum.io/rpc',
+      chainId: 42161,
+      accounts: {
+        mnemonic: process.env.MNEMONIC || '',
+      },
+    },
+    arbitrumGoerli: {
+      url: 'https://goerli-rollup.arbitrum.io/rpc',
+      chainId: 421613,
+      accounts: {
+        mnemonic: process.env.MNEMONIC || '',
+      },
+    },
+    optimisticEthereum: {
+      url: 'https://mainnet.optimism.io',
+      chainId: 10,
+      accounts: {
+        mnemonic: process.env.MAINNET_PRIVATE_KEY || '',
+      },
+    },
+    optimismGoerli: {
+      url: 'https://goerli.optimism.io',
+      chainId: 420,
+      accounts: {
+        mnemonic: process.env.TESTNET_MNEMONIC || '',
       },
     },
     hardhat: {
