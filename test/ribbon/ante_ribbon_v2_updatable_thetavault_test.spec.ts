@@ -42,13 +42,11 @@ describe('AnteRibbonV2UpdatableThetaVaultPlungeTest', function () {
     });
   });
 
-  it('cannot add vault if 1 day has not passed', async () => {
-    await expect(test.addVault('0xA1Da0580FA96129E753D736a5901C31Df5eC5edf')).to.be.reverted;
+  it('cannot add invalid vault', async () => {
+    await expect(test.addVault('0x5DD596C901987A2b28C38A9C1DfBf86fFFc15d77')).to.be.reverted;
   });
 
   it('after adding vault, still passes', async () => {
-    await evmIncreaseTime(86400);
-    await evmMineBlocks(1);
     await test.addVault('0xA1Da0580FA96129E753D736a5901C31Df5eC5edf');
     expect(await test.checkTestPasses()).to.be.true;
   });
