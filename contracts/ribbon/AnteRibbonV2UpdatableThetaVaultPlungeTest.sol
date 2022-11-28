@@ -51,7 +51,7 @@ contract AnteRibbonV2UpdatableThetaVaultPlungeTest is Ownable, AnteTest("RibbonV
 
     // vault asset - since we cannot rely 100% on the Ribbon vault or the Opyn controller for this
     IERC20[] public assets = [
-        IERC20(0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84), // wstETH
+        IERC20(0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0), // wstETH
         IERC20(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2), // WETH
         IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48), // USDC
         IERC20(0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599) // WBTC

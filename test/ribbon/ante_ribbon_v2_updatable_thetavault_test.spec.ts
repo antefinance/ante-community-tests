@@ -18,8 +18,7 @@ describe('AnteRibbonV2UpdatableThetaVaultPlungeTest', function () {
 
   let vaultAddr: string;
   let vaultAsset: string;
-  let startTokenBalance: BigNumber;
-  let startThreshold: BigNumber;
+  let startTokenBalance: BigNumber[];
 
   before(async () => {
     globalSnapshotId = await evmSnapshot();
@@ -32,10 +31,12 @@ describe('AnteRibbonV2UpdatableThetaVaultPlungeTest', function () {
     test = await factory.deploy();
     await test.deployed();
 
-    vaultAddr = await test.thetaVaults(0);
-    vaultAsset = await test.assets(0);
-    startTokenBalance = await test.calculateAssetBalance(vaultAddr, vaultAsset);
-    startThreshold = await test.thresholds(0);
+    for (let i = 0; i < 4; i++) {
+      vaultAddr = await test.thetaVaults(i);
+      vaultAsset = await test.assets(i);
+      startTokenBalance[i] = await test.calculateAssetBalance(vaultAddr, vaultAsset);
+      console.log('vault', i, ' balance: ', startTokenBalance[i]);
+    }
   });
 
   after(async () => {
