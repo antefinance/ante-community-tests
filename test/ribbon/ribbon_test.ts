@@ -6,11 +6,12 @@ import {
   AnteRibbonV2UpdatableThetaVaultPlungeTest__factory,
   AnteRibbonV2ThetaVaultPlungeTest,
   AnteRibbonV2ThetaVaultPlungeTest__factory,
+  IRibbonThetaVault,
 } from '../../typechain';
 
 import { evmSnapshot, evmRevert, fundSigner, runAsSigner, evmIncreaseTime, evmMineBlocks } from '../helpers';
 import { expect } from 'chai';
-import { BigNumber } from 'ethers';
+import { BigNumber, Contract } from 'ethers';
 import { HardhatNetworkForkingConfig } from 'hardhat/types';
 
 describe('AnteRibbonV2UpdatableThetaVaultPlungeTest', function () {
@@ -21,7 +22,16 @@ describe('AnteRibbonV2UpdatableThetaVaultPlungeTest', function () {
 
   let vaultAddr: string;
   let vaultAsset: string;
-  let startTokenBalance: BigNumber[] = new Array(6);
+  let vault: Contract;
+  let wstethAsSteth: BigNumber;
+  let wsteth: Contract;
+  let wstethBalance: BigNumber;
+  let steth: Contract;
+  let stethBalance: BigNumber;
+  let weth: Contract;
+  let wethBalance: BigNumber;
+  let startTokenBalance: BigNumber[] = new Array(4);
+  let vaultTotalBalance: BigNumber[] = new Array(4);
 
   let oldStartTokenBalance: BigNumber[] = new Array(2);
   let oldAssets = [
@@ -36,7 +46,10 @@ describe('AnteRibbonV2UpdatableThetaVaultPlungeTest', function () {
     await evmRevert(globalSnapshotId);
   });
 
-  const blocksToTest = [16046014, 16046015, 16046018, 16046077, 16046413];
+  const blocksToTest = [
+    //16046013, 16046014, 16046015, 16046018, 16046077,
+    16046137, 16046138, 16046412, 16046413,
+  ];
   blocksToTest.forEach((block: number) => {
     describe(`In block ${block}`, () => {
       before(async function () {
@@ -71,6 +84,7 @@ describe('AnteRibbonV2UpdatableThetaVaultPlungeTest', function () {
         await oldTest.deployed();
       });
 
+      /*
       it('Previous Ribbon Test Should Pass?', async () => {
         for (let i = 0; i < 2; i++) {
           vaultAddr = await oldTest.thetaVaults(i);
@@ -81,29 +95,50 @@ describe('AnteRibbonV2UpdatableThetaVaultPlungeTest', function () {
         console.log('OLD T-WBTC-C vault balance: ', oldStartTokenBalance[1].toString());
         expect(await oldTest.checkTestPasses()).to.be.true;
       });
+      */
 
       it('Updated Ribbon Test Should Pass', async () => {
         for (let i = 0; i < 4; i++) {
           vaultAddr = await test.thetaVaults(i);
-          vaultAsset = await test.assets(i);
-          startTokenBalance[i] = await test.calculateAssetBalance(vaultAddr, vaultAsset);
+          vaultAsset = await test.assets(vaultAddr);
+          startTokenBalance[i] = await test.calculateAssetBalance(vaultAddr);
+          vault = await hre.ethers.getContractAt(
+            'contracts/ribbon/ribbon-v2-contracts/interfaces/IRibbonThetaVault.sol:IRibbonThetaVault',
+            vaultAddr
+          );
+          vaultTotalBalance[i] = await vault.totalBalance();
+          if (i == 0) {
+            wsteth = await hre.ethers.getContractAt(
+              'contracts/ribbon/ribbon-v2-contracts/interfaces/ISTETH.sol:IWSTETH',
+              '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0'
+            );
+            wstethBalance = await wsteth.balanceOf(vaultAddr);
+            steth = await hre.ethers.getContractAt(
+              'contracts/ribbon/ribbon-v2-contracts/interfaces/ISTETH.sol:ISTETH',
+              '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84'
+            );
+            stethBalance = await steth.balanceOf(vaultAddr);
+            weth = await hre.ethers.getContractAt(
+              'contracts/interfaces/IERC20.sol:IERC20',
+              '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
+            );
+            wethBalance = await weth.balanceOf(vaultAddr);
+            wstethAsSteth = await wsteth.getStETHByWstETH(wstethBalance);
+          }
         }
-        // manual for reth and aave vaults
-        startTokenBalance[4] = await test.calculateAssetBalance(
-          '0xA1Da0580FA96129E753D736a5901C31Df5eC5edf',
-          '0xae78736Cd615f374D3085123A210448E74Fc6393'
-        );
-        startTokenBalance[5] = await test.calculateAssetBalance(
-          '0xe63151A0Ed4e5fafdc951D877102cf0977Abd365',
-          '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9'
-        );
 
-        console.log('T-STETH-C vault balance:    ', startTokenBalance[0].toString());
-        console.log('T-ETH-C vault balance:      ', startTokenBalance[1].toString());
-        console.log('T-USDC-P-ETH vault balance: ', startTokenBalance[2].toString());
-        console.log('T-WBTC-C vault balance:     ', startTokenBalance[3].toString());
-        console.log('T-RETH-C vault balance:     ', startTokenBalance[4].toString());
-        console.log('T-AAVE-C vault balance:     ', startTokenBalance[5].toString());
+        console.log('T-STETH-C test balance:     ', startTokenBalance[0].toString());
+        console.log('T-STETH-C wstETH balance:   ', wstethBalance.toString());
+        console.log('T-STETH-C wstETH -> stETH:  ', wstethAsSteth.toString());
+        console.log('T-STETH-C stETH balance:    ', stethBalance.toString());
+        console.log('T-STETH-C WETH balance:     ', wethBalance.toString());
+        console.log('T-STETH-C vault balance:    ', vaultTotalBalance[0].toString());
+        //console.log('T-USDC-P-ETH test balance:  ', startTokenBalance[1].toString());
+        //console.log('T-USDC-P-ETH vault balance: ', vaultTotalBalance[1].toString());
+        //console.log('T-ETH-C test balance:       ', startTokenBalance[2].toString());
+        //console.log('T-ETH-C vault balance:      ', vaultTotalBalance[2].toString());
+        //console.log('T-WBTC-C test balance:      ', startTokenBalance[3].toString());
+        //console.log('T-WBTC-C vault balance:     ', vaultTotalBalance[3].toString());
         expect(await test.checkTestPasses()).to.be.true;
       });
     });
