@@ -13,6 +13,7 @@ pragma solidity ^0.8.0;
 
 import {AnteTest} from "../AnteTest.sol";
 import {IController, GammaTypes} from "./ribbon-v2-contracts/interfaces/GammaInterface.sol";
+import {IWSTETH} from "./ribbon-v2-contracts/interfaces/ISTETH.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -21,9 +22,9 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 contract AnteRibbonV2UpdatableThetaVaultPlungeTest is Ownable, AnteTest("RibbonV2 Theta Vaults don't lose 90% of TVL") {
     /// @notice Emitted when test owner adds a vault to check
     /// @param vault The address of the vault added
-    /// @param vaultAsset The address of the ERC20 token used by the vault
+    /// @param vaultAssets The addresses of the ERC20 token used by the vault
     /// @param initialThreshold the initial failure threshold of the new vault
-    event AnteRibbonTestVaultAdded(address indexed vault, address vaultAsset, uint256 initialThreshold);
+    event AnteRibbonTestVaultAdded(address indexed vault, address[] vaultAssets, uint256 initialThreshold);
 
     /// @notice Emitted when test owner commits a failure thresholds update
     /// @param vault The address of the vault to be updated
@@ -44,10 +45,13 @@ contract AnteRibbonV2UpdatableThetaVaultPlungeTest is Ownable, AnteTest("RibbonV
 
     /// Mapping of asset to check for each vault
     // The Ribbon vault and Opyn controller don't provide this 100% reliably
-    mapping(address => IERC20) public assets;
+    mapping(address => IERC20[]) public assets;
 
     /// Mapping of vault balance failure thresholds
     mapping(address => uint256) public thresholds;
+
+    /// wstETH address, because we need to handle it differently
+    IWSTETH public constant WSTETH = IWSTETH(0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0);
 
     /// Max number of vaults to test (to guard against block stuffing)
     uint256 public constant MAX_VAULTS = 20;
@@ -71,23 +75,27 @@ contract AnteRibbonV2UpdatableThetaVaultPlungeTest is Ownable, AnteTest("RibbonV
 
         // Initial set of vaults/assets - top vaults by TVL (90% of TVL as of 2022-11-30)
         thetaVaults.push(0x53773E034d9784153471813dacAFF53dBBB78E8c); // T-STETH-C vault
-        assets[0x53773E034d9784153471813dacAFF53dBBB78E8c] = IERC20(0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0); // wstETH
+        assets[0x53773E034d9784153471813dacAFF53dBBB78E8c] = [
+            IERC20(0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0), // wstETH
+            IERC20(0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84), // stETH
+            IERC20(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2) // WETH
+        ];
 
         thetaVaults.push(0xCc323557c71C0D1D20a1861Dc69c06C5f3cC9624); // T-USDC-P-ETH vault
-        assets[0xCc323557c71C0D1D20a1861Dc69c06C5f3cC9624] = IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48); // USDC
+        assets[0xCc323557c71C0D1D20a1861Dc69c06C5f3cC9624].push(IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48)); // USDC
 
         thetaVaults.push(0x25751853Eab4D0eB3652B5eB6ecB102A2789644B); // T-ETH-C vault
-        assets[0x25751853Eab4D0eB3652B5eB6ecB102A2789644B] = IERC20(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2); // WETH
+        assets[0x25751853Eab4D0eB3652B5eB6ecB102A2789644B].push(IERC20(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2)); // WETH
 
         thetaVaults.push(0x65a833afDc250D9d38f8CD9bC2B1E3132dB13B2F); // T-WBTC-C vault
-        assets[0x65a833afDc250D9d38f8CD9bC2B1E3132dB13B2F] = IERC20(0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599); // WBTC
+        assets[0x65a833afDc250D9d38f8CD9bC2B1E3132dB13B2F].push(IERC20(0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599)); // WBTC
 
         // Set initial failure thresholds (10% of vault balance at time of test deploy)
         address vault;
         uint256 numVaults = thetaVaults.length;
         for (uint256 i; i < numVaults; i++) {
             vault = thetaVaults[i];
-            thresholds[vault] = (calculateAssetBalance(vault) * INITIAL_FAILURE_THRESHOLD_PERCENT) / 100;
+            thresholds[vault] = (calculateVaultBalance(vault) * INITIAL_FAILURE_THRESHOLD_PERCENT) / 100;
             testedContracts.push(vault);
         }
         lastUpdated = block.timestamp;
@@ -101,7 +109,7 @@ contract AnteRibbonV2UpdatableThetaVaultPlungeTest is Ownable, AnteTest("RibbonV
         uint256 numVaults = thetaVaults.length;
         for (uint256 i; i < numVaults; i++) {
             vault = thetaVaults[i];
-            if (calculateAssetBalance(vault) < thresholds[vault]) {
+            if (calculateVaultBalance(vault) < thresholds[vault]) {
                 return false;
             }
         }
@@ -112,22 +120,39 @@ contract AnteRibbonV2UpdatableThetaVaultPlungeTest is Ownable, AnteTest("RibbonV
     /// @notice computes balance of vault asset in a given Ribbon Theta Vault
     /// @param thetaVault RibbonV2 Theta Vault address
     /// @return balance of vault
-    function calculateAssetBalance(address thetaVault) public view returns (uint256) {
+    function calculateVaultBalance(address thetaVault) public view returns (uint256) {
         GammaTypes.Vault memory opynVault = controller.getVault(
             thetaVault,
             controller.getAccountVaultCounter(thetaVault)
         );
 
+        uint256 totalBalance;
+        IERC20 asset;
+        uint256 numAssets = assets[thetaVault].length;
+        for (uint256 i = 0; i < numAssets; i++) {
+            asset = IERC20(assets[thetaVault][i]);
+            if (address(asset) == address(WSTETH)) {
+                // convert wstETH to stETH equivalent amount
+                totalBalance += WSTETH.getStETHByWstETH(WSTETH.balanceOf(thetaVault));
+            } else {
+                totalBalance += asset.balanceOf(thetaVault);
+            }
+        }
+
         // Note: assumes the collateral asset of interest is 1st in array
         if (
             opynVault.collateralAmounts.length > 0 &&
             opynVault.collateralAssets.length > 0 &&
-            opynVault.collateralAssets[0] == address(assets[thetaVault])
+            opynVault.collateralAssets[0] == address(assets[thetaVault][0])
         ) {
-            return assets[thetaVault].balanceOf(thetaVault) + opynVault.collateralAmounts[0];
+            if (address(opynVault.collateralAssets[0]) == address(WSTETH)) {
+                return totalBalance + WSTETH.getStETHByWstETH(opynVault.collateralAmounts[0]);
+            } else {
+                return totalBalance + opynVault.collateralAmounts[0];
+            }
         } else {
             // in between rounds, so collateralAmounts is null array
-            return assets[thetaVault].balanceOf(thetaVault);
+            return totalBalance;
         }
     }
 
@@ -136,16 +161,25 @@ contract AnteRibbonV2UpdatableThetaVaultPlungeTest is Ownable, AnteTest("RibbonV
     /// @notice Add a Ribbon Theta Vault to test and set failure threshold
     ///         to 10% of current TVL. Can only be called by owner (Ribbon)
     /// @param vault Ribbon V2 Theta Vault address to add
-    /// @param asset token address of vault asset
-    function addVault(address vault, address asset) public onlyOwner {
+    /// @param _assets array of token addresses of vault asset -- NOTE: must be 1:1 equivalent
+    function addVault(address vault, address[] memory _assets) public onlyOwner {
         // Checks max vaults + valid Opyn vault for the given theta vault address
         require(thetaVaults.length < MAX_VAULTS, "Maximum number of tested vaults reached!");
         GammaTypes.Vault memory opynVault = controller.getVault(vault, controller.getAccountVaultCounter(vault));
         require(opynVault.collateralAmounts.length > 0, "Invalid vault");
-        require(opynVault.collateralAssets.length > 0 && opynVault.collateralAssets[0] == asset, "assets don't match!");
+        require(_assets.length > 0, "no assets provided!");
+        require(
+            opynVault.collateralAssets.length > 0 && opynVault.collateralAssets[0] == _assets[0],
+            "primary assets don't match!"
+        );
 
-        assets[vault] = IERC20(asset);
-        uint256 balance = calculateAssetBalance(vault);
+        uint256 numAssets = _assets.length;
+        assets[vault] = new IERC20[](numAssets);
+        for (uint256 i = 0; i < numAssets; i++) {
+            assets[vault][i] = IERC20(_assets[i]);
+        }
+
+        uint256 balance = calculateVaultBalance(vault);
         require(balance > 0, "Vault has no balance!");
 
         thetaVaults.push(vault);
@@ -153,7 +187,7 @@ contract AnteRibbonV2UpdatableThetaVaultPlungeTest is Ownable, AnteTest("RibbonV
         testedContracts.push(vault);
         lastUpdated = block.timestamp;
 
-        emit AnteRibbonTestVaultAdded(vault, asset, thresholds[vault]);
+        emit AnteRibbonTestVaultAdded(vault, _assets, thresholds[vault]);
     }
 
     /// @notice Propose a new vault failure threshold value and start waiting
@@ -161,9 +195,9 @@ contract AnteRibbonV2UpdatableThetaVaultPlungeTest is Ownable, AnteTest("RibbonV
     /// @param vault address of vault to reset TVL threshold for
     /// @param threshold to set (in opyn vault collateral asset with decimals)
     function commitUpdateFailureThreshold(address vault, uint256 threshold) public onlyOwner {
-        require(address(assets[vault]) != address(0), "Vault not in list");
+        require(assets[vault].length > 0, "Vault not in list");
         require(pendingVault == address(0), "Another update already pending!");
-        require(calculateAssetBalance(vault) >= threshold, "test would fail proposed threshold!");
+        require(calculateVaultBalance(vault) >= threshold, "test would fail proposed threshold!");
 
         pendingVault = vault;
         newThreshold = threshold;
