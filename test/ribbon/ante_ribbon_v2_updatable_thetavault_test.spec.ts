@@ -33,8 +33,8 @@ describe('AnteRibbonV2UpdatableThetaVaultPlungeTest', function () {
 
     for (let i = 0; i < 4; i++) {
       vaultAddr = await test.thetaVaults(i);
-      vaultAsset = await test.assets(i);
-      startTokenBalance[i] = await test.calculateAssetBalance(vaultAddr, vaultAsset);
+      vaultAsset = await test.assets(vaultAddr);
+      startTokenBalance[i] = await test.calculateAssetBalance(vaultAddr);
       console.log('vault', i, ' balance: ', startTokenBalance[i]);
     }
   });
@@ -80,23 +80,37 @@ describe('AnteRibbonV2UpdatableThetaVaultPlungeTest', function () {
     await fundSigner('0x5DD596C901987A2b28C38A9C1DfBf86fFFc15d77');
     await runAsSigner('0x5DD596C901987A2b28C38A9C1DfBf86fFFc15d77', async () => {
       const signer = await hre.ethers.getSigner('0x5DD596C901987A2b28C38A9C1DfBf86fFFc15d77');
-      await expect(test.connect(signer).commitUpdateFailureThreshold(0, 0)).to.be.reverted;
+      await expect(test.connect(signer).commitUpdateFailureThreshold('0x53773E034d9784153471813dacAFF53dBBB78E8c', 0))
+        .to.be.reverted;
     });
   });
 
   it('cannot commit update if new threshold would fail', async () => {
-    await expect(test.commitUpdateFailureThreshold(0, BigNumber.from('10000000000000000000000000000'))).to.be.reverted;
+    await expect(
+      test.commitUpdateFailureThreshold(
+        '0x53773E034d9784153471813dacAFF53dBBB78E8c',
+        BigNumber.from('10000000000000000000000000000')
+      )
+    ).to.be.reverted;
   });
 
   it('cannot execute update before waiting period over', async () => {
-    await test.commitUpdateFailureThreshold(0, BigNumber.from('1000000000000000000000'));
+    await test.commitUpdateFailureThreshold(
+      '0x53773E034d9784153471813dacAFF53dBBB78E8c',
+      BigNumber.from('1000000000000000000000')
+    );
     evmIncreaseTime(86400);
     evmMineBlocks(1);
     await expect(test.executeUpdateFailureThreshold()).to.be.reverted;
   });
 
   it('cannot commit another update during waiting period', async () => {
-    await expect(test.commitUpdateFailureThreshold(0, BigNumber.from('2000000000000000000000'))).to.be.reverted;
+    await expect(
+      test.commitUpdateFailureThreshold(
+        '0x53773E034d9784153471813dacAFF53dBBB78E8c',
+        BigNumber.from('2000000000000000000000')
+      )
+    ).to.be.reverted;
   });
 
   it('non-owner can execute update after waiting period', async () => {
