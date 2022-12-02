@@ -22,7 +22,7 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 contract AnteRibbonV2UpdatableThetaVaultPlungeTest is Ownable, AnteTest("RibbonV2 Theta Vaults don't lose 90% of TVL") {
     /// @notice Emitted when test owner adds a vault to check
     /// @param vault The address of the vault added
-    /// @param vaultAssets The addresses of the ERC20 token used by the vault
+    /// @param vaultAssets The addresses of the ERC20 tokens used by the vault
     /// @param initialThreshold the initial failure threshold of the new vault
     event AnteRibbonTestVaultAdded(address indexed vault, address[] vaultAssets, uint256 initialThreshold);
 
@@ -75,6 +75,7 @@ contract AnteRibbonV2UpdatableThetaVaultPlungeTest is Ownable, AnteTest("RibbonV
 
         // Initial set of vaults/assets - top vaults by TVL (90% of TVL as of 2022-11-30)
         thetaVaults.push(0x53773E034d9784153471813dacAFF53dBBB78E8c); // T-STETH-C vault
+        // stETH vault balance calc includes WETH, stETH, and wstETH->stETH equivalent
         assets[0x53773E034d9784153471813dacAFF53dBBB78E8c] = [
             IERC20(0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0), // wstETH
             IERC20(0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84), // stETH
@@ -82,13 +83,19 @@ contract AnteRibbonV2UpdatableThetaVaultPlungeTest is Ownable, AnteTest("RibbonV
         ];
 
         thetaVaults.push(0xCc323557c71C0D1D20a1861Dc69c06C5f3cC9624); // T-USDC-P-ETH vault
-        assets[0xCc323557c71C0D1D20a1861Dc69c06C5f3cC9624].push(IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48)); // USDC
+        assets[0xCc323557c71C0D1D20a1861Dc69c06C5f3cC9624].push(
+            IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48) // USDC
+        );
 
         thetaVaults.push(0x25751853Eab4D0eB3652B5eB6ecB102A2789644B); // T-ETH-C vault
-        assets[0x25751853Eab4D0eB3652B5eB6ecB102A2789644B].push(IERC20(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2)); // WETH
+        assets[0x25751853Eab4D0eB3652B5eB6ecB102A2789644B].push(
+            IERC20(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2) // WETH
+        );
 
         thetaVaults.push(0x65a833afDc250D9d38f8CD9bC2B1E3132dB13B2F); // T-WBTC-C vault
-        assets[0x65a833afDc250D9d38f8CD9bC2B1E3132dB13B2F].push(IERC20(0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599)); // WBTC
+        assets[0x65a833afDc250D9d38f8CD9bC2B1E3132dB13B2F].push(
+            IERC20(0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599) // WBTC
+        );
 
         // Set initial failure thresholds (10% of vault balance at time of test deploy)
         address vault;
@@ -162,12 +169,14 @@ contract AnteRibbonV2UpdatableThetaVaultPlungeTest is Ownable, AnteTest("RibbonV
     ///         to 10% of current TVL. Can only be called by owner (Ribbon)
     /// @param vault Ribbon V2 Theta Vault address to add
     /// @param _assets array of token addresses of vault asset -- NOTE: must be 1:1 equivalent
+    /// @dev when adding vaults, the collateral asset used in Opyn should be
+    ///      the first asset in the array
     function addVault(address vault, address[] memory _assets) public onlyOwner {
         // Checks max vaults + valid Opyn vault for the given theta vault address
         require(thetaVaults.length < MAX_VAULTS, "Maximum number of tested vaults reached!");
+        require(_assets.length > 0, "no assets provided!");
         GammaTypes.Vault memory opynVault = controller.getVault(vault, controller.getAccountVaultCounter(vault));
         require(opynVault.collateralAmounts.length > 0, "Invalid vault");
-        require(_assets.length > 0, "no assets provided!");
         require(
             opynVault.collateralAssets.length > 0 && opynVault.collateralAssets[0] == _assets[0],
             "primary assets don't match!"

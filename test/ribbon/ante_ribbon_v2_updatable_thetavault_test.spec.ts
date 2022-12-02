@@ -54,8 +54,13 @@ describe('AnteRibbonV2UpdatableThetaVaultPlungeTest', function () {
     ).to.be.reverted;
   });
 
+  it('can add vault', async () => {
+    await expect(
+      test.addVault('0xA1Da0580FA96129E753D736a5901C31Df5eC5edf', ['0xae78736Cd615f374D3085123A210448E74Fc6393'])
+    ).not.reverted;
+  });
+
   it('after adding vault, still passes', async () => {
-    await test.addVault('0xA1Da0580FA96129E753D736a5901C31Df5eC5edf', ['0xae78736Cd615f374D3085123A210448E74Fc6393']);
     expect(await test.checkTestPasses()).to.be.true;
   });
 
