@@ -16,11 +16,6 @@ describe('AnteRibbonV2UpdatableThetaVaultPlungeTest', function () {
 
   let globalSnapshotId: string;
 
-  let vaultAddr: string;
-  let vaultAsset: string;
-  let startTokenBalance: BigNumber;
-  let startThreshold: BigNumber;
-
   before(async () => {
     globalSnapshotId = await evmSnapshot();
 
@@ -31,11 +26,6 @@ describe('AnteRibbonV2UpdatableThetaVaultPlungeTest', function () {
     )) as AnteRibbonV2UpdatableThetaVaultPlungeTest__factory;
     test = await factory.deploy();
     await test.deployed();
-
-    vaultAddr = await test.thetaVaults(0);
-    vaultAsset = await test.assets(vaultAddr);
-    startTokenBalance = await test.calculateAssetBalance(vaultAddr);
-    startThreshold = await test.thresholds(vaultAddr);
   });
 
   after(async () => {
@@ -53,19 +43,24 @@ describe('AnteRibbonV2UpdatableThetaVaultPlungeTest', function () {
       await expect(
         test
           .connect(signer)
-          .addVault('0xA1Da0580FA96129E753D736a5901C31Df5eC5edf', '0xae78736Cd615f374D3085123A210448E74Fc6393')
+          .addVault('0xA1Da0580FA96129E753D736a5901C31Df5eC5edf', ['0xae78736Cd615f374D3085123A210448E74Fc6393'])
       ).to.be.reverted;
     });
   });
 
   it('cannot add invalid vault', async () => {
     await expect(
-      test.addVault('0x5DD596C901987A2b28C38A9C1DfBf86fFFc15d77', '0xae78736Cd615f374D3085123A210448E74Fc6393')
+      test.addVault('0x5DD596C901987A2b28C38A9C1DfBf86fFFc15d77', ['0xae78736Cd615f374D3085123A210448E74Fc6393'])
     ).to.be.reverted;
   });
 
+  it('can add vault', async () => {
+    await expect(
+      test.addVault('0xA1Da0580FA96129E753D736a5901C31Df5eC5edf', ['0xae78736Cd615f374D3085123A210448E74Fc6393'])
+    ).not.reverted;
+  });
+
   it('after adding vault, still passes', async () => {
-    await test.addVault('0xA1Da0580FA96129E753D736a5901C31Df5eC5edf', '0xae78736Cd615f374D3085123A210448E74Fc6393');
     expect(await test.checkTestPasses()).to.be.true;
   });
 
