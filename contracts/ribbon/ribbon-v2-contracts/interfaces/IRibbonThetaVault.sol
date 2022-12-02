@@ -17,6 +17,4 @@ interface IRibbonThetaVault {
     function optionState() external view returns (Vault.OptionState memory);
 
     function optionAuctionID() external view returns (uint256);
-
-    function totalBalance() external view returns (uint256);
 }
