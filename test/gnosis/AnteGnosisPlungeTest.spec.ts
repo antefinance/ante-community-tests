@@ -1,13 +1,13 @@
 import hre from 'hardhat';
 const { waffle } = hre;
 
-import { GnosisTVLPlungeTest, GnosisTVLPlungeTest__factory } from '../../typechain';
+import { AnteGnosisTVLPlungeTest, AnteGnosisTVLPlungeTest__factory } from '../../typechain';
 
 import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
 
-describe('GnosisTVLPlungeTest', function () {
-  let test: GnosisTVLPlungeTest;
+describe('AnteGnosisTVLPlungeTest', function () {
+  let test: AnteGnosisTVLPlungeTest;
 
   let globalSnapshotId: string;
 
@@ -16,9 +16,9 @@ describe('GnosisTVLPlungeTest', function () {
 
     const [deployer] = waffle.provider.getWallets();
     const factory = (await hre.ethers.getContractFactory(
-      'GnosisTVLPlungeTest',
+      'AnteGnosisTVLPlungeTest',
       deployer
-    )) as GnosisTVLPlungeTest__factory;
+    )) as AnteGnosisTVLPlungeTest__factory;
     test = await factory.deploy();
     await test.deployed();
   });

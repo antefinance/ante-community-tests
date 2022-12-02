@@ -4,7 +4,7 @@ import "../AnteTest.sol";
 import "../interfaces/IERC20.sol";
 
 // @title Gnosis Plunge Test
-contract GnosisTVLPlungeTest is AnteTest("Make sure the TVL is at least 15% of the original TVL") {
+contract AnteGnosisTVLPlungeTest is AnteTest("Make sure the TVL is at least 15% of the original TVL") {
     IERC20 private constant USDT = IERC20(0xdAC17F958D2ee523a2206206994597C13D831ec7);
     IERC20 private constant USDC = IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
     IERC20 private constant DAI = IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F);

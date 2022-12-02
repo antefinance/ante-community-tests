@@ -5,11 +5,12 @@ pragma solidity ^0.8.0;
 import {AnteTest} from "../AnteTest.sol";
 import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
-
 /// @title Checks WETH + ETH balance in Doodles Community Treasury remains >=  30
 /// @author Put your ETH address here
 /// @notice Ante Test to check
-contract AnteDoodlesCommunityTreasuryBalanceTest is AnteTest("Doodles Community Treasury WETH + ETH balance remains >= 30") {
+contract AnteDoodlesCommunityTreasuryBalanceTest is
+    AnteTest("Doodles Community Treasury WETH + ETH balance remains >= 30")
+{
     // https://etherscan.io/address/0xdcd382be6cc4f1971c667ffda85c7a287605afe4
     address public constant HOLDER_ADDRESS = 0xDcd382bE6cC4f1971C667ffDa85C7a287605afe4;
 
@@ -20,12 +21,8 @@ contract AnteDoodlesCommunityTreasuryBalanceTest is AnteTest("Doodles Community 
     uint256 public immutable thresholdBalance;
 
     constructor() {
-        // TODO replace (1000 * 1000) with desired threshold
         thresholdBalance = (30) * (10**TOKEN.decimals());
-
-        // TODO replace "Protocol" with target protocol/wallet/etc.
         protocolName = "doodles";
-
         testedContracts = [address(TOKEN), HOLDER_ADDRESS];
     }
 

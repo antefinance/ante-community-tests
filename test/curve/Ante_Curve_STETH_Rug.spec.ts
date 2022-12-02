@@ -1,13 +1,13 @@
 import hre from 'hardhat';
 const { waffle } = hre;
 
-import { AnteSTETHCurveRugTest, AnteSTETHCurveRugTest__factory } from '../../typechain';
+import { AnteCurveSTETHRugTest, AnteCurveSTETHRugTest__factory } from '../../typechain';
 
 import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
 
-describe('AnteSTETHCurveRugTest', function () {
-  let test: AnteSTETHCurveRugTest;
+describe('AnteCurveSTETHRugTest', function () {
+  let test: AnteCurveSTETHRugTest;
 
   let globalSnapshotId: string;
 
@@ -16,9 +16,9 @@ describe('AnteSTETHCurveRugTest', function () {
 
     const [deployer] = waffle.provider.getWallets();
     const factory = (await hre.ethers.getContractFactory(
-      'AnteSTETHCurveRugTest',
+      'AnteCurveSTETHRugTest',
       deployer
-    )) as AnteSTETHCurveRugTest__factory;
+    )) as AnteCurveSTETHRugTest__factory;
     test = await factory.deploy();
     await test.deployed();
   });

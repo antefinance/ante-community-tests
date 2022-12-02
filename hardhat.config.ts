@@ -46,9 +46,7 @@ const config: HardhatUserConfig = {
     },
     mainnet: {
       url: `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
-      accounts: {
-        mnemonic: process.env.MNEMONIC || '',
-      },
+      accounts: [process.env.MAINNET_PRIVATE_KEY || ''],
     },
     rinkeby: {
       url: `https://rinkeby.infura.io/v3/${process.env.INFURA_KEY}`,
@@ -124,6 +122,30 @@ const config: HardhatUserConfig = {
         mnemonic: process.env.MNEMONIC || '',
       },
     },
+    arbitrumOne: {
+      url: 'https://arb1.arbitrum.io/rpc',
+      chainId: 42161,
+      accounts: [process.env.MAINNET_PRIVATE_KEY || ''],
+    },
+    arbitrumGoerli: {
+      url: 'https://goerli-rollup.arbitrum.io/rpc',
+      chainId: 421613,
+      accounts: {
+        mnemonic: process.env.MNEMONIC || '',
+      },
+    },
+    optimisticEthereum: {
+      url: 'https://mainnet.optimism.io',
+      chainId: 10,
+      accounts: [process.env.MAINNET_PRIVATE_KEY || ''],
+    },
+    optimismGoerli: {
+      url: 'https://goerli.optimism.io',
+      chainId: 420,
+      accounts: {
+        mnemonic: process.env.TESTNET_MNEMONIC || '',
+      },
+    },
     hardhat: {
       forking: {
         url: forkingRPC[process.env.NETWORK as keyof ForkingNetworkRPC].url,
@@ -153,7 +175,7 @@ const config: HardhatUserConfig = {
     ],
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_KEY,
+    apiKey: process.env.ARBISCAN_KEY,
   },
   mocha: {
     timeout: 60000,

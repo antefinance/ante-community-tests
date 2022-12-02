@@ -23,8 +23,8 @@ contract AnteDaiCompoundcDaiAbove100MTest is AnteTest("Compound cDai Dai balance
         testedContracts = [address(TOKEN), TARGET_ADDRESS];
     }
 
-    /// @notice test to check if $[TOKEN] balance in [TARGET] is >= [THRESHOLD]
-    /// @return true if $[TOKEN] balance in [TARGET] is >= [THRESHOLD]
+    /// @notice test to check if DAI balance in Compound Dai is >= 100M
+    /// @return true if DAI balance in Compound Dai is >= 100M
     function checkTestPasses() public view override returns (bool) {
         return (TOKEN.balanceOf(TARGET_ADDRESS) >= thresholdBalance);
     }

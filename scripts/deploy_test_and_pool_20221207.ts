@@ -4,10 +4,11 @@ import chalk from 'chalk';
 const main = async () => {
   const [deployer] = await hre.ethers.getSigners();
 
+  const poolFactoryAddress = '0xa03492A9A663F04c51684A3c172FC9c4D7E02eDc';
   // name of the contract for Ante Test
-  const testName = 'AnteLlamaPayTest';
+  const testName = 'AnteSynthetixPegTest';
   // array of constructor arguments for Ante Test
-  const args = ['0xde1C04855c2828431ba637675B6929A684f84C7F'] as const;
+  const args = [] as const;
 
   console.log(
     'Deploying Ante Test',
@@ -22,20 +23,25 @@ const main = async () => {
 
   const testFactory = await hre.ethers.getContractFactory(testName);
   const test = await testFactory.connect(deployer).deploy(...args);
-
   console.log('Ante Test deploying to ', chalk.cyan(test.address));
-
   await test.deployed();
-
   console.log('Ante test successfully deployed!');
-  console.log('Visit', chalk.cyan('app.ante.finance/#/create-pool'), 'to deploy an Ante Pool for this test');
-  console.log(
-    'Check out our docs (',
-    chalk.magenta('docs.ante.finance'),
-    ') for information on how to get your test verified and join our Discord (',
-    chalk.magenta('discord.gg/yaJthzNdNG'),
-    ') to connect with likeminded developers!'
+
+  console.log('Connecting to pool factory at ', chalk.magenta(poolFactoryAddress));
+  const poolFactory = await hre.ethers.getContractAt(
+    'contracts/libraries/ante-v05-avax/AntePoolFactory.sol:AntePoolFactory',
+    poolFactoryAddress
   );
+  const tx = await poolFactory.createPool(test.address);
+  const receipt = await tx.wait();
+  let poolAddress = receipt.events;
+
+  console.log('TX Hash: ', chalk.cyan(receipt.transactionHash), ' completed');
+  if (poolAddress) {
+    console.log('Pool deployed to ', poolAddress);
+  } else {
+    console.log('Check TX, no createPool event recorded');
+  }
 };
 
 main()

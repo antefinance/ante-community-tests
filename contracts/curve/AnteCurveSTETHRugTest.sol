@@ -5,7 +5,7 @@ pragma solidity ^0.8.0;
 import "../AnteTest.sol";
 
 /// @title Curve stETH Doesn't Rug
-contract AnteSTETHCurveRugTest is AnteTest("Curve stETH Keeps 99% of it's ETH.") {
+contract AnteCurveSTETHRugTest is AnteTest("Curve stETH Keeps 99% of it's ETH.") {
     // https://etherscan.io/address/0xDC24316b9AE028F1497c275EB9192a3Ea0f67022
     address public stETHCurveSwap = 0xDC24316b9AE028F1497c275EB9192a3Ea0f67022;
 
