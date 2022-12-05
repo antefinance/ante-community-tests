@@ -1,13 +1,15 @@
 import { config as dotenvconfig } from 'dotenv';
 dotenvconfig();
 
-import { HardhatUserConfig } from 'hardhat/config';
+import { HardhatUserConfig, task } from 'hardhat/config';
 
 import 'hardhat-abi-exporter';
 import 'hardhat-gas-reporter';
 import '@typechain/hardhat';
 import '@nomiclabs/hardhat-waffle';
 import '@nomiclabs/hardhat-etherscan';
+
+require('./tasks/antegen_supply_threshold.ts');
 
 interface ForkingNetworkRPC {
   mainnet: { url: string };
