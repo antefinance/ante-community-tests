@@ -5,6 +5,7 @@ pragma solidity ^0.8.0;
 import {AnteTest} from "../AnteTest.sol";
 import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import {LendingPool} from "./llamalend-contracts/LendingPool.sol";
+import "hardhat/console.sol";
 
 /// @title Checks that asdf
 /// @author abitwhaleish.eth
@@ -17,14 +18,14 @@ contract AnteLlamaLendOraclePriceTest is AnteTest("LlamaLend Oracle never return
     address public constant TUBBY_CATS = 0xCa7cA7BcC765F77339bE2d648BA53ce9c8a262bD;
 
     uint256 public failurePrice;
-    uint256 internal price;
+    uint216 internal price;
     uint256 internal deadline;
     uint8 internal v;
     bytes32 internal r;
     bytes32 internal s;
 
     constructor() {
-        failurePrice = 1e18; // 1 eth
+        failurePrice = 4e16;
 
         protocolName = "LlamaLend";
         testedContracts = [address(LLAMALEND_TUBBY_CAT_POOL)];
@@ -38,7 +39,7 @@ contract AnteLlamaLendOraclePriceTest is AnteTest("LlamaLend Oracle never return
         bytes32 _r,
         bytes32 _s
     ) public {
-        require(price > failurePrice, "price not above failing level!");
+        require(_price > failurePrice, "price not above failing level!");
         // no need to check deadline as we are checking if the Oracle has
         // ever returned a price too high, not just recently
         price = _price;
@@ -46,6 +47,10 @@ contract AnteLlamaLendOraclePriceTest is AnteTest("LlamaLend Oracle never return
         v = _v;
         r = _r;
         s = _s;
+        console.log("deadline:", deadline);
+        console.log("v:", v);
+        console.logBytes32(r);
+        console.logBytes32(s);
     }
 
     /// @notice checks if
@@ -53,15 +58,24 @@ contract AnteLlamaLendOraclePriceTest is AnteTest("LlamaLend Oracle never return
     function checkTestPasses() public view override returns (bool) {
         address oracle = LLAMALEND_TUBBY_CAT_POOL.oracle();
         if (oracle == address(0)) return true; // no oracle, don't fail the test!
+        console.log("oracle:", oracle);
 
-        (address signer, ECDSA.RecoverError error) = ECDSA.tryRecover(
-            keccak256(
-                abi.encodePacked("\x19Ethereum Signed Message:\n111", price, deadline, block.chainid, TUBBY_CATS)
-            ),
-            v,
-            r,
-            s
+        bytes memory packed = abi.encodePacked(
+            "\x19Ethereum Signed Message:\n111",
+            price,
+            deadline,
+            block.chainid,
+            TUBBY_CATS
         );
+        console.log("packed:");
+        console.logBytes(packed);
+
+        bytes32 hashed = keccak256(packed);
+        console.log("hash:");
+        console.logBytes32(hashed);
+
+        (address signer, ECDSA.RecoverError error) = ECDSA.tryRecover(hashed, v, r, s);
+        console.log("signer:", signer);
         // don't revert if unable to recover address!
         if (error != ECDSA.RecoverError.NoError) return true;
 
