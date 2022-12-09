@@ -43,9 +43,10 @@ describe('AnteLlamaLendOraclePriceTest', function () {
 
   it('should fail if passing in valid message with high price', async () => {
     console.log(
-      'This next test will fail. See test script for details on how to modify the contract code to check this condition.'
+      'This next unit test is expected to revert. See test script for details on how to modify the contract code to check this condition.'
     );
-    // Unfortunately, hardhat uses chainid 31337 so the hash ends up different
+    // Unfortunately, hardhat uses chainid 31337 so the hash calculated by the
+    // test on the forked chain ends up different than it would be on mainnet.
     // On the other hand, we can't spoof a signed message by the oracle on the
     // hardhat "chain" without knowing the oracle's private key. So, we work
     // around it by changing 2 things in the AnteLlamaLendOraclePriceTest.sol
@@ -56,6 +57,12 @@ describe('AnteLlamaLendOraclePriceTest', function () {
     //    message, e.g. 4e16 for the example
     // 3. On line 109, replace block.chainid with bytes(1)
     // 4. If you chose a different message to check, update the arguments below
+    //
+    // For a more generalized LlamaLend price oracle ante test, you could have
+    // the test script deploy a LlamaLend lending pool, deploy an Ante Test
+    // checking that lending pool, set the oracle to the waffle deployer, sign
+    // a message with a price greater than the failure threshold, set test
+    // state, and check that the test fails appropriately.
 
     await test.setMessageToCheck(
       BigNumber.from('45690000000000000'), //price
