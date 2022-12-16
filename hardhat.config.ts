@@ -17,6 +17,7 @@ interface ForkingNetworkRPC {
   fantom: { url: string };
   arbitrumOne: { url: string };
   optimisticEthereum: { url: string };
+  aurora: { url: string };
 }
 
 const forkingRPC: ForkingNetworkRPC = {
@@ -40,6 +41,9 @@ const forkingRPC: ForkingNetworkRPC = {
   },
   optimisticEthereum: {
     url: 'https://mainnet.optimism.io',
+  },
+  aurora: {
+    url: 'https://mainnet.aurora.dev',
   },
 };
 
@@ -156,6 +160,20 @@ const config: HardhatUserConfig = {
     optimismGoerli: {
       url: 'https://goerli.optimism.io',
       chainId: 420,
+      accounts: {
+        mnemonic: process.env.TESTNET_MNEMONIC || '',
+      },
+    },
+    aurora: {
+      url: 'https://mainnet.aurora.dev',
+      chainId: 1313161554,
+      accounts: {
+        mnemonic: process.env.TESTNET_MNEMONIC || '',
+      },
+    },
+    auroraTestnet: {
+      url: 'https://testnet.aurora.dev',
+      chainId: 1313161555,
       accounts: {
         mnemonic: process.env.TESTNET_MNEMONIC || '',
       },
