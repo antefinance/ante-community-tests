@@ -203,7 +203,11 @@ describe('AnteOKXEthReservesTest', function () {
     expect(await test.checkTestPasses()).to.be.true;
   });
 
+  // TODO fix this unit test
   it('if reserves fall below threshold, test should fail', async () => {
+    console.log(
+      'this next test will fail because we passed enough time running the other tests that the oracles are considered stale and the test auto-passes'
+    );
     // transfer away balance
     await fundSigner(OKX_7);
     await runAsSigner(OKX_7, async () => {
