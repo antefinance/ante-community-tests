@@ -58,8 +58,7 @@ describe('AnteOKXEthReservesTest', function () {
   it('non-owner cannot add reserve wallet', async () => {
     await fundSigner(SIFU);
     await runAsSigner(SIFU, async () => {
-      const signer = await hre.ethers.getSigner(SIFU);
-      await expect(test.connect(signer).addReserve(USDT, SIFU)).to.be.reverted;
+      await expect(test.addReserve(USDT, SIFU)).to.be.reverted;
     });
   });
 
@@ -83,8 +82,7 @@ describe('AnteOKXEthReservesTest', function () {
 
   it('non-owner cannot add token', async () => {
     await runAsSigner(SIFU, async () => {
-      const signer = await hre.ethers.getSigner(SIFU);
-      await expect(test.connect(signer).addToken(SHIB, ETH_USD_FEED, SIFU)).to.be.reverted;
+      await expect(test.addToken(SHIB, ETH_USD_FEED, SIFU)).to.be.reverted;
     });
   });
 
@@ -137,8 +135,7 @@ describe('AnteOKXEthReservesTest', function () {
 
   it('non-owner cannot commit failure threshold update', async () => {
     await runAsSigner(SIFU, async () => {
-      const signer = await hre.ethers.getSigner(SIFU);
-      await expect(test.connect(signer).commitUpdateFailureThreshold(0)).to.be.reverted;
+      await expect(test.commitUpdateFailureThreshold(0)).to.be.reverted;
     });
   });
 
@@ -172,8 +169,7 @@ describe('AnteOKXEthReservesTest', function () {
     evmIncreaseTime(79200);
     evmMineBlocks(1);
     await runAsSigner(SIFU, async () => {
-      const signer = await hre.ethers.getSigner(SIFU);
-      await expect(test.connect(signer).executeUpdatePriceFeed()).not.reverted;
+      await expect(test.executeUpdatePriceFeed()).not.reverted;
     });
   });
 
@@ -181,8 +177,7 @@ describe('AnteOKXEthReservesTest', function () {
     evmIncreaseTime(525600);
     evmMineBlocks(1);
     await runAsSigner(SIFU, async () => {
-      const signer = await hre.ethers.getSigner(SIFU);
-      await expect(test.connect(signer).executeUpdateFailureThreshold()).not.reverted;
+      await expect(test.executeUpdateFailureThreshold()).not.reverted;
     });
   });
 
@@ -196,8 +191,7 @@ describe('AnteOKXEthReservesTest', function () {
     // transfer away balance
     await fundSigner(OKX_7);
     await runAsSigner(OKX_7, async () => {
-      const walletSigner = await hre.ethers.getSigner(OKX_7);
-      await usdt.connect(walletSigner).transfer(SIFU, delta);
+      await usdt.transfer(SIFU, delta);
     });
 
     expect(await test.checkTestPasses()).to.be.true;
@@ -211,8 +205,7 @@ describe('AnteOKXEthReservesTest', function () {
     // transfer away balance
     await fundSigner(OKX_7);
     await runAsSigner(OKX_7, async () => {
-      const walletSigner = await hre.ethers.getSigner(OKX_7);
-      await usdt.connect(walletSigner).transfer(SIFU, 1000000);
+      await usdt.transfer(SIFU, 1000000);
     });
 
     expect(await test.checkTestPasses()).to.be.false;
