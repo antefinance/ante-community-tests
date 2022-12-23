@@ -36,12 +36,12 @@ contract AnteOKXEthReservesTest is Ownable, AnteTest("OKX public reserves on Eth
     /// @notice Emitted when test owner commits a failure threshold update
     /// @param oldThreshold the previous failure threshold value (USD)
     /// @param newThreshold the new failure threshold value (USD)
-    event AnteTestPendingUpdate(uint256 oldThreshold, uint256 newThreshold);
+    event AnteThresholdPendingUpdate(uint256 oldThreshold, uint256 newThreshold);
 
     /// @notice Emitted when test owner updates the failure threshold value
     /// @param oldThreshold the previous failure threshold value (USD)
     /// @param newThreshold the new failure threshold value (USD)
-    event AnteTestFailureUpdated(uint256 oldThreshold, uint256 newThreshold);
+    event AnteThresholdUpdated(uint256 oldThreshold, uint256 newThreshold);
 
     // list of tokens to check
     address[] public tokens;
