@@ -109,25 +109,26 @@ contract AnteOKXEthReservesTest is Ownable, AnteTest("OKX public reserves on Eth
             if (price == 0) return (0, false); // price check was not successful
 
             uint256 tokenBalance;
+            uint256 tokenDecimals;
             address[] memory walletList = wallets[tokenAddr];
             uint256 walletsLength = walletList.length;
 
             if (tokenAddr == address(0)) {
                 // ETH
+                tokenDecimals = 18;
                 for (uint256 j = 0; j < walletsLength; j++) {
                     tokenBalance += walletList[j].balance;
                 }
-                // add ETH balance * ETH price, truncated down to nearest $
-                totalReserves += (tokenBalance * price) / 10**(18 + priceDecimals);
             } else {
                 // other tokens
                 IERC20Metadata token = IERC20Metadata(tokenAddr);
+                tokenDecimals = token.decimals();
                 for (uint256 j = 0; j < walletsLength; j++) {
                     tokenBalance += token.balanceOf(walletList[j]);
                 }
-                // add token balance * token price, truncated down to nearest $
-                totalReserves += (tokenBalance * price) / 10**(token.decimals() + priceDecimals);
             }
+            // add balance * price, truncated down to nearest $
+            totalReserves += (tokenBalance * price) / 10**(tokenDecimals + priceDecimals);
         }
         return (totalReserves, success);
     }
@@ -257,7 +258,7 @@ contract AnteOKXEthReservesTest is Ownable, AnteTest("OKX public reserves on Eth
         require(tokens.length < MAX_TOKENS_CHECKED, "max tokens reached");
         require(wallets[token].length == 0, "token already supported, use addReserve instead!");
         // loosely check token validity
-        require(IERC20Metadata(token).totalSupply() > 0, "invalid token");
+        require(IERC20Metadata(token).totalSupply() > 0 && IERC20Metadata(token).decimals() > 0, "invalid token");
         require(IERC20Metadata(token).balanceOf(wallet) > 0, "no token balance in wallet!");
         // loosely check price feed validity
         require(_priceFeed.code.length != 0, "Non-contract address!");
