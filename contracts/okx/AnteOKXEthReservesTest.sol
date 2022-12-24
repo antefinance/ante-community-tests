@@ -27,7 +27,7 @@ contract AnteOKXEthReservesTest is Ownable, AnteTest("OKX public reserves on Eth
     /// @param newFeed the new address of the price feed
     event AntePriceFeedPendingUpdate(address indexed token, address oldFeed, address newFeed);
 
-    /// @notice Emitted when test owner updates a Chainlink price feed
+    /// @notice Emitted when a Chainlink price feed is updated
     /// @param token the address of the token asset the feed is for
     /// @param oldFeed the address of the previous feed that is being replaced
     /// @param newFeed the new address of the price feed
@@ -36,41 +36,49 @@ contract AnteOKXEthReservesTest is Ownable, AnteTest("OKX public reserves on Eth
     /// @notice Emitted when test owner commits a failure threshold update
     /// @param oldThreshold the previous failure threshold value (USD)
     /// @param newThreshold the new failure threshold value (USD)
-    event AnteThresholdPendingUpdate(uint256 oldThreshold, uint256 newThreshold);
+    event AnteFailureThresholdPendingUpdate(uint256 oldThreshold, uint256 newThreshold);
 
-    /// @notice Emitted when test owner updates the failure threshold value
+    /// @notice Emitted when the failure threshold value is updated
     /// @param oldThreshold the previous failure threshold value (USD)
     /// @param newThreshold the new failure threshold value (USD)
-    event AnteThresholdUpdated(uint256 oldThreshold, uint256 newThreshold);
+    event AnteFailureThresholdUpdated(uint256 oldThreshold, uint256 newThreshold);
 
-    // list of tokens to check
-    address[] public tokens;
-    // map tokens to price oracle
-    mapping(address => address) public priceFeeds;
-    // map tokens to wallets
-    mapping(address => address[]) public wallets;
-    // keep track of checked combinations and wallets
-    mapping(address => mapping(address => bool)) isChecked;
+    // List of tokens to check
+    IERC20Metadata[] public tokens;
+
+    // Price oracles for each token
+    mapping(IERC20Metadata => address) public priceFeeds;
+
+    // Wallets to check for each token
+    mapping(IERC20Metadata => address[]) public wallets;
+
+    // Used to keep track of checked combinations and wallets
+    mapping(IERC20Metadata => mapping(address => bool)) public isChecked;
     mapping(address => bool) isWalletTested;
 
-    // threshold asset balance for test to fail (will set in constructor)
+    // Asset balance threshold below which the test will fail (set in constructor)
     uint256 public failureThreshold;
 
     // Max wallets and tokens to check (to prevent unbounded gas usage)
     uint256 public constant MAX_TOKENS_CHECKED = 10;
     uint256 public constant MAX_WALLETS_PER_TOKEN = 50;
 
+    // Initial tokens checked (+ ETH)
+    IERC20Metadata public constant USDT = IERC20Metadata(0xdAC17F958D2ee523a2206206994597C13D831ec7);
+    IERC20Metadata public constant USDC = IERC20Metadata(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
+    IERC20Metadata public constant USDK = IERC20Metadata(0x1c48f86ae57291F7686349F12601910BD8D470bb);
+
     /// @notice minimum time between test updates by owner
     uint256 public constant UPDATE_PRICEFEED_WAIT_PERIOD = 86400; // 1 day
     uint256 public constant UPDATE_FAILURE_WAIT_PERIOD = 604800; // 7 days
 
-    // last timestamp test parameters were updated
+    // Last timestamp test parameters were updated
     uint256 public lastUpdated;
     uint256 public updatePriceFeedCommitTime;
     uint256 public updateThresholdCommitTime;
 
     // variables to store updates to be enacted
-    address public newToken;
+    IERC20Metadata public newToken;
     address public newPriceFeed;
     uint256 public newThreshold;
 
@@ -80,7 +88,7 @@ contract AnteOKXEthReservesTest is Ownable, AnteTest("OKX public reserves on Eth
         // Total Asset Value ~$3.9B on Ethereum according to
         // https://portfolio.nansen.ai/dashboard/okx?chain=ETHEREUM
         // as of 2022-12-23, $42M is ~1% of that and a nice number
-        failureThreshold = 69_000_000;
+        failureThreshold = 42_000_000;
 
         // Set up initial list of tokens, price feeds, and wallets to check
         setupInitialReservesList();
@@ -93,7 +101,7 @@ contract AnteOKXEthReservesTest is Ownable, AnteTest("OKX public reserves on Eth
     function checkTestPasses() external view override returns (bool) {
         (uint256 currentReserves, bool success) = getCurrentReserves();
         if (!success) return true; // if any reversion, should still pass
-        return currentReserves > failureThreshold;
+        return currentReserves >= failureThreshold;
     }
 
     /// @notice view function to see current checked reserves value
@@ -103,17 +111,17 @@ contract AnteOKXEthReservesTest is Ownable, AnteTest("OKX public reserves on Eth
         success = true;
         uint256 tokensLength = tokens.length;
         for (uint256 i = 0; i < tokensLength; i++) {
-            address tokenAddr = tokens[i];
+            IERC20Metadata token = tokens[i];
 
-            (uint256 price, uint256 priceDecimals) = getPriceWithChecks(priceFeeds[tokenAddr]);
+            (uint256 price, uint256 priceDecimals) = getPriceWithChecks(priceFeeds[token]);
             if (price == 0) return (0, false); // price check was not successful
 
             uint256 tokenBalance;
             uint256 tokenDecimals;
-            address[] memory walletList = wallets[tokenAddr];
+            address[] memory walletList = wallets[token];
             uint256 walletsLength = walletList.length;
 
-            if (tokenAddr == address(0)) {
+            if (address(token) == address(0)) {
                 // ETH
                 tokenDecimals = 18;
                 for (uint256 j = 0; j < walletsLength; j++) {
@@ -121,7 +129,6 @@ contract AnteOKXEthReservesTest is Ownable, AnteTest("OKX public reserves on Eth
                 }
             } else {
                 // other tokens
-                IERC20Metadata token = IERC20Metadata(tokenAddr);
                 tokenDecimals = token.decimals();
                 for (uint256 j = 0; j < walletsLength; j++) {
                     tokenBalance += token.balanceOf(walletList[j]);
@@ -161,10 +168,10 @@ contract AnteOKXEthReservesTest is Ownable, AnteTest("OKX public reserves on Eth
         // all token-wallet combos with >$2.5M value as of 2022-11-22
         // This gives us 99.9% coverage of listed reserves on Eth Mainnet
 
-        // ETH
-        tokens.push(address(0));
-        priceFeeds[address(0)] = 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419;
-        wallets[address(0)] = [
+        // ETH - using 0x0 as the token address for ETH
+        tokens.push(IERC20Metadata(address(0)));
+        priceFeeds[IERC20Metadata(address(0))] = 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419;
+        wallets[IERC20Metadata(address(0))] = [
             0x98EC059Dc3aDFBdd63429454aEB0c990FBA4A128, // OKX 6
             0x539C92186f7C6CC4CbF443F26eF84C595baBBcA1,
             0xbFbBFacCD1126A11b8F84C60b09859F80f3BD10F,
@@ -183,10 +190,9 @@ contract AnteOKXEthReservesTest is Ownable, AnteTest("OKX public reserves on Eth
         ];
 
         // USDT
-        address usdtAddr = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
-        tokens.push(usdtAddr);
-        priceFeeds[usdtAddr] = 0x3E7d1eAB13ad0104d2750B8863b489D65364e32D;
-        wallets[usdtAddr] = [
+        tokens.push(USDT);
+        priceFeeds[USDT] = 0x3E7d1eAB13ad0104d2750B8863b489D65364e32D;
+        wallets[USDT] = [
             0x5041ed759Dd4aFc3a72b8192C143F72f4724081A, // OKX 7
             0x7eb6c83AB7D8D9B8618c0Ed973cbEF71d1921EF2, // OKX 20
             0x276cdBa3a39aBF9cEdBa0F1948312c0681E6D5Fd,
@@ -213,32 +219,30 @@ contract AnteOKXEthReservesTest is Ownable, AnteTest("OKX public reserves on Eth
         ];
 
         // USDC
-        address usdcAddr = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
-        tokens.push(usdcAddr);
-        priceFeeds[usdcAddr] = 0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6;
-        wallets[usdcAddr] = [
+        tokens.push(USDC);
+        priceFeeds[USDC] = 0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6;
+        wallets[USDC] = [
             0x7eb6c83AB7D8D9B8618c0Ed973cbEF71d1921EF2, // OKX 20
             0x5041ed759Dd4aFc3a72b8192C143F72f4724081A, // OKX 7
             0x2c8FBB630289363Ac80705A1a61273f76fD5a161 // OKX 4
         ];
 
         // USDK
-        address usdkAddr = 0x1c48f86ae57291F7686349F12601910BD8D470bb;
-        tokens.push(usdkAddr);
-        priceFeeds[usdkAddr] = 0xfAC81Ea9Dd29D8E9b212acd6edBEb6dE38Cb43Af;
-        wallets[usdkAddr] = [0x5041ed759Dd4aFc3a72b8192C143F72f4724081A];
+        tokens.push(USDK);
+        priceFeeds[USDK] = 0xfAC81Ea9Dd29D8E9b212acd6edBEb6dE38Cb43Af;
+        wallets[USDK] = [0x5041ed759Dd4aFc3a72b8192C143F72f4724081A]; // OKX 7
 
         uint256 tokensLength = tokens.length;
-        for (uint256 i = 0; i < tokensLength; i++) {
-            address tokenAddr = tokens[i];
-            address[] memory walletList = wallets[tokenAddr];
+        for (uint256 i = 0; i < tokensLength; ++i) {
+            IERC20Metadata token = tokens[i];
+            address[] memory walletList = wallets[token];
             uint256 walletsLength = walletList.length;
-            for (uint256 j = 0; j < walletsLength; j++) {
-                address walletAddr = wallets[tokenAddr][j];
-                isChecked[tokenAddr][walletAddr] = true;
-                if (!isWalletTested[walletAddr]) {
-                    isWalletTested[walletAddr] = true;
-                    testedContracts.push(walletAddr);
+            for (uint256 j = 0; j < walletsLength; ++j) {
+                address wallet = wallets[token][j];
+                isChecked[token][wallet] = true;
+                if (!isWalletTested[wallet]) {
+                    isWalletTested[wallet] = true;
+                    testedContracts.push(wallet);
                 }
             }
         }
@@ -247,21 +251,23 @@ contract AnteOKXEthReservesTest is Ownable, AnteTest("OKX public reserves on Eth
     // ADMIN FUNCTIONS //
 
     /// @notice Add an new token, pricefeed, and wallet to test. Can only be called by owner
-    /// @param token token address to check balance of (0x0 for ETH)
+    /// @param tokenAddr token address to check balance of (0x0 for ETH)
     /// @param _priceFeed address of AggregatorV3Interface USD price feed for token
     /// @param wallet wallet address to add
     function addToken(
-        address token,
+        address tokenAddr,
         address _priceFeed,
         address wallet
     ) public onlyOwner {
-        require(tokens.length < MAX_TOKENS_CHECKED, "max tokens reached");
-        require(wallets[token].length == 0, "token already supported, use addReserve instead!");
+        require(tokens.length < MAX_TOKENS_CHECKED, "Max # of tokens to check reached!");
+        IERC20Metadata token = IERC20Metadata(tokenAddr);
+        require(wallets[token].length == 0, "Token already checked, use addReserve instead!");
         // loosely check token validity
-        require(IERC20Metadata(token).totalSupply() > 0 && IERC20Metadata(token).decimals() > 0, "invalid token");
-        require(IERC20Metadata(token).balanceOf(wallet) > 0, "no token balance in wallet!");
+        require(tokenAddr.code.length != 0, "Non-contract token address!");
+        require(token.totalSupply() > 0 && token.decimals() > 0, "Invalid token");
+        require(token.balanceOf(wallet) > 0, "No token balance in wallet!");
         // loosely check price feed validity
-        require(_priceFeed.code.length != 0, "Non-contract address!");
+        require(_priceFeed.code.length != 0, "Non-contract price feed address!");
         (uint256 price, ) = getPriceWithChecks(_priceFeed);
         require(price > 0, "Invalid feed!");
 
@@ -275,18 +281,19 @@ contract AnteOKXEthReservesTest is Ownable, AnteTest("OKX public reserves on Eth
         }
 
         lastUpdated = block.timestamp;
-        emit AnteTokenAdded(token, _priceFeed);
-        emit AnteReservesAdded(token, wallet);
+        emit AnteTokenAdded(address(token), _priceFeed);
+        emit AnteReservesAdded(address(token), wallet);
     }
 
     /// @notice Add an address to test. Can only be called by owner
-    /// @param token token address to check balance of (0x0 for ETH)
+    /// @param tokenAddr token address to check balance of (0x0 for ETH)
     /// @param wallet wallet address to add
-    function addReserve(address token, address wallet) public onlyOwner {
+    function addReserve(address tokenAddr, address wallet) public onlyOwner {
+        IERC20Metadata token = IERC20Metadata(tokenAddr);
         require(priceFeeds[token] != address(0), "Token not added yet, use addToken");
-        require(wallets[token].length < MAX_WALLETS_PER_TOKEN, "max wallets reached");
-        require(!isChecked[token][wallet], "wallet already included");
-        require(IERC20Metadata(token).balanceOf(wallet) > 0, "no token balance in wallet!");
+        require(wallets[token].length < MAX_WALLETS_PER_TOKEN, "Max # of wallets to check reached");
+        require(!isChecked[token][wallet], "Token/wallet already checked");
+        require(token.balanceOf(wallet) > 0, "No token balance in wallet!");
 
         isChecked[token][wallet] = true;
         if (!isWalletTested[wallet]) {
@@ -296,7 +303,7 @@ contract AnteOKXEthReservesTest is Ownable, AnteTest("OKX public reserves on Eth
 
         wallets[token].push(wallet);
         lastUpdated = block.timestamp;
-        emit AnteReservesAdded(token, wallet);
+        emit AnteReservesAdded(address(token), wallet);
     }
 
     // TIME-BOUND ADMIN FUNCTIONS //
@@ -306,26 +313,26 @@ contract AnteOKXEthReservesTest is Ownable, AnteTest("OKX public reserves on Eth
     // function to update a price feed?
     function commitUpdatePriceFeed(address _token, address _priceFeed) public onlyOwner {
         require(newPriceFeed == address(0), "Another update already pending!");
-        require(priceFeeds[_token] != address(0), "Token not added yet, use addToken");
-        require(_priceFeed.code.length != 0, "Non-contract address!");
+        require(priceFeeds[IERC20Metadata(_token)] != address(0), "Token not added yet, use addToken");
         // loosely check price feed validity
+        require(_priceFeed.code.length != 0, "Non-contract address!");
         (uint256 price, ) = getPriceWithChecks(_priceFeed);
         require(price > 0, "Invalid feed!");
 
-        newToken = _token;
+        newToken = IERC20Metadata(_token);
         newPriceFeed = _priceFeed;
         updatePriceFeedCommitTime = block.timestamp;
-        emit AntePriceFeedPendingUpdate(newToken, priceFeeds[newToken], newPriceFeed);
+        emit AntePriceFeedPendingUpdate(address(newToken), priceFeeds[newToken], newPriceFeed);
     }
 
     function executeUpdatePriceFeed() public {
         require(newPriceFeed != address(0), "No update pending!");
         require(
             block.timestamp > updatePriceFeedCommitTime + UPDATE_PRICEFEED_WAIT_PERIOD,
-            "Need to wait 1 day between updates!"
+            "Need to wait 1 day to update price feed!"
         );
 
-        emit AntePriceFeedUpdated(newToken, priceFeeds[newToken], newPriceFeed);
+        emit AntePriceFeedUpdated(address(newToken), priceFeeds[newToken], newPriceFeed);
         priceFeeds[newToken] = newPriceFeed;
 
         newPriceFeed = address(0);
@@ -339,11 +346,11 @@ contract AnteOKXEthReservesTest is Ownable, AnteTest("OKX public reserves on Eth
         require(newThreshold == 0, "Another update already pending!");
         (uint256 currentReserves, bool success) = getCurrentReserves();
         require(success, "Unable to calculate reserves at the moment");
-        require(currentReserves > threshold, "test would fail proposed threshold!");
+        require(currentReserves > threshold, "Test would fail proposed threshold!");
 
         newThreshold = threshold;
         updateThresholdCommitTime = block.timestamp;
-        emit AnteTestPendingUpdate(failureThreshold, newThreshold);
+        emit AnteFailureThresholdPendingUpdate(failureThreshold, newThreshold);
     }
 
     /// @notice Update test failure threshold after waiting period has passed.
@@ -354,7 +361,7 @@ contract AnteOKXEthReservesTest is Ownable, AnteTest("OKX public reserves on Eth
             block.timestamp > updateThresholdCommitTime + UPDATE_FAILURE_WAIT_PERIOD,
             "Need to wait 7 days to adjust failure threshold!"
         );
-        emit AnteTestFailureUpdated(failureThreshold, newThreshold);
+        emit AnteFailureThresholdUpdated(failureThreshold, newThreshold);
         failureThreshold = newThreshold;
 
         newThreshold = 0;
