@@ -33,10 +33,10 @@ contract AntePoPKTest is AnteTest("Nobody else knows the private key of this pub
     /// @return true if ECDSA.recover(message_hash, signature) != testAddress
     function checkTestPasses() public view override returns (bool) {
         // The signature must have length 65 in order to be valid
-        if (signature.length == 65) {
-            return ECDSA.recover(message_hash, signature) != testAddress;
+        if (signature.length != 65) {
+            return true;
         }
-        return true;
+        return ECDSA.recover(message_hash, signature) != testAddress;
     }
 
     /// This is known to be frontrunnable
