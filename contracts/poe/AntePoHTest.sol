@@ -4,7 +4,6 @@ pragma solidity ^0.8.0;
 
 import {AnteTest} from "../AnteTest.sol";
 
-
 /// @title Nobody knows the pre-image of this hash
 /// @notice Ante Test to check that pre-image of the hash is unknown
 contract AntePoHTest is AnteTest("Nobody knows the pre-image of this hash") {
@@ -13,8 +12,6 @@ contract AntePoHTest is AnteTest("Nobody knows the pre-image of this hash") {
 
     constructor() {
         protocolName = "";
-
-        testedContracts = [];
     }
 
     function checkTestPasses() public view override returns (bool) {
