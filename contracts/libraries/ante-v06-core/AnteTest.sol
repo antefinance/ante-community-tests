@@ -48,9 +48,7 @@ abstract contract AnteTest is IAnteTest {
         return testedContracts;
     }
 
-    /// @notice Sets the author of the Ante Test
-    /// @dev This can only be called by the current author, which is the deployer initially
-    /// @param _testAuthor The address of the test author
+    /// @inheritdoc IAnteTest
     function setTestAuthor(address _testAuthor) external {
         require(msg.sender == testAuthor, "Only the current testAuthor can set a new test author");
         require(_testAuthor != address(0), "ANTE: Test author cannot be the zero address");
