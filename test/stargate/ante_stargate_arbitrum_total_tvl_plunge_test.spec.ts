@@ -10,7 +10,7 @@ import { evmSnapshot, evmRevert, fundSigner, runAsSigner } from '../helpers';
 import { expect } from 'chai';
 import { BigNumber, Contract } from 'ethers';
 
-describe.only('AnteStargateArbitrumTotalTVLPlungeTest', function () {
+describe('AnteStargateArbitrumTotalTVLPlungeTest', function () {
   let test: AnteStargateArbitrumTotalTVLPlungeTest;
   let usdt: Contract;
   let usdc: Contract;
