@@ -10,7 +10,7 @@
 
 pragma solidity ^0.8.0;
 
-import {AnteTest} from "../AnteTest.sol";
+import {AnteTest} from "../../AnteTest.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 /// @title  UST price remains within 5% of 1 USD
