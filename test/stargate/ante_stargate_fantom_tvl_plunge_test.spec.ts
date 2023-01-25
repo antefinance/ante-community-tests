@@ -6,8 +6,14 @@ import { AnteStargateFantomTVLPlungeTest, AnteStargateFantomTVLPlungeTest__facto
 import { evmSnapshot, evmRevert, fundSigner, runAsSigner } from '../helpers';
 import { expect } from 'chai';
 import { BigNumber, Contract } from 'ethers';
+import { config as dotenvconfig } from 'dotenv';
+dotenvconfig();
 
 describe('AnteStargateFantomTVLPlungeTest', function () {
+  if (process.env.NETWORK != 'fantom') {
+    return;
+  }
+
   let test: AnteStargateFantomTVLPlungeTest;
   let usdc: Contract;
 

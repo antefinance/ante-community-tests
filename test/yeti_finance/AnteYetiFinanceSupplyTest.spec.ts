@@ -5,8 +5,12 @@ import { AnteYetiFinanceSupplyTest, AnteYetiFinanceSupplyTest__factory } from '.
 
 import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
+import { config as dotenvconfig } from 'dotenv';
+dotenvconfig();
 
 describe('AnteYetiFinanceSupplyTest', function () {
+  if (process.env.NETWORK != 'avalanche') return;
+
   let test: AnteYetiFinanceSupplyTest;
 
   let globalSnapshotId: string;

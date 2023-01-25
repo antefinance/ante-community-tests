@@ -6,8 +6,11 @@ import { AnteStargateAvalancheTVLPlungeTest, AnteStargateAvalancheTVLPlungeTest_
 import { evmSnapshot, evmRevert, fundSigner, runAsSigner } from '../helpers';
 import { expect } from 'chai';
 import { BigNumber, Contract } from 'ethers';
+import { config as dotenvconfig } from 'dotenv';
+dotenvconfig();
 
 describe('AnteStargateAvalancheTVLPlungeTest', function () {
+  if (process.env.NETWORK != 'avalanche') return;
   let test: AnteStargateAvalancheTVLPlungeTest;
   let usdt: Contract;
   let usdc: Contract;
