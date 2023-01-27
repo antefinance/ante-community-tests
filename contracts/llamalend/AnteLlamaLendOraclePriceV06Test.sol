@@ -14,7 +14,9 @@ interface ILendingPool {
 /// @author 0x1A2B73207C883Ce8E51653d6A9cC8a022740cCA4 (abitwhaleish.eth)
 /// @notice Ante Test to check the LlamaLend oracle used by the TubbyLoan
 ///         pool never returns a Tubby Cats price greater than 0.3 ETH
-contract AnteLlamaLendOraclePriceV06Test is AnteTest("LlamaLend oracle never returns Tubby Cats price > 0.3 ETH") {
+contract AnteLlamaLendOraclePriceV06Test is
+    AnteTest("LlamaLend oracle never returns Tubby Cats price > 0.3 ETH (V06)")
+{
     struct Message {
         bytes32 hash;
         uint8 v;

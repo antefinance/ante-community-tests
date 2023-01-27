@@ -27,7 +27,7 @@ interface ILlamaPay {
 ///         set the LlamaPay instance and payer to check.
 ///         Note: may no longer hold after 231,800 A.D. due to holding timestamp in uint40
 contract AnteLlamaPayV06Test is
-    AnteTest("LlamaPay never pays future payments early (lastPayerUpdate[anyone] <= block.timestamp)")
+    AnteTest("LlamaPay never pays future payments early (lastPayerUpdate[anyone] <= block.timestamp) (V06)")
 {
     // Eth Mainnet: https://etherscan.io/address/0xde1C04855c2828431ba637675B6929A684f84C7F
     // Polygon: https://polygonscan.com/address/0xde1C04855c2828431ba637675B6929A684f84C7F
