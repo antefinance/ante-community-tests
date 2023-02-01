@@ -54,10 +54,11 @@ describe('AnteLlamaLendOraclePriceTest', function () {
     // contract:
     // 1. Choose an existing message that will be the "failing" message, e.g.
     //    https://tx.eth.samczsun.com/ethereum/0xdec8265c7dcbe6168b4d10f8179c8b6884f96a817bca30654487733ee0f6a585
-    // 2. On line 32, set failure threshold lower than the price in the
+    // 2. On line 34, set failure threshold lower than the price in the
     //    message, e.g. 4e16 for the example
-    // 3. On line 95, replace block.chainid with uint(1)
+    // 3. On line 97, replace block.chainid with uint(1)
     // 4. If you chose a different message to check, update the arguments below
+    // 5. Uncomment the lines 80-86 in this unit test below
     //
     // For a more generalized LlamaLend price oracle ante test, you could have
     // the test script deploy a LlamaLend lending pool, deploy an Ante Test
@@ -76,13 +77,13 @@ describe('AnteLlamaLendOraclePriceTest', function () {
       [price, deadline, v, r, s]
     );
 
-    await expect(test.setStateAndCheckTestPasses(state)).to.not.be.reverted;
+    // await expect(test.setStateAndCheckTestPasses(state)).to.not.be.reverted;
 
-    expect((await test.message()).v).to.be.eq(v);
-    expect((await test.message()).r).to.be.eq(r);
-    expect((await test.message()).s).to.be.eq(s);
+    // expect((await test.message()).v).to.be.eq(v);
+    // expect((await test.message()).r).to.be.eq(r);
+    // expect((await test.message()).s).to.be.eq(s);
 
-    expect(await test.checkTestPasses()).to.be.false;
+    // expect(await test.checkTestPasses()).to.be.false;
   });
 
   it('should return correct state types', async () => {

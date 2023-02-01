@@ -13,7 +13,8 @@ describe('AnteOHMv2BackingTest', function () {
 
   const INITIAL_TESTING_ETH = ethers.utils.parseEther('1000.0').toHexString();
 
-  const _olympusAuthorityAddr = '0x1c21f8ea7e39e2ba00bc12d2968d63f4acb38b7a'; // Olympus Treasury
+  const _olympusAuthorityAddr = '0x1c21f8ea7e39e2ba00bc12d2968d63f4acb38b7a'; // Olympus Authority
+  const _olympusTreasuryAddr = '0x9A315BdF513367C0377FB36545857d12e85813Ef'; // Olympus Treasury
   const _ohmTokenAddr = '0x64aa3364f17a4d01c6f1751fd97c2bd3d7e7f1d5'; // OHM Token
 
   // Reserve Tokens as of block 14000889 (may be a third one as well but not significant part
@@ -33,7 +34,7 @@ describe('AnteOHMv2BackingTest', function () {
       deployer
     )) as AnteOHMv2BackingTest__factory;
     test = await factory.deploy(
-      _olympusAuthorityAddr,
+      _olympusTreasuryAddr,
       _ohmTokenAddr,
       [_slpOhmFraxAddr],
       [_daiTokenAddr, _fraxTokenAddr]

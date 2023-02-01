@@ -53,10 +53,11 @@ describe('AnteLlamaLendOraclePriceTest', function () {
     // contract:
     // 1. Choose an existing message that will be the "failing" message, e.g.
     //    https://tx.eth.samczsun.com/ethereum/0xdec8265c7dcbe6168b4d10f8179c8b6884f96a817bca30654487733ee0f6a585
-    // 2. On line 36, set failure threshold lower than the price in the
+    // 2. On line 37, set failure threshold lower than the price in the
     //    message, e.g. 4e16 for the example
-    // 3. On line 109, replace block.chainid with uint(1)
+    // 3. On line 98, replace block.chainid with uint(1)
     // 4. If you chose a different message to check, update the arguments below
+    // 5. Uncomment the lines 68-76 in this unit test below
     //
     // For a more generalized LlamaLend price oracle ante test, you could have
     // the test script deploy a LlamaLend lending pool, deploy an Ante Test
@@ -64,14 +65,14 @@ describe('AnteLlamaLendOraclePriceTest', function () {
     // a message with a price greater than the failure threshold, set test
     // state, and check that the test fails appropriately.
 
-    await test.setMessageToCheck(
-      BigNumber.from('45690000000000000'), //price
-      1669858244, //deadline
-      27, // v
-      '0x57a44d4d5578295c0b40c13a6def46b2d28d5f1887c385bf38f1dbc29b64c8fc', //r
-      '0x1b68ffc82e99e9a943e9cc1e1eaf3538726045976c9be0957aea87ecac2fe5ae' //s
-    );
+    // await test.setMessageToCheck(
+    //   BigNumber.from('45690000000000000'), //price
+    //   1669858244, //deadline
+    //   27, // v
+    //   '0x57a44d4d5578295c0b40c13a6def46b2d28d5f1887c385bf38f1dbc29b64c8fc', //r
+    //   '0x1b68ffc82e99e9a943e9cc1e1eaf3538726045976c9be0957aea87ecac2fe5ae' //s
+    // );
 
-    expect(await test.checkTestPasses()).to.be.false;
+    // expect(await test.checkTestPasses()).to.be.false;
   });
 });
