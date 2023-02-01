@@ -11,6 +11,8 @@ import { expect } from 'chai';
 import { BigNumber, Contract } from 'ethers';
 
 describe('AnteStargateArbitrumTotalTVLPlungeTest', function () {
+  if (process.env.NETWORK != 'arbitrum') return;
+
   let test: AnteStargateArbitrumTotalTVLPlungeTest;
   let usdt: Contract;
   let usdc: Contract;

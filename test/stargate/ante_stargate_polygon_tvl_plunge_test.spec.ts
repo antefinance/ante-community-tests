@@ -8,6 +8,8 @@ import { expect } from 'chai';
 import { BigNumber, Contract } from 'ethers';
 
 describe('AnteStargatePolygonTVLPlungeTest', function () {
+  if (process.env.NETWORK != 'polygon') return;
+
   let test: AnteStargatePolygonTVLPlungeTest;
   let usdt: Contract;
   let usdc: Contract;

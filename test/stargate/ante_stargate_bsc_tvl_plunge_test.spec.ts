@@ -8,6 +8,8 @@ import { expect } from 'chai';
 import { BigNumber, Contract } from 'ethers';
 
 describe('AnteStargateBSCTVLPlungeTest', function () {
+  if (process.env.NETWORK != 'bsc') return;
+
   let test: AnteStargateBSCTVLPlungeTest;
   let usdt: Contract;
   let busd: Contract;

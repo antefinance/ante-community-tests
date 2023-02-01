@@ -7,6 +7,8 @@ import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
 
 describe('AnteArbitrumUSDCPegTest', function () {
+  if (process.env.NETWORK != 'optimism') return;
+
   let test: AnteOptimismUSDCPegTest;
 
   let globalSnapshotId: string;

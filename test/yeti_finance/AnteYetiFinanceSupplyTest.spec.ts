@@ -7,6 +7,8 @@ import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
 
 describe('AnteYetiFinanceSupplyTest', function () {
+  if (process.env.NETWORK != 'avalanche') return;
+
   let test: AnteYetiFinanceSupplyTest;
 
   let globalSnapshotId: string;

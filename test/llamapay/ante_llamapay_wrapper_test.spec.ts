@@ -53,7 +53,7 @@ describe('AnteLlamaPayTestChallengerWrapper', function () {
 
     // deploy AntePoolFactory
     const antePoolFactory = (await hre.ethers.getContractFactory(
-      'AntePoolFactory',
+      'contracts/libraries/ante-v05-core/AntePoolFactory.sol:AntePoolFactory',
       deployer
     )) as AntePoolFactory__factory;
     poolFactory = await antePoolFactory.deploy();

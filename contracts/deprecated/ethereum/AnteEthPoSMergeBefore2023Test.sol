@@ -11,7 +11,7 @@
 
 pragma solidity ^0.7.0;
 
-import "../libraries/ante-v05-core/AnteTest.sol";
+import "../../libraries/ante-v05-core/AnteTest.sol";
 
 /// @title  Ethereum PoS Merge happens before 2023
 /// @notice Ante Test to check if The Merge has happened before 2023
