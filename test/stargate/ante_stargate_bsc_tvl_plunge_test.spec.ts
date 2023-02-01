@@ -6,8 +6,11 @@ import { AnteStargateBSCTVLPlungeTest, AnteStargateBSCTVLPlungeTest__factory } f
 import { evmSnapshot, evmRevert, fundSigner, runAsSigner } from '../helpers';
 import { expect } from 'chai';
 import { BigNumber, Contract } from 'ethers';
+import { config as dotenvconfig } from 'dotenv';
+dotenvconfig();
 
 describe('AnteStargateBSCTVLPlungeTest', function () {
+  if (process.env.NETWORK != 'bsc') return;
   let test: AnteStargateBSCTVLPlungeTest;
   let usdt: Contract;
   let busd: Contract;

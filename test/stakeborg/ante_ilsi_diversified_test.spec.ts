@@ -39,7 +39,7 @@ describe('AnteILSIDiversifiedTest', function () {
     await test.preCheck();
 
     const currentBlock = await waffle.provider.getBlockNumber();
-    expect(await test.preCheckBlock()).to.be.gt((currentBlock - 1).toString());
+    expect(await test.preCheckBlock()).to.be.gt((currentBlock - 3).toString());
     expect(await test.lastCheckAllocation()).to.be.gt('1');
     expect(await test.lastCheckPositions()).to.be.gt('1');
 

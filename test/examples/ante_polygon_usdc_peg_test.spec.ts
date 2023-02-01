@@ -5,8 +5,11 @@ import { AntePolygonUSDCPegTest, AntePolygonUSDCPegTest__factory } from '../../t
 
 import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
+import { config as dotenvconfig } from 'dotenv';
+dotenvconfig();
 
 describe('AntePolygonUSDCPegTest', function () {
+  if (process.env.NETWORK != 'polygon') return;
   let test: AntePolygonUSDCPegTest;
 
   let globalSnapshotId: string;

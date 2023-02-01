@@ -5,8 +5,11 @@ import { AnteOptimismUSDCPegTest, AnteOptimismUSDCPegTest__factory } from '../..
 
 import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
+import { config as dotenvconfig } from 'dotenv';
+dotenvconfig();
 
 describe('AnteArbitrumUSDCPegTest', function () {
+  if (process.env.NETWORK != 'optimism') return;
   let test: AnteOptimismUSDCPegTest;
 
   let globalSnapshotId: string;

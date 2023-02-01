@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-import "../AnteTest.sol";
+import "../../AnteTest.sol";
 import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
 
 // @title Ensure that the slippage of these two tokens are <= 3%
