@@ -5,8 +5,6 @@ import { AnteFantomUSDCPegTest, AnteFantomUSDCPegTest__factory } from '../../typ
 
 import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
-import { config as dotenvconfig } from 'dotenv';
-dotenvconfig();
 
 describe('AnteFantomUSDCPegTest', function () {
   if (process.env.NETWORK != 'fantom') return;
