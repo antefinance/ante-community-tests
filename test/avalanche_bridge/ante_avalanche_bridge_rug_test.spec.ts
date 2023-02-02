@@ -1,15 +1,13 @@
 import hre from 'hardhat';
 const { waffle } = hre;
 
-import { AnteOptimismUSDCPegTest, AnteOptimismUSDCPegTest__factory } from '../../typechain';
+import { AnteAvalancheBridgeRugTest__factory, AnteAvalancheBridgeRugTest } from '../../typechain';
 
 import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
 
-describe('AnteArbitrumUSDCPegTest', function () {
-  if (process.env.NETWORK != 'optimism') return;
-
-  let test: AnteOptimismUSDCPegTest;
+describe('AnteAvalancheBridgeRugTest', function () {
+  let test: AnteAvalancheBridgeRugTest;
 
   let globalSnapshotId: string;
 
@@ -18,10 +16,10 @@ describe('AnteArbitrumUSDCPegTest', function () {
 
     const [deployer] = waffle.provider.getWallets();
     const factory = (await hre.ethers.getContractFactory(
-      'AnteOptimismUSDCPegTest',
+      'AnteAvalancheBridgeRugTest',
       deployer
-    )) as AnteOptimismUSDCPegTest__factory;
-    test = await factory.deploy('0x7F5c764cBc14f9669B88837ca1490cCa17c31607');
+    )) as AnteAvalancheBridgeRugTest__factory;
+    test = await factory.deploy();
     await test.deployed();
   });
 

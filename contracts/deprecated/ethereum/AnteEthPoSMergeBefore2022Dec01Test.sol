@@ -11,31 +11,33 @@
 
 pragma solidity ^0.7.0;
 
-import "../AnteTest.sol";
-import "../interfaces/IERC20.sol";
+import "../../libraries/ante-v05-core/AnteTest.sol";
 
-/// @title Ante Test to check Compund Finance cUSDC total supply never will be less than 8591273087904514301/(10^8) = 85 912 730 879
-/// @dev Checks cUSDC totalSupply in Compound cUSDC contract
-contract AnteCompoundcUSDCSupplyTest is AnteTest("cUSDC totalSupply is greater than 6000000000000000000") {
-    // cUSDC Address: https://etherscan.io/token/0x39aa39c021dfbae8fac545936693ac917d5e7563
-
-    address public immutable cusdcAddress;
-    uint256 public immutable thresholdSupply;
-    IERC20 public cusdcToken;
-
-    constructor(address _cusdcAddress) {
-        cusdcAddress = _cusdcAddress;
-        cusdcToken = IERC20(_cusdcAddress);
-        thresholdSupply = 6000000000000000000;
-
-        protocolName = "Compound";
-        testedContracts = [_cusdcAddress];
+/// @title  Ethereum PoS Merge happens before 2022-12-01 (Beacon Chain turns 2 yrs old)
+/// @notice Ante Test to check if The Merge between Ethereum PoW and PoS has happened
+///         before 2022-12-01 12:00:23 UTC. This marks the 2-year anniversary of the
+///         genesis block of the Beacon Chain PoS system.
+///         (see https://beaconscan.com/slot/0)
+contract AnteEthPoSMergeBefore2022Dec01Test is
+    AnteTest("The Merge (Ethereum PoS) happens before 2022-12-01 (Beacon Chain turns 2 yrs old)")
+{
+    constructor() {
+        protocolName = "Ethereum";
     }
 
-    /// @notice test to check if cUSDC token supply is greater than 8591273087904514301
-    /// @return true if supply is greater than 8591273087904514301
+    /// @notice Checks if the merge has occurred before the Beacon Chain's 2nd birthday
+    /// @return false if it is 2022-12-01 12:00:23 UTC or later and the difficulty
+    ///         bomb has not yet occurred; returns true otherwise
     function checkTestPasses() external view override returns (bool) {
-        // Protocol Math: https://compound.finance/docs#protocol-math
-        return (cusdcToken.totalSupply() >= thresholdSupply);
+        // After the difficulty bomb, block.difficulty will be > 2**64 or = 0
+        if (
+            block.timestamp >= 1669896023 && // 2022-12-01 12:00:23 UTC
+            block.difficulty < 2**64 &&
+            block.difficulty > 0
+        ) {
+            return false;
+        }
+
+        return true;
     }
 }

@@ -14,10 +14,10 @@ pragma solidity ^0.7.0;
 import "../AnteTest.sol";
 import "@openzeppelin-contracts-old/contracts/token/ERC20/IERC20.sol";
 
-/// @title Axie Ronin Bridge doesn't rug test on mainnet
+/// @title Axie Ronin Bridge V2 doesn't rug test on mainnet
 /// @notice Ante Test to check if Axie Ronin Bridge "rugs" 90% of its value (as of test deployment)
-contract AnteAxieRoninBridgeRugTest is AnteTest("Axie Ronin Bridge doesn't rug 90% of its value") {
-    address public constant RONIN_BRIDGE = 0x1A2a1c938CE3eC39b6D47113c7955bAa9DD454F2;
+contract AnteAxieRoninBridgeV2RugTest is AnteTest("Axie Ronin Bridge V2 doesn't rug 90% of its value") {
+    address public constant RONIN_BRIDGE = 0x64192819Ac13Ef72bF6b5AE239AC672B43a9AF08;
 
     IERC20 private constant AXS = IERC20(0xBB0E17EF65F82Ab018d8EDd776e8DD940327B28b);
     IERC20 private constant USDC = IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);

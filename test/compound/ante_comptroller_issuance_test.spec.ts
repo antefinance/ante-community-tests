@@ -3,7 +3,7 @@ const { waffle } = hre;
 
 import { IERC20, AnteComptrollerIssuanceTest, AnteComptrollerIssuanceTest__factory } from '../../typechain';
 
-import { runAsSigner, evmSnapshot, evmRevert, evmIncreaseTime, blockTimestamp } from '../helpers';
+import { runAsSigner, evmSnapshot, evmRevert, evmIncreaseTime, blockTimestamp, evmMineBlocks } from '../helpers';
 import { expect } from 'chai';
 
 describe('AnteComptrollerIssuanceTest', function () {
@@ -101,6 +101,7 @@ describe('AnteComptrollerIssuanceTest', function () {
   it('should fail if large amount of COMP transferred out of comptroller after min period', async () => {
     // increase time by 12 hours and 1 second
     await evmIncreaseTime(43201);
+    await evmMineBlocks(1);
 
     const compBalance = await comp.balanceOf(COMPTROLLER_ADDRESS);
 

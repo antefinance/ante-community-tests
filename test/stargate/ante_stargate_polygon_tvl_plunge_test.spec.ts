@@ -6,13 +6,9 @@ import { AnteStargatePolygonTVLPlungeTest, AnteStargatePolygonTVLPlungeTest__fac
 import { evmSnapshot, evmRevert, fundSigner, runAsSigner } from '../helpers';
 import { expect } from 'chai';
 import { BigNumber, Contract } from 'ethers';
-import { config as dotenvconfig } from 'dotenv';
-dotenvconfig();
 
 describe('AnteStargatePolygonTVLPlungeTest', function () {
-  if (process.env.NETWORK != 'polygon') {
-    return;
-  }
+  if (process.env.NETWORK != 'polygon') return;
 
   let test: AnteStargatePolygonTVLPlungeTest;
   let usdt: Contract;
