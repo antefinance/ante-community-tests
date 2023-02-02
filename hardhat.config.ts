@@ -21,7 +21,7 @@ interface ForkingNetworkRPC {
 
 const forkingRPC: ForkingNetworkRPC = {
   mainnet: {
-    url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
+    url: `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
   },
   avalanche: {
     url: 'https://api.avax.network/ext/bc/C/rpc',
@@ -47,7 +47,7 @@ const config: HardhatUserConfig = {
   networks: {
     localhost: {
       forking: {
-        url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
+        url: `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
         blockNumber: 15300000,
       },
       url: 'http://localhost:8545',

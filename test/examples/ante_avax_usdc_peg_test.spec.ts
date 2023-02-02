@@ -5,6 +5,8 @@ import { AnteAvaxUSDCPegTest, AnteAvaxUSDCPegTest__factory } from '../../typecha
 
 import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
+import { config as dotenvconfig } from 'dotenv';
+dotenvconfig();
 
 describe('AnteAvaxUSDCPegTest', function () {
   if (process.env.NETWORK != 'avalanche') return;

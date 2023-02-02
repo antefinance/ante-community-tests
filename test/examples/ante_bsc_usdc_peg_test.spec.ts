@@ -5,6 +5,8 @@ import { AnteBscUSDCPegTest, AnteBscUSDCPegTest__factory } from '../../typechain
 
 import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
+import { config as dotenvconfig } from 'dotenv';
+dotenvconfig();
 
 describe('AnteBscUSDCPegTest', function () {
   if (process.env.NETWORK != 'bsc') return;
