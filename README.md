@@ -7,6 +7,7 @@ Please feel free to join our Discord to bounce ideas and discuss various ideas w
 Website: [ante.finance](https://www.ante.finance/)  
 Twitter: [AnteFinance](https://twitter.com/AnteFinance)  
 Discord: [Ante Finance](https://discord.gg/yaJthzNdNG)
+Youtube: [Ante Finance](https://www.youtube.com/channel/UCJ7wxiuzI2SKw3U2gB2ZqDA)
 
 **IMPORTANT - We're incredibly excited by the enthusiasm the community is showing towards writing Ante Tests for their favorite protocols. We're still working on making the test deployment process as seamless and user-friendly as possible.**
 
@@ -186,3 +187,7 @@ Once finished, the smart contracts can be deployed to the Rinkeby network with a
 ```
 npx hardhat run scripts/deploy.js --network rinkeby
 ```
+
+## References
+
+[NFT Template Video](https://youtu.be/_qiGWIAyx6k)
