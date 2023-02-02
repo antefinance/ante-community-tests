@@ -20,11 +20,9 @@ contract AnteNFTBalanceTestTemplate is AnteTest("LockShiboshi Shiboshi balance r
     uint256 public immutable thresholdBalance;
 
     constructor() {
-        // TODO replace 100 with desired threshold
-        thresholdBalance = 100;
+        thresholdBalance = 400;
 
-        // TODO replace "Project" with target NFT collection name
-        protocolName = "Project";
+        protocolName = "Shiboshi";
 
         testedContracts = [address(NFT), HOLDER_ADDRESS];
     }
