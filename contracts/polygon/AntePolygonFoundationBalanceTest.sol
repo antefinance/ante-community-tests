@@ -5,10 +5,10 @@ pragma solidity ^0.8.0;
 import {AnteTest} from "../AnteTest.sol";
 import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
-/// @title Checks Polygon Foundation holds >= 5M $MATIC on Eth Mainnet
+/// @title Checks Polygon Foundation holds >= 5M MATIC on Eth Mainnet
 /// @author Put your ETH address here
 /// @notice Ante Test to check
-contract AntePolygonFoundationBalanceTest is AnteTest("Polygon Foundation holds >= 5M $MATIC on Eth Mainnet") {
+contract AntePolygonFoundationBalanceTest is AnteTest("Polygon Foundation holds >= 5M MATIC on Eth Mainnet") {
     // https://etherscan.io/address/0xb316fa9Fa91700D7084D377bfdC81Eb9F232f5Ff
     address public constant HOLDER_ADDRESS = 0xb316fa9Fa91700D7084D377bfdC81Eb9F232f5Ff;
 
@@ -26,8 +26,8 @@ contract AntePolygonFoundationBalanceTest is AnteTest("Polygon Foundation holds 
         testedContracts = [address(TOKEN), HOLDER_ADDRESS];
     }
 
-    /// @notice test to check if $[TOKEN] balance in [HOLDER] is >= [THRESHOLD]
-    /// @return true if $[TOKEN] balance in [HOLDER] is >= [THRESHOLD]
+    /// @notice test to check if MATIC balance in Polygon Foundation is >= 5M
+    /// @return true if MATIC balance in Polygon Foundation is >= 5M
     function checkTestPasses() public view override returns (bool) {
         return (TOKEN.balanceOf(HOLDER_ADDRESS) >= thresholdBalance);
     }
