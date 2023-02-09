@@ -1,0 +1,37 @@
+// SPDX-License-Identifier: GPL-3.0-only
+
+pragma solidity ^0.8.0;
+
+import {AnteTest} from "../AnteTest.sol";
+import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+// ==  Running an Ante Test using an NFT Balance token Terraforms
+// ==  Test name - Fingerprints DAO holds >=5 Terraforms NFTs
+
+
+/// @title Checks that Fingerprints DAO holds at least 5 Terraforms
+/// @author Put your ETH address here
+/// @notice Ante Test to check
+contract TerraformsBalanceTest is AnteTest("Fingerprints DAO holds >=5 Terraforms NFTs") {
+    // https://etherscan.io/address/0xbC49de68bCBD164574847A7ced47e7475179C76B
+    address public constant HOLDER_ADDRESS = 0xbC49de68bCBD164574847A7ced47e7475179C76B;
+
+    // https://etherscan.io/address/0x4E1f41613c9084FdB9E34E11fAE9412427480e56
+    IERC721 public constant NFT = IERC721(0x4E1f41613c9084FdB9E34E11fAE9412427480e56);
+
+    // Will be set to desired token balance threshold
+    uint256 public immutable thresholdBalance;
+
+    constructor() {
+        thresholdBalance = 5;
+
+        protocolName = "Terraforms";
+
+        testedContracts = [address(NFT), HOLDER_ADDRESS];
+    }
+
+    /// @notice test to check if Fingerprints DAO owns >= 5 Terraformss
+    /// @return true if Terraforms balance of Fingerprints DAO is >= 5
+    function checkTestPasses() public view override returns (bool) {
+        return (NFT.balanceOf(HOLDER_ADDRESS) >= thresholdBalance);
+    }
+}
