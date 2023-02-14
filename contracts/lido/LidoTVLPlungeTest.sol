@@ -36,7 +36,12 @@ contract LidoTVLPlungeTest is AnteTest("Lido TVL Plunge Test") {
       
       protocolName = "Lido";
 
-      testedContracts = [address(LIDO_STETH), address(CHAINLINK_ETHUSD_PRICE)];
+      testedContracts = [
+        address(LIDO_STETH), 
+        address(CHAINLINK_ETHUSD_PRICE),
+        address(LIDO_STMATIC),
+        address(CHAINLINK_MATICUSD_PRICE)
+      ];
 
       initialTVL = getCurrentTVL();
       thresholdTVL = (100 - _thresholdPercentage) * initialTVL / 100;
