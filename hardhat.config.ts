@@ -1,13 +1,24 @@
 import { config as dotenvconfig } from 'dotenv';
 dotenvconfig();
 
-import { HardhatUserConfig } from 'hardhat/config';
+import { HardhatUserConfig, subtask } from 'hardhat/config';
 
 import 'hardhat-abi-exporter';
 import 'hardhat-gas-reporter';
 import '@typechain/hardhat';
 import '@nomiclabs/hardhat-waffle';
 import '@nomiclabs/hardhat-etherscan';
+
+import { TASK_COMPILE_SOLIDITY_GET_SOURCE_PATHS } from 'hardhat/builtin-tasks/task-names';
+
+/* 
+  Skip contracts/templates files from compilation
+*/
+subtask(TASK_COMPILE_SOLIDITY_GET_SOURCE_PATHS).setAction(async (_, __, runSuper) => {
+  const paths = await runSuper();
+  return paths.filter((path: string) => !path.includes('contracts/templates'));
+});
+
 
 interface ForkingNetworkRPC {
   mainnet: { url: string };
