@@ -57,7 +57,6 @@ contract MakerDAOTVLPlungeTest is AnteTest("Lido TVL Plunge Test") {
   address public btcToUsdDataFeed = 0xF4030086522a5bEEa4988F8cA5B36dbC97BeE88c;
 
   address[] public regularMcdJoins;
-  address[] public wbtcMcdJoins;
   address[] public univ2McdJoins;
   address[] public guniv3McdJoins;
 
@@ -177,10 +176,7 @@ contract MakerDAOTVLPlungeTest is AnteTest("Lido TVL Plunge Test") {
       0x10CD5fbe1b404B7E19Ef964B63939907bdaf42E2, // MCD_JOIN_WSTETH_A -> wstETH
       0x248cCBf4864221fC0E840F29BB042ad5bFC89B5c, // MCD_JOIN_WSTETH_B -> wstETH
       0xC6424e862f1462281B0a5FAc078e4b63006bDEBF, // MCD_JOIN_RETH_A -> rETH
-      0x7bD3f01e24E0f0838788bC8f573CEA43A80CaBB5 // MCD_JOIN_GNO_A -> GNO
-    ];
-
-    wbtcMcdJoins = [
+      0x7bD3f01e24E0f0838788bC8f573CEA43A80CaBB5, // MCD_JOIN_GNO_A -> GNO
       0xBF72Da2Bd84c5170618Fbe5914B0ECA9638d5eb5, // MCD_JOIN_WBTC_A -> WBTC
       0xfA8c996e158B80D77FbD0082BB437556A65B96E0, // MCD_JOIN_WBTC_B -> WBTC
       0x7f62f9592b823331E012D3c5DdF2A7714CfB9de2 // MCD_JOIN_WBTC_C -> WBTC
@@ -350,10 +346,12 @@ contract MakerDAOTVLPlungeTest is AnteTest("Lido TVL Plunge Test") {
   /// @return TVL value of Lido Staking Pool
   function getCurrentTVL() public view returns (uint256) {
     uint256 regularMcdJoinsValue = getRegularMcdJoinsValue();
-    uint256 wbtcMcdJoinsValue = getWbtcMcdJoinsValue();
+    //uint256 wbtcMcdJoinsValue = getWbtcMcdJoinsValue();
     uint256 univ2McdJoinsValue = getUniv2McdJoinsValue();
     uint256 guniv3McdJoinsValue = getGuniv3McdJoinsValue();
-    return regularMcdJoinsValue + wbtcMcdJoinsValue + univ2McdJoinsValue + guniv3McdJoinsValue;
+    return regularMcdJoinsValue 
+    + univ2McdJoinsValue 
+    + guniv3McdJoinsValue;
   }
 
   function getRegularMcdJoinsValue() public view returns (uint256) {
@@ -361,14 +359,6 @@ contract MakerDAOTVLPlungeTest is AnteTest("Lido TVL Plunge Test") {
     for(uint256 i = 0; i < regularMcdJoins.length; i++) {
       total = total + getRegularJoinValue(regularMcdJoins[i]);
       
-    }
-    return total;
-  }
-
-  function getWbtcMcdJoinsValue() public view returns (uint256) {
-    uint256 total = 0;
-    for(uint256 i = 0; i < wbtcMcdJoins.length; i++) {
-      total = total + getWbtcJoinValue(wbtcMcdJoins[i]);
     }
     return total;
   }
@@ -428,16 +418,6 @@ contract MakerDAOTVLPlungeTest is AnteTest("Lido TVL Plunge Test") {
     return total;
   }
 
-  function getWbtcJoinValue(address _join) public view returns (uint256) {
-    IERC20Metadata token = IERC20Metadata(IGemJoin(_join).gem());
-    uint256 amount = token.balanceOf(_join);
-    uint256 decimals = 8;
-    uint256 priceInBTC = uint256(IChainlinkAggregator(dataFeedsBTC[address(token)]).latestAnswer());
-    uint256 valueInBTC = calculateValue(amount, priceInBTC, decimals);
-    uint256 priceOfBTC = uint256(IChainlinkAggregator(btcToUsdDataFeed).latestAnswer());
-    return calculateValue(valueInBTC, priceOfBTC, 8);
-  }
-
   function getRegularJoinValue(address _join) public view returns (uint256) {
     return getUsdValue(IGemJoin(_join).gem(), _join);
   }
@@ -479,7 +459,7 @@ contract MakerDAOTVLPlungeTest is AnteTest("Lido TVL Plunge Test") {
     }
     if(dataFeedsBTC[address(token)] != address(0)){
       uint256 priceInBTC = uint256(IChainlinkAggregator(dataFeedsBTC[address(token)]).latestAnswer());
-      uint256 valueInBTC = calculateValue(amount, priceInBTC, decimals);
+      uint256 valueInBTC = calculateValue(amount, priceInBTC, 8);
       uint256 priceOfBTC = uint256(IChainlinkAggregator(btcToUsdDataFeed).latestAnswer());
       return calculateValue(valueInBTC, priceOfBTC, 8);
     }

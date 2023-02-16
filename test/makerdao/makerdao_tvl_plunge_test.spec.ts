@@ -19,7 +19,7 @@ describe('MakerDAOTVLPlungeTest', function () {
       'MakerDAOTVLPlungeTest',
       deployer
     )) as MakerDAOTVLPlungeTest__factory;
-    test = await factory.deploy(plungePercentage, { gasLimit: 8000000 });
+    test = await factory.deploy(plungePercentage);
     await test.deployed();
   });
 
@@ -33,12 +33,14 @@ describe('MakerDAOTVLPlungeTest', function () {
     expect(initialTVL).to.be.gt(thresholdTVL);
     const thresholdPercentage = initialTVL.sub(thresholdTVL).mul(100).div(initialTVL);
     /*
+    const regularValue = await test.getRegularMcdJoinsValue();
     const univ2value = await test.getUniv2McdJoinsValue();
     const guniv3value = await test.getGuniv3McdJoinsValue();
     console.log(`
       Initial TVL: ${ethers.utils.formatUnits(initialTVL, 8)} 
       Threshold TVL: ${ethers.utils.formatUnits(thresholdTVL, 8)}
       Threshold Percentage: ${thresholdPercentage}%
+      Regular MCD Join Value: ${ethers.utils.formatUnits(regularValue, 8)}
       Uniswap V2 MCD Join Value: ${ethers.utils.formatUnits(univ2value, 8)}
       Gelato Uniswap V3 MCD Join Value: ${ethers.utils.formatUnits(guniv3value, 8)}
     `);
