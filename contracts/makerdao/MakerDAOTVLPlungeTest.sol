@@ -337,15 +337,15 @@ contract MakerDAOTVLPlungeTest is AnteTest("MakerDAO TVL Plunge Test") {
   }
 
 
-  /// @notice test to check if TVL value of Lido Staking Pool has decreased by %X since test deployment
-  /// @return true if TVL value of Lido Staking Pool has not decreased by %X since test deployment
+  /// @notice test to check if TVL value of MakerDAO has decreased by %X since test deployment
+  /// @return true if TVL value of MakerDAO has not decreased by %X since test deployment
   function checkTestPasses() public view override returns (bool) {
     
     return (getCurrentTVL() >= thresholdTVL);
   }
 
-  /// @notice get TVL value of Lido Staking Pool
-  /// @return TVL value of Lido Staking Pool
+  /// @notice get TVL value of MakerDAO
+  /// @return TVL value of MakerDAO
   function getCurrentTVL() public view returns (uint256) {
     uint256 regularMcdJoinsValue = getRegularMcdJoinsValue();
     //uint256 wbtcMcdJoinsValue = getWbtcMcdJoinsValue();
