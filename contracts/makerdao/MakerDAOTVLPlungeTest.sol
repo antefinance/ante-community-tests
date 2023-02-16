@@ -63,9 +63,9 @@ contract MakerDAOTVLPlungeTest is AnteTest("MakerDAO TVL Plunge Test") {
   mapping(address => address) public dataFeedsUSD;
   mapping(address => address) public dataFeedsETH;
   mapping(address => address) public dataFeedsBTC;
-  // initial TVL value of Lido Staking Pools
+  // initial TVL value of MakerDAO 
   uint256 public immutable initialTVL;
-  // min accepted TVL value of Lido Staking Pools
+  // min accepted TVL value of MakerDAO
   uint256 public immutable thresholdTVL;
   /// @param _thresholdPercentage desired max TVL plunge threshold percentage
   constructor(uint256 _thresholdPercentage) {
