@@ -348,7 +348,6 @@ contract MakerDAOTVLPlungeTest is AnteTest("MakerDAO TVL Plunge Test") {
   /// @return TVL value of MakerDAO
   function getCurrentTVL() public view returns (uint256) {
     uint256 regularMcdJoinsValue = getRegularMcdJoinsValue();
-    //uint256 wbtcMcdJoinsValue = getWbtcMcdJoinsValue();
     uint256 univ2McdJoinsValue = getUniv2McdJoinsValue();
     uint256 guniv3McdJoinsValue = getGuniv3McdJoinsValue();
     return regularMcdJoinsValue 
