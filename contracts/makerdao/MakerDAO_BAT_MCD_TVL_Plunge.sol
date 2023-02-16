@@ -22,9 +22,9 @@ contract MakerDAOBATMCDTVLPlungeTest is AnteTest("MakerDAO BAT MCD TVL Plunge Te
 
   address public constant BAT_MCD_JOIN = 0x3D0B1912B66114d4096F48A8CEe3A56C231772cA;
 
-  // initial TVL value of Lido Staking Pools
+  // initial TVL value of MakerDAO BAT MCD
   uint256 public immutable initialTVL;
-  // min accepted TVL value of Lido Staking Pools
+  // min accepted TVL value of MakerDAO BAT MCD
   uint256 public immutable thresholdTVL;
   /// @param _thresholdPercentage desired max TVL plunge threshold percentage
   constructor(uint256 _thresholdPercentage) {
