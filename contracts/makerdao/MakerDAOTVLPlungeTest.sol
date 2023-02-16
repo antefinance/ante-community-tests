@@ -47,7 +47,7 @@ interface IGemJoin {
 
 /// @title Check TVL Value of MakerDAO plunges by %X since test deployment
 /// @notice Ante Test to check if MakerDAO TVL value has decreased by %X since test deployment
-contract MakerDAOTVLPlungeTest is AnteTest("Lido TVL Plunge Test") {
+contract MakerDAOTVLPlungeTest is AnteTest("MakerDAO TVL Plunge Test") {
   address public constant DAI = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
   address public constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
   address public constant WBTC = 0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599;
@@ -327,7 +327,9 @@ contract MakerDAOTVLPlungeTest is AnteTest("Lido TVL Plunge Test") {
       // MCD_JOIN_GUNIV3DAIUSDC1_A
       0xbFD445A97e7459b0eBb34cfbd3245750Dba4d7a4,
       // MCD_JOIN_GUNIV3DAIUSDC2_A
-      0xA7e4dDde3cBcEf122851A7C8F7A55f23c0Daf335
+      0xA7e4dDde3cBcEf122851A7C8F7A55f23c0Daf335,
+      // CHAINLINK FEED BTC / USD 
+      0xF4030086522a5bEEa4988F8cA5B36dbC97BeE88c
     ];
 
     initialTVL = getCurrentTVL();
