@@ -92,7 +92,8 @@ library TokenUsdValueMainnet {
   /// @param _token address of the token
   /// @return true if the token has a price feed in either USD/ETH/BTC, otherwise false
   function hasFeed(address _token) internal view returns (bool) {
-    /// PriceRegistry defines WETH as having a price feed in Denominations.ETH 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE
+    /// PriceRegistry defines WETH as having a price 
+    /// feed in Denominations.ETH 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE
     if(_token == WETH) {
       return true;
     }

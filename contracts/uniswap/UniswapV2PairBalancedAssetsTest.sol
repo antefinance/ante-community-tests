@@ -28,6 +28,10 @@ contract UniswapV2PairBalancedAssetsTest is AnteTest("Uniswap V2 Pair Balanced A
 
   uint256 public acceptedDeviation;
 
+  /// @param _acceptedDeviation accepted deviation in percentage
+  /// @param _factoryAddress Uniswap V2 Factory address
+  /// @param _initialTokenA initial token A address
+  /// @param _initialTokenB initial token B address
   constructor(uint256 _acceptedDeviation, address _factoryAddress, address _initialTokenA, address _initialTokenB) {
     require(_factoryAddress != address(0), "UniswapV2PairBalancedAssetsTest: factory address cannot be 0x0");
     require(_acceptedDeviation > 0 &&
@@ -70,6 +74,9 @@ contract UniswapV2PairBalancedAssetsTest is AnteTest("Uniswap V2 Pair Balanced A
 
   }
 
+  /// @notice get the pair reserves values
+  /// @return token0Value token 0 value in USD
+  /// @return token1Value token 1 value in USD
   function getPairReservesValues() public view returns (uint256, uint256) {
     address token0 = IUniswapV2Pair(pairAddress).token0();
     address token1 = IUniswapV2Pair(pairAddress).token1();
@@ -80,7 +87,7 @@ contract UniswapV2PairBalancedAssetsTest is AnteTest("Uniswap V2 Pair Balanced A
 
     return (token0Value, token1Value);
   }
-
+  
   function _setState(bytes memory _state) internal override {
     (address tokenA, address tokenB) = abi.decode(_state, (address, address));
     require(tokenA.hasFeed(), "UniswapV2PairBalancedAssetsTest: token A not supported");
