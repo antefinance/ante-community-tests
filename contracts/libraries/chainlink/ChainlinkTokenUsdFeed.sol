@@ -10,7 +10,7 @@ import { Denominations } from "@chainlink/contracts/src/v0.8/Denominations.sol";
 
 /// @title Library to get USD value of tokens
 /// @notice This library is used to get USD value of tokens using Chainlink feeds on Ethereum Mainnet
-library TokenUsdValueMainnet {
+library ChainlinkTokenUsdFeed {
   // https://etherscan.io/address/0x47Fb2585D2C56Fe188D0E6ec628a38b74fCeeeDf
   address public constant FEED_REGISTRY = 0x47Fb2585D2C56Fe188D0E6ec628a38b74fCeeeDf;
   // https://etherscan.io/address/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
@@ -116,7 +116,7 @@ library TokenUsdValueMainnet {
   /// @param _token address of the token
   /// @param _amount amount of the token
   /// @return USD value of the token amount
-  function getValue(address _token, uint256 _amount) internal view returns (uint256) {
+  function getUSDValue(address _token, uint256 _amount) internal view returns (uint256) {
     uint256 tokenDecimals = IERC20Metadata(_token).decimals();
     uint256 tokenPrice;
     /// WETH is a special case for price Feed Registry, using Denominations.ETH instead of token address

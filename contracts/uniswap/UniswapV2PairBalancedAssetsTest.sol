@@ -5,7 +5,7 @@ pragma solidity ^0.8.0;
 import {AnteTest} from "../libraries/ante-v06-core/AnteTest.sol";
 import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
-import {TokenUsdValueMainnet} from "../libraries/chainlink/TokenUsdValueMainnet.sol";
+import {ChainlinkTokenUsdFeed} from "../libraries/chainlink/ChainlinkTokenUsdFeed.sol";
 
 interface IUniswapV2Pair is IERC20Metadata {
   function token0() external view returns (address);
@@ -22,10 +22,10 @@ interface IUniswapV2Factory {
 /// @title Check if Uniswap V2 Pair has balanced assets
 /// @notice Ante Test to check if Uniswap V2 Pair has balanced assets
 contract UniswapV2PairBalancedAssetsTest is AnteTest("Uniswap V2 Pair Balanced Assets Test") {
-  using TokenUsdValueMainnet for address;
+  
   address public factoryAddress;
   address public pairAddress;
-
+  
   uint256 public acceptedDeviation;
 
   /// @param _acceptedDeviation accepted deviation in percentage
@@ -36,14 +36,15 @@ contract UniswapV2PairBalancedAssetsTest is AnteTest("Uniswap V2 Pair Balanced A
     require(_factoryAddress != address(0), "UniswapV2PairBalancedAssetsTest: factory address cannot be 0x0");
     require(_acceptedDeviation > 0 &&
             _acceptedDeviation < 100, "UniswapV2PairBalancedAssetsTest: invalid accepted deviation");
-    require(_initialTokenA.hasFeed(), "UniswapV2PairBalancedAssetsTest: token A not supported");
-    require(_initialTokenB.hasFeed(), "UniswapV2PairBalancedAssetsTest: token B not supported");
+    require(ChainlinkTokenUsdFeed.hasFeed(_initialTokenA), "UniswapV2PairBalancedAssetsTest: token A not supported");
+    require(ChainlinkTokenUsdFeed.hasFeed(_initialTokenB), "UniswapV2PairBalancedAssetsTest: token B not supported");
     factoryAddress = _factoryAddress;
 
     // Set initial pair address
     pairAddress = IUniswapV2Factory(factoryAddress).getPair(_initialTokenA, _initialTokenB);
     require(pairAddress != address(0), "UniswapV2PairBalancedAssetsTest: pair address cannot be 0x0");
-    
+    acceptedDeviation = _acceptedDeviation;
+
     protocolName = "Uniswap V2";
 
     testedContracts = [
@@ -82,16 +83,16 @@ contract UniswapV2PairBalancedAssetsTest is AnteTest("Uniswap V2 Pair Balanced A
     address token1 = IUniswapV2Pair(pairAddress).token1();
     (uint256 token0Balance, uint256 token1Balance,) = IUniswapV2Pair(pairAddress).getReserves();
 
-    uint256 token0Value = token0.getValue(token0Balance);
-    uint256 token1Value = token1.getValue(token1Balance);
+    uint256 token0Value = ChainlinkTokenUsdFeed.getUSDValue(token0, token0Balance);
+    uint256 token1Value = ChainlinkTokenUsdFeed.getUSDValue(token1, token1Balance);
 
     return (token0Value, token1Value);
   }
   
   function _setState(bytes memory _state) internal override {
     (address tokenA, address tokenB) = abi.decode(_state, (address, address));
-    require(tokenA.hasFeed(), "UniswapV2PairBalancedAssetsTest: token A not supported");
-    require(tokenB.hasFeed(), "UniswapV2PairBalancedAssetsTest: token B not supported");
+    require(ChainlinkTokenUsdFeed.hasFeed(tokenA), "UniswapV2PairBalancedAssetsTest: token A not supported");
+    require(ChainlinkTokenUsdFeed.hasFeed(tokenB), "UniswapV2PairBalancedAssetsTest: token B not supported");
 
     address _pair = IUniswapV2Factory(factoryAddress).getPair(tokenA, tokenB);
     require(_pair != address(0), "Pair does not exist");

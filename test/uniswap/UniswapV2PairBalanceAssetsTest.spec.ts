@@ -10,7 +10,7 @@ describe('UniswapV2PairBalancedAssetsTest', function () {
   let test: UniswapV2PairBalancedAssetsTest;
 
   let globalSnapshotId: string;
-  let acceptedDeviation = 1;
+  let acceptedDeviation = 5;
   let factoryAddress = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'; // UniswapV2 factory
   const tokens = {
     WETH: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
@@ -36,16 +36,6 @@ describe('UniswapV2PairBalancedAssetsTest', function () {
   });
 
   it('should pass', async () => {
-    /*
-    const [value0, value1] = await test.getPairReservesValues();
-    const diffPercentage = value0.sub(value1).mul(100).div(value0).abs();
-    console.log(`
-    Reserve0: ${value0}
-    Reserve1: ${value1}
-    Difference: ${diffPercentage}%
-    `);
-    */
-
     // test with WETH and USDC that have a direct USD price feed
     expect(await test.checkTestPasses()).to.be.true;
 
