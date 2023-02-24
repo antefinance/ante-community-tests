@@ -102,6 +102,16 @@ library TokenUsdValueMainnet {
             hasUsdFeed(_token);
   }
 
+  /// @notice get the latest price of a token in a denomination
+  /// @param _base address of the token
+  /// @param _denomination address of the denomination
+  /// @return latest price of the token in the denomination
+  function latestPrice(address _base, address _denomination) internal view returns (uint256) {
+    (,int256 price,,,) = FeedRegistryInterface(FEED_REGISTRY)
+                                    .latestRoundData(_base, _denomination);
+    return uint256(price);
+  }
+
   /// @notice get the USD value of a token amount
   /// @param _token address of the token
   /// @param _amount amount of the token
@@ -111,30 +121,23 @@ library TokenUsdValueMainnet {
     uint256 tokenPrice;
     /// WETH is a special case for price Feed Registry, using Denominations.ETH instead of token address
     if(_token == WETH) {
-      tokenPrice = uint256(FeedRegistryInterface(FEED_REGISTRY)
-                          .latestAnswer(Denominations.ETH, Denominations.USD));
+      tokenPrice = latestPrice(Denominations.ETH, Denominations.USD);
     } else {
       /// if a direct USD feed exists, we use that
       if(hasUsdFeed(_token)){
-        tokenPrice = uint256(FeedRegistryInterface(FEED_REGISTRY)
-                            .latestAnswer(_token, Denominations.USD));
+        tokenPrice = latestPrice(_token, Denominations.USD);
       } else if(hasEthFeed(_token)) {
         /// if a direct ETH feed exists, we will convert to USD through it
-        uint256 tokenPriceEth = uint256(FeedRegistryInterface(FEED_REGISTRY)
-                                        .latestAnswer(_token, Denominations.ETH));
-        uint256 ethPrice = uint256(FeedRegistryInterface(FEED_REGISTRY)
-                                        .latestAnswer(Denominations.ETH, Denominations.USD));
+        uint256 tokenPriceEth = latestPrice(_token, Denominations.ETH);
+        uint256 ethPrice = latestPrice(Denominations.ETH, Denominations.USD);
         tokenPrice = ethPrice * tokenPriceEth / 10 ** 8;
       } else if(hasBtcFeed(_token)) {
         /// if a direct BTC feed exists, we will convert to USD through it
-        uint256 tokenPriceBtc = uint256(FeedRegistryInterface(FEED_REGISTRY)
-                                        .latestAnswer(_token, Denominations.BTC));
-        uint256 btcPrice = uint256(FeedRegistryInterface(FEED_REGISTRY)
-                                        .latestAnswer(Denominations.BTC, Denominations.USD));
+        uint256 tokenPriceBtc = latestPrice(_token, Denominations.BTC);
+        uint256 btcPrice = latestPrice(Denominations.BTC, Denominations.USD);
         tokenPrice = btcPrice * tokenPriceBtc / 10 ** 8;
       }
     }
     return _amount * tokenPrice / (10 ** tokenDecimals);
-    
   }
 }
