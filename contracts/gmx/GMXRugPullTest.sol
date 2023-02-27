@@ -17,6 +17,8 @@ error GMXRugPullDetected();
 contract GMXRugPullTest is AnteTest("GMX Rug Pull Test") {
   
   address public gmxVaultAddress;
+
+  // will hold the last known balances of all tokens in GMX Vault
   mapping(address=>uint256) public lastBalances;
 
   /// @param _gmxVaultAddress GMX Vault address
@@ -33,7 +35,7 @@ contract GMXRugPullTest is AnteTest("GMX Rug Pull Test") {
     
     gmxVaultAddress = _gmxVaultAddress;
     
-    updateVaultBalances();
+    _updateVaultBalances();
   }
 
 
@@ -49,14 +51,39 @@ contract GMXRugPullTest is AnteTest("GMX Rug Pull Test") {
   /// @return true if average balances dropped 99% or more
   function checkTestPasses() public view override returns (bool) {
   
-      uint256 averagePercentageRemaining = getAveragePercentageRemaining();
+      uint256 averagePercentageRemaining = _getAveragePercentageRemaining();
       // if average balance dropped 99% or more
       // test fails
       return averagePercentageRemaining > 1;
 
   }
 
-  function getAveragePercentageRemaining() public view returns (uint256) {
+  function _updateVaultBalances() internal {
+    uint256 length = IGMXVault(gmxVaultAddress).allWhitelistedTokensLength();
+
+    for (uint256 i = 0; i < length; i++) {
+      address token = IGMXVault(gmxVaultAddress).allWhitelistedTokens(i);
+      lastBalances[token] = IERC20Metadata(token).balanceOf(gmxVaultAddress);
+    }
+  }
+
+  function _setState(bytes memory _state) internal override {
+    (bool updateKnownVaultBalances) = abi.decode(_state, (bool));
+
+    if(updateKnownVaultBalances){
+      // before updating balances
+      // check if we are not in a rug pull
+      if(!checkTestPasses()){
+        revert GMXRugPullDetected();
+      }
+      _updateVaultBalances();
+    }
+
+  }
+
+  /// @notice Get the average percentage remaining of all tokens in GMX Vault since last balances state update
+  /// @return average percentage remaining of all tokens in GMX Vault
+  function _getAveragePercentageRemaining() internal view returns (uint256) {
     uint256 length = IGMXVault(gmxVaultAddress).allWhitelistedTokensLength();
 
     uint256 averagePercentageRemaining = 0;
@@ -91,31 +118,6 @@ contract GMXRugPullTest is AnteTest("GMX Rug Pull Test") {
     averagePercentageRemaining /= length;
 
     return averagePercentageRemaining;
-  }
-
-  function updateVaultBalances() internal {
-    uint256 length = IGMXVault(gmxVaultAddress).allWhitelistedTokensLength();
-
-    for (uint256 i = 0; i < length; i++) {
-      address token = IGMXVault(gmxVaultAddress).allWhitelistedTokens(i);
-      lastBalances[token] = IERC20Metadata(token).balanceOf(gmxVaultAddress);
-    }
-  }
-
-
-  
-  function _setState(bytes memory _state) internal override {
-    (bool updateKnownVaultBalances) = abi.decode(_state, (bool));
-
-    if(updateKnownVaultBalances){
-      // before updating balances
-      // check if we are not in a rug pull
-      if(!checkTestPasses()){
-        revert GMXRugPullDetected();
-      }
-      updateVaultBalances();
-    }
-
   }
 
 }
