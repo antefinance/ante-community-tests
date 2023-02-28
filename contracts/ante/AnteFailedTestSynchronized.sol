@@ -41,19 +41,18 @@ contract AnteTestStatePushedTest is AnteTest("TestStateInfo information is pushe
     function checkTestPasses() public view override returns (bool) {
         IAntePoolFactory factory = IAntePoolFactory(factoryContractAddr);
         require(factory.getPoolsByTest(testAddr).length > 0, "ANTE: testAddr is not a registered test"); // must have at least 1 pool
-        
-        TestStateInfo memory testState = factory.stateByTest(testAddr);
-        address[] memory pools = factory.poolsByTest(testAddr);
+
+        bool testHasFailed = factory.hasTestFailed(testAddr);
+        address[] memory pools = factory.getPoolsByTest(testAddr);
 
         for (uint i = 0; i < pools.length; i += 1) { // capped at MAX_POOLS_PER_TEST=10 so gas bombing shouldn't be a problem
-            IAntePool pool = IAntePool(pools[i]);
-            if (testState.failedBlock != pool.failedBlock()) return false;
-            if (testState.failedTimestamp != pool.failedTimestamp()) return false;
+            IAntePool pool = IAntePool(pools[0]);
+            if (testHasFailed && pool.failedBlock() == 0) return false;
+            if (testHasFailed && pool.failedTimestamp() == 0) return false;
         }
 
         return true;
     }
-
     /// @param data the state passed by checkTestWithState
     function _setState(bytes memory data) internal override virtual {
         testAddr = abi.decode(data, (address));
