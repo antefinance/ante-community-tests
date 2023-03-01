@@ -1,22 +1,30 @@
 import hre from 'hardhat';
 const { waffle, ethers } = hre;
 
-import { GMXRugPullTest, GMXRugPullTest__factory } from '../../typechain';
+import {
+  ArbitrumGMXRugPullAllWhitelistedTokensTest,
+  ArbitrumGMXRugPullAllWhitelistedTokensTest__factory,
+} from '../../typechain';
 
 import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
 
-describe('GMXRugPullTest', function () {
-  let test: GMXRugPullTest;
+describe('ArbitrumGMXRugPullAllWhitelistedTokensTest', function () {
+  if (process.env.NETWORK !== 'arbitrumOne') {
+    return;
+  }
 
+  let test: ArbitrumGMXRugPullAllWhitelistedTokensTest;
   let globalSnapshotId: string;
-  let gmxVaultAddress = '0x489ee077994B6658eAfA855C308275EAd8097C4A'; // GMX Vault Address Arbitrum
 
   before(async () => {
     globalSnapshotId = await evmSnapshot();
     const [deployer] = waffle.provider.getWallets();
-    const factory = (await hre.ethers.getContractFactory('GMXRugPullTest', deployer)) as GMXRugPullTest__factory;
-    test = await factory.deploy(gmxVaultAddress, { gasLimit: 8000000 });
+    const factory = (await hre.ethers.getContractFactory(
+      'ArbitrumGMXRugPullAllWhitelistedTokensTest',
+      deployer
+    )) as ArbitrumGMXRugPullAllWhitelistedTokensTest__factory;
+    test = await factory.deploy();
     await test.deployed();
   });
 

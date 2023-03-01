@@ -10,30 +10,26 @@ interface IGMXVault {
   function allWhitelistedTokensLength() external view returns (uint256);
 }
 
-error GMXVaultCanNotBeZeroAddress();
 error GMXRugPullDetected();
-/// @title Check if GMX Vault balances dropped 99% or more
-/// @notice Ante Test to check if GMX Vault balances dropped 99% or more
-contract GMXRugPullTest is AnteTest("GMX Rug Pull Test") {
+
+/// @title Check if Arbitrum GMX Vault balances dropped 99% or more
+/// @notice Ante Test to check if Arbitrum GMX Vault balances dropped 99% or more
+contract ArbitrumGMXRugPullAllWhitelistedTokensTest is 
+        AnteTest("Arbitrum GMX Rug Pull Test On All Whitelisted Tokens") {
   
-  address public gmxVaultAddress;
+  // https://arbiscan.io/address/0x489ee077994B6658eAfA855C308275EAd8097C4A#code
+  IGMXVault constant public GMX_VAULT_ADDRESS = IGMXVault(0x489ee077994B6658eAfA855C308275EAd8097C4A);
 
   // will hold the last known balances of all tokens in GMX Vault
   mapping(address=>uint256) public lastBalances;
-
-  /// @param _gmxVaultAddress GMX Vault address
-  constructor(address _gmxVaultAddress) {
-    if(_gmxVaultAddress == address(0)){
-      revert GMXVaultCanNotBeZeroAddress();
-    }    
-    
+  address[] private tokens;
+  constructor() {
+        
     protocolName = "GMX";
 
     testedContracts = [
-      gmxVaultAddress
+      address(GMX_VAULT_ADDRESS)
     ];
-    
-    gmxVaultAddress = _gmxVaultAddress;
     
     _updateVaultBalances();
   }
@@ -59,11 +55,12 @@ contract GMXRugPullTest is AnteTest("GMX Rug Pull Test") {
   }
 
   function _updateVaultBalances() internal {
-    uint256 length = IGMXVault(gmxVaultAddress).allWhitelistedTokensLength();
-
+    uint256 length = GMX_VAULT_ADDRESS.allWhitelistedTokensLength();
+    tokens = new address[](length);
     for (uint256 i = 0; i < length; i++) {
-      address token = IGMXVault(gmxVaultAddress).allWhitelistedTokens(i);
-      lastBalances[token] = IERC20Metadata(token).balanceOf(gmxVaultAddress);
+      address token = GMX_VAULT_ADDRESS.allWhitelistedTokens(i);
+      lastBalances[token] = IERC20Metadata(token).balanceOf(address(GMX_VAULT_ADDRESS));
+      tokens[i] = token;
     }
   }
 
@@ -84,14 +81,14 @@ contract GMXRugPullTest is AnteTest("GMX Rug Pull Test") {
   /// @notice Get the average percentage remaining of all tokens in GMX Vault since last balances state update
   /// @return average percentage remaining of all tokens in GMX Vault
   function _getAveragePercentageRemaining() internal view returns (uint256) {
-    uint256 length = IGMXVault(gmxVaultAddress).allWhitelistedTokensLength();
+    uint256 length = tokens.length;
 
     uint256 averagePercentageRemaining = 0;
 
     for (uint256 i = 0; i < length; i++) {
-      address token = IGMXVault(gmxVaultAddress).allWhitelistedTokens(i);
+      address token = tokens[i];
       uint256 lastBalance = lastBalances[token];
-      uint256 currentBalance = IERC20Metadata(token).balanceOf(gmxVaultAddress);
+      uint256 currentBalance = IERC20Metadata(token).balanceOf(address(GMX_VAULT_ADDRESS));
       
       // if known balance is 0 either it's a new token or previous balance was 0
       // in both cases we can't calculate the delta
