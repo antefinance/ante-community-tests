@@ -3,7 +3,7 @@
 pragma solidity ^0.8.0;
 
 import {AnteTest} from "../libraries/ante-v06-core/AnteTest.sol";
-import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 interface IGMXVault {
   function allWhitelistedTokens(uint256 index) external view returns (address);
@@ -18,17 +18,18 @@ contract ArbitrumGMXRugPullAllWhitelistedTokensTest is
         AnteTest("Arbitrum GMX Rug Pull Test On All Whitelisted Tokens") {
   
   // https://arbiscan.io/address/0x489ee077994B6658eAfA855C308275EAd8097C4A#code
-  IGMXVault constant public GMX_VAULT_ADDRESS = IGMXVault(0x489ee077994B6658eAfA855C308275EAd8097C4A);
+  IGMXVault constant public GMX_VAULT = IGMXVault(0x489ee077994B6658eAfA855C308275EAd8097C4A);
 
   // will hold the last known balances of all tokens in GMX Vault
   mapping(address=>uint256) public lastBalances;
-  address[] private tokens;
+  IERC20[] private tokens;
+
   constructor() {
         
     protocolName = "GMX";
 
     testedContracts = [
-      address(GMX_VAULT_ADDRESS)
+      address(GMX_VAULT)
     ];
     
     _updateVaultBalances();
@@ -55,11 +56,11 @@ contract ArbitrumGMXRugPullAllWhitelistedTokensTest is
   }
 
   function _updateVaultBalances() internal {
-    uint256 length = GMX_VAULT_ADDRESS.allWhitelistedTokensLength();
-    tokens = new address[](length);
+    uint256 length = GMX_VAULT.allWhitelistedTokensLength();
+    tokens = new IERC20[](length);
     for (uint256 i = 0; i < length; i++) {
-      address token = GMX_VAULT_ADDRESS.allWhitelistedTokens(i);
-      lastBalances[token] = IERC20Metadata(token).balanceOf(address(GMX_VAULT_ADDRESS));
+      IERC20 token = IERC20(GMX_VAULT.allWhitelistedTokens(i));
+      lastBalances[address(token)] = token.balanceOf(address(GMX_VAULT));
       tokens[i] = token;
     }
   }
@@ -86,9 +87,9 @@ contract ArbitrumGMXRugPullAllWhitelistedTokensTest is
     uint256 averagePercentageRemaining = 0;
 
     for (uint256 i = 0; i < length; i++) {
-      address token = tokens[i];
-      uint256 lastBalance = lastBalances[token];
-      uint256 currentBalance = IERC20Metadata(token).balanceOf(address(GMX_VAULT_ADDRESS));
+      IERC20 token = tokens[i];
+      uint256 lastBalance = lastBalances[address(token)];
+      uint256 currentBalance = token.balanceOf(address(GMX_VAULT));
       
       // if known balance is 0 either it's a new token or previous balance was 0
       // in both cases we can't calculate the delta
