@@ -189,5 +189,24 @@
         "datafeed": "0x8dBa75e83DA73cc766A7e5a0ee71F656BAb470d6"
       }
     }
+  },
+  {
+    "templateName": "stable-token-peg-test-wih-chainlink-datafeed",
+    "vars": {
+      "protocolName": "USDC",
+      "contractName": "AnteStableTokenUsdcOptimismPegTest",
+      "networkName": "Optimism",
+      "token": {
+        "symbol": "USDC",
+        "address": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607"
+      },
+      "peg": {
+        "symbol": "USD",
+        "percentage": 5,
+        "minValue": "95000000",
+        "maxValue": "105000000",
+        "datafeed": "0x16a9FA2FDa030272Ce99B29CF780dFA30361E0f3"
+      }
+    }
   }
 ]
