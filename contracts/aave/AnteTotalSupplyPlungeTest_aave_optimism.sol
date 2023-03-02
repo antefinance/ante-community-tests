@@ -23,14 +23,14 @@ contract AnteTotalSupplyPlungeTest is AnteTest("Ensure that AAVE Optimism market
     constructor() {
         protocolName = "AAVE";
 
-        for (uint256 i = 0; i < 5; i++) {
+        for (uint256 i = 0; i < tokens.length; i++) {
             testedContracts.push(address(tokens[i]));
             thresholds[i] = (tokens[i].totalSupply() * PERCENT_DROP_THRESHOLD) / 100;
         }
     }
 
     function checkTestPasses() external view override returns (bool) {
-        for (uint256 i = 0; i < 5; i++) {
+        for (uint256 i = 0; i < tokens.length; i++) {
             if (tokens[i].totalSupply() < thresholds[i]) {
                 return false;
             }

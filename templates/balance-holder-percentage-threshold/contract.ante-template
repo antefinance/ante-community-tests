@@ -7,14 +7,13 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /// @title ${contractName} ${protocolName} ${networkName}
 /// @notice Ante Test to check if ${protocolName} ${networkName} "rugs" ${100-percentageThreshold}% of its top ${tokens.length} tokens (as of test deployment)
-
 contract ${contractName} is AnteTest("${protocolName} does not rug ${100-percentageThreshold}% of its top ${tokens.length} tokens") {
     
     
     address public constant ${holder.varName} = ${holder.address};
 
     // Pool Assets
-IERC20[${tokens.length}] public tokens = [
+    IERC20[${tokens.length}] public tokens = [
 ${tokens
   .map(
     ({ symbol, address }, index, arr) =>
@@ -36,7 +35,7 @@ ${tokens
         protocolName = "${protocolName}";
         testedContracts = [${holder.varName}];
 
-        for(uint256 i = 0; i < ${tokens.length}; i++) {
+        for(uint256 i = 0; i < tokens.length; i++) {
           tokenThresholds[address(tokens[i])] = (tokens[i].balanceOf(${holder.varName}) * THRESHOLD) / 100;
         }
     }
@@ -44,7 +43,7 @@ ${tokens
     /// @notice test to check value of top 3 tokens on Across Bridge
     /// @return true if bridge has more than 30% of assets from when it was deployed
     function checkTestPasses() external view override returns (bool) {
-        for(uint256 i = 0; i < ${tokens.length}; i++) {
+        for(uint256 i = 0; i < tokens.length; i++) {
           if (tokens[i].balanceOf(${holder.varName}) < tokenThresholds[address(tokens[i])]) {
             return false;
           }
