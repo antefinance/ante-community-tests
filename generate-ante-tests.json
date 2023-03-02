@@ -246,5 +246,20 @@
         "datafeed": "0xc7D132BeCAbE7Dcc4204841F33bae45841e41D9C"
       }
     }
+  },
+  {
+    "templateName": "total-supply-drop-list-of-tokens",
+    "vars": {
+      "protocolName": "USDC",
+      "contractName": "AnteUDCGoerliTotalSupplyDropTest",
+      "networkName": "Goerli",
+      "percentageThreshold": 15,
+      "tokens": [
+        {
+          "symbol": "USDC",
+          "address": "0x07865c6E87B9F70255377e024ace6630C1Eaa37F"
+        }
+      ]
+    }
   }
 ]
