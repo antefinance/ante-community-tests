@@ -170,5 +170,24 @@
         "valueSeconds": 3600
       }
     }
+  },
+  {
+    "templateName": "stable-token-peg-test-wih-chainlink-datafeed",
+    "vars": {
+      "protocolName": "DAI",
+      "contractName": "AnteStableTokenDaiPegTest",
+      "networkName": "Optimism",
+      "token": {
+        "symbol": "DAI",
+        "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1"
+      },
+      "peg": {
+        "symbol": "USD",
+        "percentage": 5,
+        "minValue": "95000000",
+        "maxValue": "105000000",
+        "datafeed": "0x8dBa75e83DA73cc766A7e5a0ee71F656BAb470d6"
+      }
+    }
   }
 ]
