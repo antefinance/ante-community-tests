@@ -227,5 +227,24 @@
         "datafeed": "0xECef79E109e997bCA29c1c0897ec9d7b03647F5E"
       }
     }
+  },
+  {
+    "templateName": "stable-token-peg-test-wih-chainlink-datafeed",
+    "vars": {
+      "protocolName": "frax",
+      "contractName": "AnteStableTokenFraxOptimismPegTest",
+      "networkName": "Optimism",
+      "token": {
+        "symbol": "FRAX",
+        "address": "0x2E3D870790dC77A83DD1d18184Acc7439A53f475"
+      },
+      "peg": {
+        "symbol": "USD",
+        "percentage": 5,
+        "minValue": "95000000",
+        "maxValue": "105000000",
+        "datafeed": "0xc7D132BeCAbE7Dcc4204841F33bae45841e41D9C"
+      }
+    }
   }
 ]
