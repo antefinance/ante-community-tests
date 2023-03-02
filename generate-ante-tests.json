@@ -208,5 +208,24 @@
         "datafeed": "0x16a9FA2FDa030272Ce99B29CF780dFA30361E0f3"
       }
     }
+  },
+  {
+    "templateName": "stable-token-peg-test-wih-chainlink-datafeed",
+    "vars": {
+      "protocolName": "tether",
+      "contractName": "AnteStableTokenTetherOptimismPegTest",
+      "networkName": "Optimism",
+      "token": {
+        "symbol": "USDT",
+        "address": "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58"
+      },
+      "peg": {
+        "symbol": "USD",
+        "percentage": 5,
+        "minValue": "95000000",
+        "maxValue": "105000000",
+        "datafeed": "0xECef79E109e997bCA29c1c0897ec9d7b03647F5E"
+      }
+    }
   }
 ]
