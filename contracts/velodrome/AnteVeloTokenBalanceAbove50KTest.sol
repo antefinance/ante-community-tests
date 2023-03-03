@@ -6,10 +6,9 @@ import {AnteTest} from "../AnteTest.sol";
 import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
 /// @title Checks VELO balance in Velodrome Rewards Distributor remains >= 50K
-/// @author Put your ETH address here
+/// @author 0xacd5443c888301BC2A767DB1B11D1C7E5Fa98002
 /// @notice Ante Test to check
-// TODO Change AnteTokenBalanceTestTemplate to the filename of the test,
-contract AnteTokenBalanceTestTemplate is AnteTest("Velodrome Rewards Distributor VELO balance remains >= 50K") {
+contract AnteVeloTokenBalanceAbove50K is AnteTest("Velodrome Rewards Distributor VELO balance remains >= 50K") {
     // TODO update tokenholder address and block explorer link
     // https://etherscan.io/address/0x5d5bea9f0fc13d967511668a60a3369fd53f784f
     address public constant HOLDER_ADDRESS = 0x5d5Bea9f0Fc13d967511668a60a3369fD53F784F;
