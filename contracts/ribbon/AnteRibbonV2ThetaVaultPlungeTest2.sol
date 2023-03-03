@@ -66,7 +66,7 @@ contract AnteRibbonV2ThetaVaultPlungeTest2 is AnteTest("Ribbon V2 Theta Vaults d
     /// @notice checks balance of Ribbon Theta V2 vaults against threshold
     /// (10% of balance when this contract was deployed)
     /// @return true if balance of all theta vaults is greater than thresholds
-    function checkTestPasses() external view override returns (bool) {
+    function checkTestPasses() public view override returns (bool) {
         for (uint256 i; i < thetaVaults.length; i++) {
             if (calculateAssetBalance(thetaVaults[i]) < thresholds[i]) {
                 return false;

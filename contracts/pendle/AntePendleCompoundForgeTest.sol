@@ -2,7 +2,7 @@
 
 pragma solidity ^0.7.0;
 
-import "../AnteTest.sol";
+import "../libraries/ante-v05-core/AnteTest.sol";
 import "./interfaces/ICToken.sol";
 import "./interfaces/IPendleCompoundForge.sol";
 import "./libraries/MathLib.sol";

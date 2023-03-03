@@ -12,7 +12,7 @@
 pragma solidity ^0.7.0;
 
 import "@openzeppelin-contracts-old/contracts/token/ERC20/IERC20.sol";
-import "../AnteTest.sol";
+import "../libraries/ante-v05-core/AnteTest.sol";
 
 /// @title WETH9 issued fully backed by ETH test
 /// @notice Ante Test to check WETH9 minted WETH matches deposited ETH in contract

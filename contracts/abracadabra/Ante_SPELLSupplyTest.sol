@@ -12,7 +12,7 @@
 pragma solidity ^0.7.0;
 
 import "@openzeppelin-contracts-old/contracts/token/ERC20/IERC20.sol";
-import "../AnteTest.sol";
+import "../libraries/ante-v05-core/AnteTest.sol";
 
 /// @title SPELL supply never exceeds 420 billion test and 210 billion SPELL has been burned
 /// @notice Ante Test to check that SPELL supply is always less than 420 billion and 210 billion SPELL has been burned

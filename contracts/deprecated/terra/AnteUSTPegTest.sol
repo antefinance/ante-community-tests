@@ -32,7 +32,7 @@ contract AnteUSTPegTest is AnteTest("UST price remains within 5% of 1 USD") {
 
     /// @notice Checks price of UST relative to USD
     /// @return true if price of UST falls between $0.95 and $1.05 inclusive
-    function checkTestPasses() external view override returns (bool) {
+    function checkTestPasses() public view override returns (bool) {
         // grab latest price from Chainlink feed (currently 0.3% deviation, 24h heartbeat)
         (, int256 price, , , ) = priceFeed.latestRoundData();
 

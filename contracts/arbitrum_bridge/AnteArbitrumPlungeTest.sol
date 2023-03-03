@@ -2,7 +2,7 @@
 
 pragma solidity ^0.7.0;
 
-import "../AnteTest.sol";
+import "../libraries/ante-v05-core/AnteTest.sol";
 
 /// @title AnteArbitrumPlungeTest
 /// @notice Ante Test to check that ETH in Arbitrum bridge does NOT drop below 7K (as of Aug 2022)

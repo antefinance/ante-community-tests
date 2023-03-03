@@ -41,7 +41,7 @@ contract AntecvxCRVPegTest is AnteTest("Ensure that cvxCRV and CRV maintain peg 
 
     /// @notice Must be called after 20 blocks after preCheck()
     /// @return true if the peg is within 4%
-    function checkTestPasses() external view override returns (bool) {
+    function checkTestPasses() public view override returns (bool) {
         uint256 crvToETH = oneInchOracle.getRate(CURVE_ADDRESS, WETH_ADDRESS, false);
         uint256 cvxCRVToETH = oneInchOracle.getRate(CVX_CURVE_ADDRESS, WETH_ADDRESS, false);
 

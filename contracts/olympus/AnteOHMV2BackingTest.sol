@@ -48,7 +48,7 @@ contract AnteOHMv2BackingTest is AnteTest("Olympus OHMv2 fully backed by treasur
 
     /// @notice test to check OHMv2 token supply against total treasury reserves
     /// @return true Olympus treasury reserves exceed OHMv2 supply
-    function checkTestPasses() external view override returns (bool) {
+    function checkTestPasses() public view override returns (bool) {
         uint256 reserves;
 
         for (uint256 i = 0; i < reserveTokens.length; i++) {
