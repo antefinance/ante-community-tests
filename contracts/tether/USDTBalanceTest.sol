@@ -28,7 +28,7 @@ contract AnteTokenBalanceTestTemplate is AnteTest("[HOLDER] [TOKEN] balance rema
 
     constructor() {
         // TODO replace (1000 * 1000) with desired threshold
-        thresholdBalance = (1000 * 1000) * (10**TOKEN.decimals());
+        thresholdBalance = (20000000) * (10**TOKEN.decimals());
 
         // TODO replace "Protocol" with target protocol/wallet/etc.
         protocolName = "Tether";
