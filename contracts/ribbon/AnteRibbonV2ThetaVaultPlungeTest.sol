@@ -11,7 +11,7 @@
 
 pragma solidity ^0.8.0;
 
-import {AnteTest} from "../AnteTest.sol";
+import {AnteTest} from "../libraries/ante-v05-avax/AnteTest.sol";
 import {IRibbonThetaVault} from "./ribbon-v2-contracts/interfaces/IRibbonThetaVault.sol";
 import {IController, GammaTypes} from "./ribbon-v2-contracts/interfaces/GammaInterface.sol";
 import {Vault} from "./ribbon-v2-contracts/libraries/Vault.sol";
