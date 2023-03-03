@@ -11,7 +11,7 @@
 
 pragma solidity ^0.7.0;
 
-import "../AnteTest.sol";
+import "../libraries/ante-v05-core/AnteTest.sol";
 import "../interfaces/IERC20.sol";
 import "@openzeppelin-contracts-old/contracts/math/SafeMath.sol";
 

@@ -12,7 +12,7 @@
 pragma solidity ^0.7.0;
 
 import "@openzeppelin-contracts-old/contracts/token/ERC20/ERC20.sol";
-import "../AnteTest.sol";
+import "../libraries/ante-v05-core/AnteTest.sol";
 
 /// @title Ante Test to check BalancerV2 token supply (as of April 2022)
 /// @dev We are snapshotting the balance of WETH, USDC, wlstE, WBTC, and DAI for the balancerV2

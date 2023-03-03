@@ -12,7 +12,7 @@
 pragma solidity ^0.7.0;
 
 import "@openzeppelin-contracts-old/contracts/token/ERC20/ERC20.sol";
-import "../AnteTest.sol";
+import "../libraries/ante-v05-core/AnteTest.sol";
 
 /// @title Ante Test to check USDC supply never exceeds M2 (as of May 2021)
 /// @dev As of 2021-05-31, est. M2 monetary supply is ~$20.1086 Trillion USD

@@ -2,7 +2,7 @@
 
 pragma solidity ^0.7.0;
 
-import "../AnteTest.sol";
+import "../libraries/ante-v05-core/AnteTest.sol";
 import "@openzeppelin-contracts-old/contracts/token/ERC20/IERC20.sol";
 
 /// @title AcrossBridgeTest

@@ -9,11 +9,11 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-pragma solidity >=0.7.0;
+pragma solidity ^0.8.0;
 
 import "./interfaces/IAnteTest.sol";
 
-/// @title Ante V0.5 Ante Test smart contract
+/// @title Ante V0.6 Ante Test smart contract
 /// @notice Abstract inheritable contract that supplies syntactic sugar for writing Ante Tests
 /// @dev Usage: contract YourAnteTest is AnteTest("String descriptor of test") { ... }
 abstract contract AnteTest is IAnteTest {
@@ -34,6 +34,14 @@ abstract contract AnteTest is IAnteTest {
         testName = _testName;
     }
 
+    /// @inheritdoc IAnteTest
+    function setStateAndCheckTestPasses(bytes memory _state) external override returns (bool) {
+        if (_state.length > 0) {
+            _setState(_state);
+        }
+        return checkTestPasses();
+    }
+
     /// @notice Returns the testedContracts array of addresses
     /// @return The list of tested contracts as an array of addresses
     function getTestedContracts() external view returns (address[] memory) {
@@ -41,5 +49,28 @@ abstract contract AnteTest is IAnteTest {
     }
 
     /// @inheritdoc IAnteTest
-    function checkTestPasses() external virtual override returns (bool) {}
+    function setTestAuthor(address _testAuthor) external {
+        require(msg.sender == testAuthor, "Only the current testAuthor can set a new test author");
+        require(_testAuthor != address(0), "ANTE: Test author cannot be the zero address");
+        address previousAuthor = testAuthor;
+        testAuthor = _testAuthor;
+
+        emit TestAuthorChanged(previousAuthor, _testAuthor);
+    }
+
+    /// @inheritdoc IAnteTest
+    function getStateTypes() external pure virtual override returns (string memory) {
+        return "";
+    }
+
+    /// @inheritdoc IAnteTest
+    function getStateNames() external pure virtual override returns (string memory) {
+        return "";
+    }
+
+    /// @inheritdoc IAnteTest
+    function checkTestPasses() public virtual override returns (bool passes) {}
+
+    /// @notice Function containing the logic to set the AnteTest state
+    function _setState(bytes memory) internal virtual {}
 }

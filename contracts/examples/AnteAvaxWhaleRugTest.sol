@@ -32,7 +32,7 @@ contract AnteAvaxWhaleRugTest is AnteTest("Avalanche Address 0xd497...e49c Doesn
 
     /// @notice test to check balance of avax whale
     /// @return true if AVAX has reduced to 10% or below of original deploy balance
-    function checkTestPasses() external view override returns (bool) {
+    function checkTestPasses() public view override returns (bool) {
         return avaxWhaleAddr.balance * 10 >= avaxBalanceAtDeploy;
     }
 }

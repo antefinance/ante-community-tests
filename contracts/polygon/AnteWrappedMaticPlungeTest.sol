@@ -2,7 +2,7 @@
 
 pragma solidity ^0.7.0;
 
-import "../AnteTest.sol";
+import "../libraries/ante-v05-core/AnteTest.sol";
 
 /// @title Ante Wrapped Matic Plunge Test
 /// @notice Ante Test to check that Wrapped Matic does NOT drop below 2M (as of Aug 2022)

@@ -32,7 +32,7 @@ contract AnteConvexCRVPoolBalanceTest is AnteTest("cvxCRV/CRV Pool Remains Balan
     }
 
     /// @return true if the reserve difference is according the the price difference
-    function checkTestPasses() external view override returns (bool) {
+    function checkTestPasses() public view override returns (bool) {
         address strongerCurrency = getStrongerCurrency(CURVE_ADDRESS, CVX_CURVE_ADDRESS);
 
         if (strongerCurrency == address(0)) {

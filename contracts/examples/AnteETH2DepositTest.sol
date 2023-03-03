@@ -11,7 +11,7 @@
 
 pragma solidity ^0.7.0;
 
-import "../AnteTest.sol";
+import "../libraries/ante-v05-core/AnteTest.sol";
 
 /// @title ETH2 beacon contract doesn't lose 99.99% of its ETH test
 /// @notice Ante Test to check that ETH2 beacon depositcontract.eth doesn't lose 99.99% of

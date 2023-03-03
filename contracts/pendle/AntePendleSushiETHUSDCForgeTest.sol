@@ -3,7 +3,7 @@
 pragma solidity ^0.7.0;
 pragma abicoder v2;
 
-import "../AnteTest.sol";
+import "../libraries/ante-v05-core/AnteTest.sol";
 import "./interfaces/IUniswapV2Pair.sol";
 import "./interfaces/IMasterChef.sol";
 import "./libraries/MathLib.sol";

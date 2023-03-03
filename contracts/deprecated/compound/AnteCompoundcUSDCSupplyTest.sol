@@ -11,7 +11,7 @@
 
 pragma solidity ^0.7.0;
 
-import "../../AnteTest.sol";
+import "../../libraries/ante-v05-core/AnteTest.sol";
 import "../../interfaces/IERC20.sol";
 
 /// @title Ante Test to check Compund Finance cUSDC total supply never will be less than 8591273087904514301/(10^8) = 85 912 730 879

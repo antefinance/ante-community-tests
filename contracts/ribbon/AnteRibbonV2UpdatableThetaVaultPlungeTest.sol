@@ -111,7 +111,7 @@ contract AnteRibbonV2UpdatableThetaVaultPlungeTest is Ownable, AnteTest("RibbonV
     /// @notice checks balance of Ribbon Theta V2 vaults against threshold
     /// (by default, 10% of vault balance when added to test)
     /// @return true if balance of all theta vaults is greater than thresholds
-    function checkTestPasses() external view override returns (bool) {
+    function checkTestPasses() public view override returns (bool) {
         address vault;
         uint256 numVaults = thetaVaults.length;
         for (uint256 i; i < numVaults; i++) {

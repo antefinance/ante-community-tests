@@ -37,7 +37,7 @@ contract AnteChainlinkHeartbeatTest is
         }
     }
 
-    function checkTestPasses() external view override returns (bool) {
+    function checkTestPasses() public view override returns (bool) {
         // Check pairs with 24h heartbeat
         for (uint256 i = 0; i < 3; i++) {
             uint256 updatedAt = priceFeeds24h[i].latestTimestamp();
