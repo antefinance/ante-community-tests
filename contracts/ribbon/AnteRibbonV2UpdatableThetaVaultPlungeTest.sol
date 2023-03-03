@@ -11,7 +11,7 @@
 
 pragma solidity ^0.8.0;
 
-import {AnteTest} from "../AnteTest.sol";
+import {AnteTest} from "../libraries/ante-v05-avax/AnteTest.sol";
 import {IController, GammaTypes} from "./ribbon-v2-contracts/interfaces/GammaInterface.sol";
 import {IWSTETH} from "./ribbon-v2-contracts/interfaces/ISTETH.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";

@@ -9,7 +9,7 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-pragma solidity ^0.7.0;
+pragma solidity >=0.7.0;
 
 /// @title The interface for the Ante V0.5 Ante Test
 /// @notice The Ante V0.5 Ante Test wraps test logic for verifying fundamental invariants of a protocol
