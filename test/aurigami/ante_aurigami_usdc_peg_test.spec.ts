@@ -7,6 +7,7 @@ import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
 
 describe('AnteAurigamiUSDCPegTest', function () {
+  if (process.env.NETWORK != 'aurora') return;
   let test: AnteAurigamiUSDCPegTest;
 
   let globalSnapshotId: string;
