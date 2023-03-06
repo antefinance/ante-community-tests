@@ -8,7 +8,7 @@ import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 /// @title Checks that Aethernity Owner doesn't rug all Aether NFT
 /// @author 0xa0e7Fb16cdE37Ebf2ceD6C89fbAe8780B8497e12
-contract AnteNFTBalanceTestTemplate is AnteTest("Aethernity Owner doesn't rug all Aether NFT") {
+contract AnteAethernityOwnerTest is AnteTest("Aethernity Owner doesn't rug all Aether NFT") {
     // https://optimistic.etherscan.io/address/0xa49cee842116a89299a721d831bcf0511e8f6a15
     address public constant HOLDER_ADDRESS = 0xA49CEE842116A89299A721D831BCf0511E8F6A15;
 
