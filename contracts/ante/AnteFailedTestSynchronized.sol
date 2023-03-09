@@ -46,7 +46,7 @@ contract AnteTestStatePushedTest is AnteTest("TestStateInfo information is pushe
         address[] memory pools = factory.getPoolsByTest(testAddr);
 
         for (uint i = 0; i < pools.length; i += 1) { // capped at MAX_POOLS_PER_TEST=10 so gas bombing shouldn't be a problem
-            IAntePool pool = IAntePool(pools[0]);
+            IAntePool pool = IAntePool(pools[i]);
             if (testHasFailed && pool.failedBlock() == 0) return false;
             if (testHasFailed && pool.failedTimestamp() == 0) return false;
         }
