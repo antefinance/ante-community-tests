@@ -1,0 +1,32 @@
+`// SPDX-License-Identifier: GPL-3.0-only
+
+pragma solidity ^0.8.0;
+
+import {AnteTest} from "../AnteTest.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20.sol";
+
+/// @title Checks ${token.symbol} balance in ${holder.name} remains >= ${threshold.humanReadable} on ${networName}
+/// @notice Ante Test to check
+contract ${contractName} is AnteTest("${holder.name} ${token.symbol} balance remains >= ${threshold.humanReadable}}") {
+    address public constant TARGET_ADDRESS = ${holder.address};
+
+    IERC20 public constant TOKEN = IERC20(${token.address});
+
+    uint256 public constant thresholdBalance = ${threshold.value} * 10 ** ${token.decimals};
+
+    constructor() {
+        protocolName = "${protocolName}";
+
+        testedContracts = [
+            ${token.address},
+            ${holder.address}
+        ];
+    }
+
+    /// @notice test to check if $[TOKEN] balance in [TARGET] is >= [THRESHOLD]
+    /// @return true if $[TOKEN] balance in [TARGET] is >= [THRESHOLD]
+    function checkTestPasses() public view override returns (bool) {
+        return (TOKEN.balanceOf(TARGET_ADDRESS) >= thresholdBalance);
+    }
+}
+`

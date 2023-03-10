@@ -38,3 +38,4 @@ typechain
 packages/react-app/src/contracts/*
 !packages/react-app/src/contracts/contracts.js
 cache
+/templates
