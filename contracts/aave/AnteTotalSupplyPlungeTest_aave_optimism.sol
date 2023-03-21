@@ -29,7 +29,7 @@ contract AnteTotalSupplyPlungeTest is AnteTest("Ensure that AAVE Optimism market
         }
     }
 
-    function checkTestPasses() external view override returns (bool) {
+    function checkTestPasses() public view override returns (bool) {
         for (uint256 i = 0; i < tokens.length; i++) {
             if (tokens[i].totalSupply() < thresholds[i]) {
                 return false;

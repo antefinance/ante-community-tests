@@ -30,7 +30,7 @@ contract AnteChainlinkLINKUSDDatafeedUpdateDailyTest is AnteTest("Chainlink data
     }
 
     /// @return true if the datafeed has been updated in the past day
-    function checkTestPasses() external view override returns (bool) {
+    function checkTestPasses() public view override returns (bool) {
         uint256 currentTimeStamp = block.timestamp;
         uint256 lastUpdate = 0;
 

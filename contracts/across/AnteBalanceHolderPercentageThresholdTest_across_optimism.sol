@@ -34,7 +34,7 @@ contract AnteBalanceHolderPercentageThresholdTest is AnteTest("Across does not r
 
     /// @notice test to check value of top 3 tokens on Across Bridge
     /// @return true if bridge has more than 30% of assets from when it was deployed
-    function checkTestPasses() external view override returns (bool) {
+    function checkTestPasses() public view override returns (bool) {
         for(uint256 i = 0; i < tokens.length; i++) {
           if (tokens[i].balanceOf(POOL_ADDRESS) < tokenThresholds[address(tokens[i])]) {
             return false;

@@ -23,7 +23,7 @@ contract AnteChainlinkLINKUSDDatafeedHeartbeatTest is
         ];
     }
 
-    function checkTestPasses() external view override returns (bool) {
+    function checkTestPasses() public view override returns (bool) {
         
         uint256 updatedAt = datafeed.latestTimestamp();
         if (updatedAt + declaredHeartbeat + 60 < block.timestamp) {
