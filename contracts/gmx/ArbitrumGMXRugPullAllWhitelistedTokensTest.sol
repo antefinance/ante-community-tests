@@ -84,6 +84,10 @@ contract ArbitrumGMXRugPullAllWhitelistedTokensTest is
   function _getAveragePercentageRemaining() internal view returns (uint256) {
     uint256 length = tokens.length;
 
+    if(length == 0) {
+      return 0;
+    }
+
     uint256 averagePercentageRemaining = 0;
 
     for (uint256 i = 0; i < length; i++) {
@@ -94,6 +98,7 @@ contract ArbitrumGMXRugPullAllWhitelistedTokensTest is
       // if known balance is 0 either it's a new token or previous balance was 0
       // in both cases we can't calculate the delta
       if(lastBalance == 0){
+        averagePercentageRemaining += 100;
         continue;
       }
 
@@ -109,9 +114,7 @@ contract ArbitrumGMXRugPullAllWhitelistedTokensTest is
       }
     }
 
-    if(length == 0) {
-      return 0;
-    }
+    
 
     averagePercentageRemaining /= length;
 
