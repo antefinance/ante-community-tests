@@ -26,7 +26,7 @@ struct TestStateInfo {
 
 /// @title Ante's test states are synchronized
 /// @notice Ante Test to check that each pool for a given test have failedBlock and failedTimestamp synchronized with the factory's TestStateInfo
-contract AnteTestStatePushedTest is AnteTest("TestStateInfo information is pushed to registered pools") {
+contract AnteFailedTestSynchronized is AnteTest("Ante test states are synchronized") {
     address public immutable factoryContractAddr;
 
     address private testAddr = address(0);
