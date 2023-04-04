@@ -5,7 +5,7 @@ pragma solidity ^0.8.0;
 import {AnteTest} from "../AnteTest.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-interface L1StandardBridge {
+interface IL1StandardBridge {
     function deposits(address _l1Token, address _l2Token) external view returns (uint256);
 }
 
@@ -61,7 +61,7 @@ contract AnteOptimismL1BridgeTokenSolvencyTest is AnteTest("Optimism L1 Bridge t
     /// @return true if bridge owns at least as many tokens as were deposited
     function checkTestPasses() public view override returns (bool) {
         for (uint256 i = 0; i < tokens.length; i++) {
-            uint256 depositedAmount = L1StandardBridge(optimismL1BridgeAddr).deposits(
+            uint256 depositedAmount = IL1StandardBridge(optimismL1BridgeAddr).deposits(
                 tokens[i].l1Token,
                 tokens[i].l2Token
             );
