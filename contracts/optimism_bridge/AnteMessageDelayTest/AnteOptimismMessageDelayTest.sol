@@ -35,6 +35,14 @@ contract AnteOptimismMessageDelayTest is
         testedContracts = [getXorig()];
     }
 
+    function getStateTypes() external pure virtual override returns (string memory) {
+        return "address";
+    }
+
+    function getStateNames() external pure virtual override returns (string memory) {
+        return "caller";
+    }
+
     function setTimestamp(bytes memory _state) public onlyMessenger {
         (address user, uint256 submittedTimestamp) = abi.decode(_state, (address, uint256));
         submittedTimestamps[user] = submittedTimestamp;
