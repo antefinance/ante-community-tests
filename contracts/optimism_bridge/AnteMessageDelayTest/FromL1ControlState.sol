@@ -3,7 +3,7 @@
 // The addresses are specific to Optimistic Goerli.
 pragma solidity ^0.8.0;
 
-import {ICrossDomainMessenger} from "@eth-optimism/contracts/libraries/bridge/ICrossDomainMessenger.sol";
+import {ICrossDomainMessenger} from "../ICrossDomainMessenger.sol";
 
 /// @title Control the state of the Ante Test on L2
 contract FromL1ControlState {

@@ -4,9 +4,7 @@ const { waffle, ethers } = hre;
 import {
   AnteOptimismMessageDelayTest__factory, AnteOptimismMessageDelayTest,
   FromL1ControlState__factory, FromL1ControlState,
-  L2CrossDomainMessenger__factory
 } from '../../../typechain';
-import AnteOptimismMessageDelayTestAbi from '../../../abi/contracts/optimism_bridge/AnteMessageDelayTest/AnteOptimismMessageDelayTest.sol/AnteOptimismMessageDelayTest.json';
 
 import { evmSnapshot, evmRevert, blockTimestamp, runAsSigner, evmSetNextBlockTimestamp, fundSigner } from '../../helpers';
 import { expect } from 'chai';
@@ -28,6 +26,7 @@ describe('AnteOptimismMessageDelayTest', function () {
   let controller: FromL1ControlState;
 
   let globalSnapshotId: string;
+  let snapshotId: string;
 
   before(async () => {
     await ethers.provider.send("hardhat_reset", [
@@ -55,10 +54,17 @@ describe('AnteOptimismMessageDelayTest', function () {
     )) as FromL1ControlState__factory;
     controller = await controllerFactory.deploy(test.address);
     await controller.deployed();
+
+    snapshotId = await evmSnapshot();
   });
 
   after(async () => {
     await evmRevert(globalSnapshotId);
+  });
+
+  beforeEach(async () => {
+    await evmRevert(snapshotId);
+    snapshotId = await evmSnapshot();
   });
 
   describe('AnteOptimismMessageDelayTest', () => {
@@ -90,48 +96,21 @@ describe('AnteOptimismMessageDelayTest', function () {
     it('should fail if more than 20 minutes passed until message is relayed', async () => {
       expect(await test.checkTestPasses()).to.be.true;
 
-      const L2CrossDomainMessenger = (await ethers.getContractFactory("L2CrossDomainMessenger")) as L2CrossDomainMessenger__factory;
-      const l2CrossDomainMessenger = L2CrossDomainMessenger.attach(L2_CROSS_DOMAIN_MESSENGER_ADDRESS);
-
-      const submittedTimestamp = await blockTimestamp();
-      const state = defaultAbiCoder.encode(
-        ['address', 'uint256'],
-        [deployer.address, submittedTimestamp]
-      );
-
-      const anteTestInterface = new ethers.utils.Interface(AnteOptimismMessageDelayTestAbi);
-      const message = anteTestInterface.encodeFunctionData('setTimestamp', [state]);
-
-      await runAsSigner('0x0000000000000000000000000000000000000000', async () => {
-        const signer = await ethers.getSigner('0x0000000000000000000000000000000000000000');
+      await runAsSigner(L2_CROSS_DOMAIN_MESSENGER_ADDRESS, async () => {
+        const signer = await ethers.getSigner(L2_CROSS_DOMAIN_MESSENGER_ADDRESS);
         await fundSigner(signer.address);
 
-        await evmSetNextBlockTimestamp(submittedTimestamp + 21 * 60);
-        // await test.connect(signer).setTimestamp(state);
+        const submittedTimestamp = await blockTimestamp();
+        const state = defaultAbiCoder.encode(['address', 'uint256'], [deployer.address, submittedTimestamp]);
 
-        await l2CrossDomainMessenger.connect(signer).relayMessage(
-          test.address,
-          // L1 OptimismMessengerWrapper
-          '0xa45DF1A388049fb8d76E72D350d24E2C3F7aEBd1',
-          message,
-          0
-        );
+        await evmSetNextBlockTimestamp(submittedTimestamp + 21 * 60);
+        await test.connect(signer).setTimestamp(state);
       });
 
-      // await runAsSigner(L2_CROSS_DOMAIN_MESSENGER_ADDRESS, async () => {
-      //   const signer = await ethers.getSigner(L2_CROSS_DOMAIN_MESSENGER_ADDRESS);
-      //   await fundSigner(signer.address);
+      const checkTestState = defaultAbiCoder.encode(['address'], [deployer.address]);
 
-      //   const submittedTimestamp = await blockTimestamp();
-      //   const state = defaultAbiCoder.encode(['address', 'uint256'], [deployer.address, submittedTimestamp]);
-
-      //   await evmSetNextBlockTimestamp(submittedTimestamp + 21 * 60);
-      //   await test.connect(signer).setTimestamp(state);
-      // });
-
-      // const checkTestState = defaultAbiCoder.encode(['address'], [deployer.address]);
-
-      // expect(await test.setStateAndCheckTestPasses(checkTestState)).to.be.false;
+      await test.setStateAndCheckTestPasses(checkTestState);
+      expect(await test.checkTestPasses()).to.be.false;
     });
 
     it('should pass if less than 20 minutes passed until message is relayed', async () => {
@@ -150,7 +129,15 @@ describe('AnteOptimismMessageDelayTest', function () {
 
       const checkTestState = defaultAbiCoder.encode(['address'], [deployer.address]);
 
-      expect(await test.setStateAndCheckTestPasses(checkTestState)).to.be.true;
+      await test.setStateAndCheckTestPasses(checkTestState);
+      expect(await test.checkTestPasses()).to.be.true;
     });
   });
+
+  /** @todo Check is CanonicalTransacationChain has got the message: https://etherscan.io/address/0x5E4e65926BA27467555EB562121fac00D24E9dD2#code */
+  // describe('FromL1ControlState', () => {
+  //   it('can setState', async () => {
+  //     controller.connect(deployer).sendState();
+  //   });
+  // })
 });
