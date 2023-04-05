@@ -4,9 +4,10 @@ const { waffle, ethers } = hre;
 import {
   AnteOptimismMessageDelayTest__factory, AnteOptimismMessageDelayTest,
   FromL1ControlState__factory, FromL1ControlState,
-  ICanonicalTransactionChain
+  ICanonicalTransactionChain,
+  L2CrossDomainMessenger__factory
 } from '../../../typechain';
-
+import AnteOptimismMessageDelayTestAbi from '../../../abi/contracts/optimism_bridge/AnteMessageDelayTest/AnteOptimismMessageDelayTest.sol/AnteOptimismMessageDelayTest.json'
 import { evmSnapshot, evmRevert, blockTimestamp, runAsSigner, evmSetNextBlockTimestamp, fundSigner } from '../../helpers';
 import { expect } from 'chai';
 import { defaultAbiCoder } from 'ethers/lib/utils';
@@ -23,9 +24,10 @@ describe('AnteOptimismMessageDelayTest', function () {
   const L1_CANONICAL_TRANSACTION_CHAIN = '0x5E4e65926BA27467555EB562121fac00D24E9dD2';
   const L1_CROSS_DOMAIN_MESSENGER_ADDRESS = '0x25ace71c97B33Cc4729CF772ae268934F7ab5fA1';
   const L2_CROSS_DOMAIN_MESSENGER_ADDRESS = '0x4200000000000000000000000000000000000007';
+  const L1ToL2Alias = '0x36bde71c97b33cc4729cf772ae268934f7ab70b2';
 
   let test: AnteOptimismMessageDelayTest;
-  let controller: FromL1ControlState;
+  let l1Controller: FromL1ControlState;
 
   let globalSnapshotId: string;
   let snapshotId: string;
@@ -50,6 +52,26 @@ describe('AnteOptimismMessageDelayTest', function () {
     test = await factory.deploy();
     await test.deployed();
 
+    await ethers.provider.send("hardhat_reset", [
+      {
+        forking: {
+          jsonRpcUrl: (config.networks?.mainnet as HttpNetworkUserConfig)?.url,
+          blockNumber: 16000000,
+        },
+      },
+    ]);
+
+    /** Deploy controller contract on L1 */
+    const [l1Deployer] = waffle.provider.getWallets();
+    const controllerFactory = (await hre.ethers.getContractFactory(
+      'FromL1ControlState',
+      l1Deployer
+    )) as FromL1ControlState__factory;
+    l1Controller = await controllerFactory.deploy(test.address);
+    await l1Controller.deployed();
+
+
+    /** @todo Need to switch back to L2 */
     snapshotId = await evmSnapshot();
   });
 
@@ -91,15 +113,31 @@ describe('AnteOptimismMessageDelayTest', function () {
     it('should fail if more than 20 minutes passed until message is relayed', async () => {
       expect(await test.checkTestPasses()).to.be.true;
 
-      await runAsSigner(L2_CROSS_DOMAIN_MESSENGER_ADDRESS, async () => {
-        const signer = await ethers.getSigner(L2_CROSS_DOMAIN_MESSENGER_ADDRESS);
+      await test.connect(deployer).setController(l1Controller.address);
+
+      const L2CrossDomainMessenger = (await ethers.getContractFactory("L2CrossDomainMessenger")) as L2CrossDomainMessenger__factory;
+      const l2CrossDomainMessenger = L2CrossDomainMessenger.attach(L2_CROSS_DOMAIN_MESSENGER_ADDRESS);
+
+      await runAsSigner(L1ToL2Alias, async () => {
+        const signer = await ethers.getSigner(L1ToL2Alias);
         await fundSigner(signer.address);
 
         const submittedTimestamp = await blockTimestamp();
         const state = defaultAbiCoder.encode(['address', 'uint256'], [deployer.address, submittedTimestamp]);
 
+        const anteTestInterface = new ethers.utils.Interface(AnteOptimismMessageDelayTestAbi);
+        const message = anteTestInterface.encodeFunctionData('setTimestamp', [state]);
+
         await evmSetNextBlockTimestamp(submittedTimestamp + 21 * 60);
-        await test.connect(signer).setTimestamp(state);
+
+        await expect(
+          l2CrossDomainMessenger.connect(signer).relayMessage(
+            test.address,
+            l1Controller.address,
+            message,
+            0
+          )
+        ).to.not.be.reverted;
       });
 
       const checkTestState = defaultAbiCoder.encode(['address'], [deployer.address]);
@@ -131,27 +169,9 @@ describe('AnteOptimismMessageDelayTest', function () {
 
   describe('FromL1ControlState', () => {
     it('enqueues the message in CTC', async () => {
-      await ethers.provider.send("hardhat_reset", [
-        {
-          forking: {
-            jsonRpcUrl: (config.networks?.mainnet as HttpNetworkUserConfig)?.url,
-            blockNumber: 16000000,
-          },
-        },
-      ]);
-
-      /** Deploy controller contract on L1 */
-      const [deployer] = waffle.provider.getWallets();
-      const controllerFactory = (await hre.ethers.getContractFactory(
-        'FromL1ControlState',
-        deployer
-      )) as FromL1ControlState__factory;
-      controller = await controllerFactory.deploy(test.address);
-      await controller.deployed();
-
       const canonicalTransacationChain = (await ethers.getContractAt("ICanonicalTransactionChain", L1_CANONICAL_TRANSACTION_CHAIN)) as ICanonicalTransactionChain;
       const initNumElements = await canonicalTransacationChain.getQueueLength();
-      await expect(controller.connect(deployer).sendState()).to.not.be.reverted;
+      await expect(l1Controller.connect(deployer).sendState()).to.not.be.reverted;
 
       expect(await canonicalTransacationChain.getQueueLength()).to.be.eq(initNumElements + 1);
     });
