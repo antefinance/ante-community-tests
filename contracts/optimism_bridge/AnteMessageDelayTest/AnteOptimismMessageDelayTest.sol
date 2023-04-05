@@ -3,7 +3,7 @@
 pragma solidity ^0.8.0;
 
 import {AnteTest} from "../../AnteTest.sol";
-import {ICrossDomainMessenger} from "../ICrossDomainMessenger.sol";
+import {ICrossDomainMessenger} from "@eth-optimism/contracts/libraries/bridge/ICrossDomainMessenger.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 error InvalidAddress();
@@ -74,7 +74,8 @@ contract AnteOptimismMessageDelayTest is
         if (block.chainid == 5) cdmAddr = 0x5086d1eEF304eb5284A0f6720f79403b4e9bE294;
 
         // L2 (same address on every network)
-        if (block.chainid == 10 || block.chainid == 420 || block.chainid == 31337) cdmAddr = 0x4200000000000000000000000000000000000007;
+        if (block.chainid == 10 || block.chainid == 420 || block.chainid == 31337)
+            cdmAddr = 0x4200000000000000000000000000000000000007;
 
         // If this isn't a cross domain message
         if (msg.sender != cdmAddr) return address(0);
