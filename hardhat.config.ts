@@ -162,7 +162,7 @@ const config: HardhatUserConfig = {
       },
     },
     optimisticEthereum: {
-      url: 'https://mainnet.optimism.io',
+      url: `https://opt-mainnet.g.alchemy.com/v2/${process.env.OP_ALCHEMY_KEY}`,
       chainId: 10,
       accounts: {
         mnemonic: process.env.MAINNET_PRIVATE_KEY || '',

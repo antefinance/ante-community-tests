@@ -6,7 +6,6 @@ import {AnteTest} from "../../AnteTest.sol";
 import {ICrossDomainMessenger} from "../ICrossDomainMessenger.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-error OnlyMessenger();
 error InvalidAddress();
 
 /// @title Optimism Bridge updates messages as stated Test
@@ -23,16 +22,12 @@ contract AnteOptimismMessageDelayTest is
         if (messengerAddr == address(0)) {
             revert InvalidAddress();
         }
-
-        if (msg.sender != messengerAddr) {
-            revert OnlyMessenger();
-        }
         _;
     }
 
     constructor() {
         protocolName = "Optimism Bridge";
-        testedContracts = [getXorig()];
+        testedContracts = [0x4200000000000000000000000000000000000007];
     }
 
     function getStateTypes() external pure virtual override returns (string memory) {
@@ -53,7 +48,7 @@ contract AnteOptimismMessageDelayTest is
     /// @return true if checked on L2 and message took more less than 20 mins to be delivered
     function checkTestPasses() public view override returns (bool) {
         // Pass the test on chains that are not Optimism L2
-        if (block.chainid != 10 && block.chainid != 420) return true;
+        if (block.chainid != 10 && block.chainid != 420 && block.chainid != 31337) return true;
 
         if (receivedTimestamps[caller] - submittedTimestamps[caller] > 20 minutes) {
             return false;
@@ -79,7 +74,7 @@ contract AnteOptimismMessageDelayTest is
         if (block.chainid == 5) cdmAddr = 0x5086d1eEF304eb5284A0f6720f79403b4e9bE294;
 
         // L2 (same address on every network)
-        if (block.chainid == 10 || block.chainid == 420) cdmAddr = 0x4200000000000000000000000000000000000007;
+        if (block.chainid == 10 || block.chainid == 420 || block.chainid == 31337) cdmAddr = 0x4200000000000000000000000000000000000007;
 
         // If this isn't a cross domain message
         if (msg.sender != cdmAddr) return address(0);
