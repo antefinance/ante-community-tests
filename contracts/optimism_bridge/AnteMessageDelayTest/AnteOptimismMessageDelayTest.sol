@@ -47,7 +47,7 @@ contract AnteOptimismMessageDelayTest is
     /// @return true if checked on L2 and message took more less than 20 mins to be delivered
     function checkTestPasses() public view override returns (bool) {
         // Pass the test on chains that are not Optimism L2
-        if (block.chainid != 10 && block.chainid != 420 && block.chainid != 31337) return true;
+        if (block.chainid != 10 && block.chainid != 420) return true;
 
         if (receivedTimestamps[caller] - submittedTimestamps[caller] > 20 minutes) {
             return false;
