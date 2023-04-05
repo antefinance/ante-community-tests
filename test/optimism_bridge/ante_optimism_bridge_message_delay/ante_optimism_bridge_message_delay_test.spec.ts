@@ -4,6 +4,7 @@ const { waffle, ethers } = hre;
 import {
   AnteOptimismMessageDelayTest__factory, AnteOptimismMessageDelayTest,
   FromL1ControlState__factory, FromL1ControlState,
+  ICanonicalTransactionChain
 } from '../../../typechain';
 
 import { evmSnapshot, evmRevert, blockTimestamp, runAsSigner, evmSetNextBlockTimestamp, fundSigner } from '../../helpers';
@@ -19,6 +20,7 @@ import { HttpNetworkUserConfig } from 'hardhat/types';
  */
 describe('AnteOptimismMessageDelayTest', function () {
   const [deployer] = waffle.provider.getWallets();
+  const L1_CANONICAL_TRANSACTION_CHAIN = '0x5E4e65926BA27467555EB562121fac00D24E9dD2';
   const L1_CROSS_DOMAIN_MESSENGER_ADDRESS = '0x25ace71c97B33Cc4729CF772ae268934F7ab5fA1';
   const L2_CROSS_DOMAIN_MESSENGER_ADDRESS = '0x4200000000000000000000000000000000000007';
 
@@ -47,13 +49,6 @@ describe('AnteOptimismMessageDelayTest', function () {
     )) as AnteOptimismMessageDelayTest__factory;
     test = await factory.deploy();
     await test.deployed();
-
-    const controllerFactory = (await hre.ethers.getContractFactory(
-      'FromL1ControlState',
-      deployer
-    )) as FromL1ControlState__factory;
-    controller = await controllerFactory.deploy(test.address);
-    await controller.deployed();
 
     snapshotId = await evmSnapshot();
   });
@@ -134,10 +129,31 @@ describe('AnteOptimismMessageDelayTest', function () {
     });
   });
 
-  /** @todo Check is CanonicalTransacationChain has got the message: https://etherscan.io/address/0x5E4e65926BA27467555EB562121fac00D24E9dD2#code */
-  // describe('FromL1ControlState', () => {
-  //   it('can setState', async () => {
-  //     controller.connect(deployer).sendState();
-  //   });
-  // })
+  describe('FromL1ControlState', () => {
+    it('enqueues the message in CTC', async () => {
+      await ethers.provider.send("hardhat_reset", [
+        {
+          forking: {
+            jsonRpcUrl: (config.networks?.mainnet as HttpNetworkUserConfig)?.url,
+            blockNumber: 16000000,
+          },
+        },
+      ]);
+
+      /** Deploy controller contract on L1 */
+      const [deployer] = waffle.provider.getWallets();
+      const controllerFactory = (await hre.ethers.getContractFactory(
+        'FromL1ControlState',
+        deployer
+      )) as FromL1ControlState__factory;
+      controller = await controllerFactory.deploy(test.address);
+      await controller.deployed();
+
+      const canonicalTransacationChain = (await ethers.getContractAt("ICanonicalTransactionChain", L1_CANONICAL_TRANSACTION_CHAIN)) as ICanonicalTransactionChain;
+      const initNumElements = await canonicalTransacationChain.getQueueLength();
+      await expect(controller.connect(deployer).sendState()).to.not.be.reverted;
+
+      expect(await canonicalTransacationChain.getQueueLength()).to.be.eq(initNumElements + 1);
+    });
+  })
 });
