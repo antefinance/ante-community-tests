@@ -2,10 +2,9 @@ import hre from 'hardhat';
 
 const { waffle } = hre;
 
-import { ContractFactory, Contract, BigNumber, Wallet } from 'ethers';
-import * as constants from './constants';
+import { BigNumber, providers } from 'ethers';
 
-import { expect, assert } from 'chai';
+import { expect } from 'chai';
 
 export function expectAlmostEqual(num1: BigNumber, num2: BigNumber, tolerance: number): void {
   expect(num1.sub(num2).abs()).to.be.lt(tolerance);
@@ -68,10 +67,21 @@ export async function runAsSigner(signerAddr: string, fn: () => Promise<void>): 
   });
 }
 
+export async function runAsSignerProvider(provider: providers.JsonRpcProvider, signerAddr: string, fn: () => Promise<void>): Promise<void> {
+  await provider.send('hardhat_impersonateAccount', [signerAddr]);
+  await fn();
+  await provider.send('hardhat_stopImpersonatingAccount', [signerAddr]);
+}
+
 export async function fundSigner(signerAddr: string) {
   const ETH_BAL = hre.ethers.utils.parseEther('10000000000');
   await hre.network.provider.request({
     method: 'hardhat_setBalance',
     params: [signerAddr, hre.ethers.utils.hexStripZeros(ETH_BAL.toHexString())],
   });
+}
+
+export async function providerFundSigner(provider: providers.JsonRpcProvider, signerAddr: string) {
+  const ETH_BAL = hre.ethers.utils.parseEther('10000000000');
+  await provider.send('hardhat_setBalance', [signerAddr, hre.ethers.utils.hexStripZeros(ETH_BAL.toHexString())]);
 }

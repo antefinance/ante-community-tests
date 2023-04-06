@@ -14,7 +14,7 @@ error OnlyOwner();
 contract AnteOptimismMessageDelayTest is
     AnteTest("Optimism Bridge message doesn't take more than 20 mins from L1 to L2")
 {
-    address private owner;
+    address public owner;
     address public l1Controller;
     address public ovmL2CrossDomainMessenger = 0x4200000000000000000000000000000000000007;
     mapping(address => uint256) public submittedTimestamps;
