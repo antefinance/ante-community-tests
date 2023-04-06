@@ -4,6 +4,7 @@ out = 'artifacts'
 libs = ['node_modules', 'lib']
 test = 'test'
 cache_path  = 'cache_forge'
+match_path = "./test/*"
 
 [rpc_endpoints]
 mainnet = "https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}"
