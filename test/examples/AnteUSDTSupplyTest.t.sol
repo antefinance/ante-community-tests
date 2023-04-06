@@ -8,13 +8,8 @@ contract AnteUSDTSupplyTestTest is Test {
     uint256 mainnetFork;
     AnteUSDTSupplyTest public test;
 
-    string MAINNET_RPC_URL = string(abi.encodePacked(
-        "https://eth-mainnet.g.alchemy.com/v2/", 
-        vm.envString("ALCHEMY_KEY")
-    ));
-
     function setUp() public {
-        mainnetFork = vm.createSelectFork(MAINNET_RPC_URL);
+        mainnetFork = vm.createSelectFork(vm.rpcUrl("mainnet"));
         test = new AnteUSDTSupplyTest(0xdAC17F958D2ee523a2206206994597C13D831ec7);
     }
 
