@@ -1,0 +1,27 @@
+`// SPDX-License-Identifier: MIT
+
+pragma solidity >=0.8.0;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import "../AnteTest.sol";
+
+/// @title ${contractName} ${protocolName} ${networkName}
+/// @notice Ante Test to check if ${protocolName} ${networkName} pegs between +- ${peg.percentage}% of ${peg.symbol}
+contract ${contractName} is AnteTest("${token.symbol} on ${networkName} is pegged to +- ${peg.percentage}% of ${peg.symbol}") {
+
+    address public constant ${token.symbol} = ${token.address};
+
+    AggregatorV3Interface public constant priceFeed = AggregatorV3Interface(${peg.datafeed});
+    
+    constructor() {
+        protocolName = "${protocolName}";
+        testedContracts = [${token.address}];
+    }
+
+    function checkTestPasses() public view override returns (bool) {
+        (, int256 price, , , ) = priceFeed.latestRoundData();
+        return (${peg.minValue} < price && price < ${peg.maxValue});
+    }
+}
+`

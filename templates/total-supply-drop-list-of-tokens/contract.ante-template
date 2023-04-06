@@ -1,0 +1,54 @@
+`// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "../AnteTest.sol";
+import "../interfaces/IERC20.sol";
+
+// @title ${protocolName} ${networkName} markets do not lose ${
+  100 - percentageThreshold
+}% of their assets
+// @notice Ensure that ${protocolName} ${networkName} markets don't drop under ${percentageThreshold}% for top ${
+  tokens.length
+} tokens
+contract ${contractName} is AnteTest("Ensure that ${protocolName} ${networkName} markets don't drop under ${percentageThreshold}% for top ${
+  tokens.length
+} tokens") {
+    IERC20[${tokens.length}] public tokens = [
+${tokens
+  .map(
+    ({ symbol, address }, index, arr) =>
+      "      IERC20(" +
+      address +
+      ")" +
+      (index == arr.length - 1 ? "" : ",") +
+      " //" +
+      symbol
+  )
+  .join("\n")}
+    ];
+
+    uint256 private constant PERCENT_DROP_THRESHOLD = ${percentageThreshold};
+
+    // threshold amounts under which the test fails
+    uint256[${tokens.length}] public thresholds;
+
+    constructor() {
+        protocolName = "${protocolName}";
+
+        for (uint256 i = 0; i < tokens.length; i++) {
+            testedContracts.push(address(tokens[i]));
+            thresholds[i] = (tokens[i].totalSupply() * PERCENT_DROP_THRESHOLD) / 100;
+        }
+    }
+
+    function checkTestPasses() public view override returns (bool) {
+        for (uint256 i = 0; i < tokens.length; i++) {
+            if (tokens[i].totalSupply() < thresholds[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+`
