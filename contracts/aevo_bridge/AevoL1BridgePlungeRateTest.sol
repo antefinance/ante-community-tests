@@ -34,7 +34,7 @@ contract AevoL1BridgePlungeRateTest is AnteTest("Aevo L1 Bridge top token balanc
     uint256 public lastCheckpointTime;
 
     /// @notice threshold amounts below which the test fails
-    uint256[6] public thresholds;
+    uint256[1] public thresholds;
 
     constructor() {
         protocolName = "Aevo Bridge";
@@ -61,7 +61,7 @@ contract AevoL1BridgePlungeRateTest is AnteTest("Aevo L1 Bridge top token balanc
         _updateThresholds();
     }
 
-    /// @notice test to check value of top 6 assets on Optimism Bridge hasn't dropped below a certain threshold
+    /// @notice test to check value of top 1 asset on Aevo Bridge hasn't dropped below a certain threshold
     /// in a given time window
     /// @return true if the top assets haven't dropped PERCENT_DROP_THRESHOLD since the last checkpoint
     /// or if the last checkpoint isn't in the allowed time interval window
