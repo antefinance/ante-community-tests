@@ -1,6 +1,7 @@
 import hre from 'hardhat';
 const { waffle, ethers } = hre;
-
+import net from 'net';
+import chalk from 'chalk';
 import {
   AnteOptimismMessageDelayTest__factory, AnteOptimismMessageDelayTest,
   FromL1ControlState__factory, FromL1ControlState,
@@ -41,7 +42,12 @@ describe('AnteOptimismMessageDelayTest', function () {
   let l1Deployer: Wallet;
   let l2Deployer: Wallet;
 
-  before(async () => {
+  before(async function () {
+    if (!await isForkRunning()) {
+      console.warn(chalk.yellow('AnteOptimismMessageDelayTest: This test suite requires a local fork to run on http://localhost:8545 in order to execute'))
+      this.skip();
+    }
+
     await l2Provider.send("hardhat_reset", [
       {
         forking: {
@@ -87,6 +93,9 @@ describe('AnteOptimismMessageDelayTest', function () {
   });
 
   after(async () => {
+    if (!await isForkRunning()) {
+      return;
+    }
     await evmRevert(l1GlobalSnapshotId);
     await l2Provider.send('evm_revert', [l2GlobalSnapshotId]);
   });
@@ -206,3 +215,12 @@ describe('AnteOptimismMessageDelayTest', function () {
     });
   })
 });
+
+function isForkRunning(port = 8545) {
+  return new Promise((resolve, reject) => {
+    const tester: any = net.createServer()
+      .once('error', err => ((err as any).code == 'EADDRINUSE' ? resolve(true) : reject(err)))
+      .once('listening', () => tester.once('close', () => resolve(false)).close())
+      .listen(port);
+  });
+}
