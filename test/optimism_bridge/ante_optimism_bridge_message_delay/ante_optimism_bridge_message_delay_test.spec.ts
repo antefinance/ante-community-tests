@@ -1,6 +1,6 @@
 import hre from 'hardhat';
 const { waffle, ethers } = hre;
-import net from 'net';
+import net, { Server } from 'net';
 import chalk from 'chalk';
 import {
   AnteOptimismMessageDelayTest__factory, AnteOptimismMessageDelayTest,
@@ -14,7 +14,7 @@ import { expect } from 'chai';
 import { defaultAbiCoder } from 'ethers/lib/utils';
 import config from '../../../hardhat.config';
 import { HttpNetworkUserConfig } from 'hardhat/types';
-import { Wallet } from 'ethers';
+import { providers, Wallet } from 'ethers';
 
 /**
  * IMPORTANT! In order to run this testsuite, you have to edit AnteOptimismMessageDelayTest.sol:
@@ -43,7 +43,7 @@ describe('AnteOptimismMessageDelayTest', function () {
   let l2Deployer: Wallet;
 
   before(async function () {
-    if (!await isForkRunning()) {
+    if (!await isForkRunning(l2Provider)) {
       console.warn(chalk.yellow('AnteOptimismMessageDelayTest: This test suite requires a local fork to run on http://localhost:8545 in order to execute'))
       this.skip();
     }
@@ -93,7 +93,7 @@ describe('AnteOptimismMessageDelayTest', function () {
   });
 
   after(async () => {
-    if (!await isForkRunning()) {
+    if (!await isForkRunning(l2Provider)) {
       return;
     }
     await evmRevert(l1GlobalSnapshotId);
@@ -216,11 +216,10 @@ describe('AnteOptimismMessageDelayTest', function () {
   })
 });
 
-function isForkRunning(port = 8545) {
-  return new Promise((resolve, reject) => {
-    const tester: any = net.createServer()
-      .once('error', err => ((err as any).code == 'EADDRINUSE' ? resolve(true) : reject(err)))
-      .once('listening', () => tester.once('close', () => resolve(false)).close())
-      .listen(port);
-  });
+const isForkRunning = async (provider: providers.JsonRpcProvider): Promise<boolean> => {
+  try {
+    return (await provider.getBlock('latest'))?.number > 0;
+  } catch (e) {
+    return false;
+  }
 }
