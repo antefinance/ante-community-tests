@@ -55,7 +55,7 @@ We recommend writing unit tests to make sure your Ante Test works. Unit tests li
 
 1. Create a file in the `./test/[PROTOCOL_NAME]` folder with filename `[YOUR_TEST_NAME].t.sol`
 
-2. Run the following command:
+2. Use `forge test` to run all Forge tests, or run a specific test with:
     ```
     forge test --match-path test/[PROTOCOL_NAME]/[YOUR_TEST_NAME].t.sol
     ```
