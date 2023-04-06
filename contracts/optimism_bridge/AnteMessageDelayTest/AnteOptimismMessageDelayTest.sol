@@ -7,26 +7,24 @@ import {ICrossDomainMessenger} from "../ICrossDomainMessenger.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 error InvalidAddress();
-error OnlyOwner();
 
 /// @title Optimism Bridge updates messages as stated Test
 /// @notice Ante Test to check if Optimism Bridge deliveres messages from L1 to L2 in less than 20 mins
 contract AnteOptimismMessageDelayTest is
     AnteTest("Optimism Bridge message doesn't take more than 20 mins from L1 to L2")
 {
-    address public owner;
+    /// @notice The address of L1 contract that is allowed to register the state
     address public l1Controller;
-    address public ovmL2CrossDomainMessenger = 0x4200000000000000000000000000000000000007;
-    mapping(address => uint256) public submittedTimestamps;
-    mapping(address => uint256) public receivedTimestamps;
-    address private caller;
 
-    modifier onlyOwner() {
-        if (msg.sender != owner) {
-            revert OnlyOwner();
-        }
-        _;
-    }
+    /// @notice https://optimistic.etherscan.io/address/0x4200000000000000000000000000000000000007
+    address public ovmL2CrossDomainMessenger = 0x4200000000000000000000000000000000000007;
+
+    /// @notice Mapping that stores the message submitted timestamp for a specific caller
+    mapping(address => uint256) public submittedTimestamps;
+    /// @notice Mapping that stores the message received timestamp for a specific caller
+    mapping(address => uint256) public receivedTimestamps;
+    /// @notice The address used to test the invariant
+    address private caller;
 
     modifier onlyMessenger() {
         if (
@@ -38,16 +36,10 @@ contract AnteOptimismMessageDelayTest is
         _;
     }
 
-    constructor() {
-        owner = msg.sender;
+    constructor(address _controller) {
+        l1Controller = _controller;
         protocolName = "Optimism Bridge";
         testedContracts = [ovmL2CrossDomainMessenger];
-    }
-
-    function setController(address _controller) external onlyOwner {
-        l1Controller = _controller;
-        // Destroy the owner after controller is set.
-        owner = address(0);
     }
 
     function setTimestamp(bytes memory _state) external onlyMessenger {
@@ -56,10 +48,12 @@ contract AnteOptimismMessageDelayTest is
         receivedTimestamps[user] = block.timestamp;
     }
 
+    /// @inheritdoc AnteTest
     function getStateTypes() external pure virtual override returns (string memory) {
         return "address";
     }
 
+    /// @inheritdoc AnteTest
     function getStateNames() external pure virtual override returns (string memory) {
         return "caller";
     }

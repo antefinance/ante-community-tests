@@ -1,6 +1,5 @@
 import hre from 'hardhat';
 const { waffle, ethers } = hre;
-import net, { Server } from 'net';
 import chalk from 'chalk';
 import {
   AnteOptimismMessageDelayTest__factory, AnteOptimismMessageDelayTest,
@@ -48,26 +47,8 @@ describe('AnteOptimismMessageDelayTest', function () {
       this.skip();
     }
 
-    await l2Provider.send("hardhat_reset", [
-      {
-        forking: {
-          jsonRpcUrl: (config.networks?.optimisticEthereum as HttpNetworkUserConfig)?.url,
-          blockNumber: 86331460,
-        },
-      },
-    ]);
-
     l1GlobalSnapshotId = await evmSnapshot();
     l2GlobalSnapshotId = await l2Provider.send('evm_snapshot', []);
-
-    l2Deployer = new ethers.Wallet("0x526d54c21663f5c1baf8755ed5cf5c5b2e5e5c5be2d796da3ce3aa57da38f85c", l2Provider);
-    await providerFundSigner(l2Provider, l2Deployer.address);
-    const factory = (await hre.ethers.getContractFactory(
-      'AnteOptimismMessageDelayTest',
-      l2Deployer
-    )) as AnteOptimismMessageDelayTest__factory;
-    test = await factory.connect(l2Deployer).deploy();
-    await test.deployed();
 
     // Ensure hardhat network is set to L1 (Eth mainnet)
     await ethers.provider.send("hardhat_reset", [
@@ -85,8 +66,28 @@ describe('AnteOptimismMessageDelayTest', function () {
       'FromL1ControlState',
       l1Deployer
     )) as FromL1ControlState__factory;
-    l1Controller = await controllerFactory.deploy(test.address);
+    l1Controller = await controllerFactory.connect(l1Deployer).deploy();
     await l1Controller.deployed();
+
+    await l2Provider.send("hardhat_reset", [
+      {
+        forking: {
+          jsonRpcUrl: (config.networks?.optimisticEthereum as HttpNetworkUserConfig)?.url,
+          blockNumber: 86331460,
+        },
+      },
+    ]);
+
+    l2Deployer = new ethers.Wallet("0x526d54c21663f5c1baf8755ed5cf5c5b2e5e5c5be2d796da3ce3aa57da38f85c", l2Provider);
+    await providerFundSigner(l2Provider, l2Deployer.address);
+    const factory = (await hre.ethers.getContractFactory(
+      'AnteOptimismMessageDelayTest',
+      l2Deployer
+    )) as AnteOptimismMessageDelayTest__factory;
+    test = await factory.connect(l2Deployer).deploy(l1Controller.address);
+    await test.deployed();
+
+    await l1Controller.connect(l1Deployer).setTestAddress(test.address);
 
     l1SnapshotId = await evmSnapshot();
     l2SnapshotId = await l2Provider.send('evm_snapshot', []);
@@ -112,6 +113,10 @@ describe('AnteOptimismMessageDelayTest', function () {
       expect(await test.checkTestPasses()).to.be.true;
     });
 
+    it('should have the controller address set', async () => {
+      expect(await test.l1Controller()).to.be.eq(l1Controller.address);
+    });
+
     describe('setTimestamp', () => {
       it('cannot be called by EOA', async () => {
         const state = defaultAbiCoder.encode(['address'], [l2Deployer.address]);
@@ -125,7 +130,7 @@ describe('AnteOptimismMessageDelayTest', function () {
           const signer = l2Provider.getSigner(L1ToL2Alias);
           await providerFundSigner(l2Provider, await signer.getAddress());
 
-          const submittedTimestamp = await blockTimestamp();
+          const submittedTimestamp = await blockTimestamp(l2Provider);
           const state = defaultAbiCoder.encode(['address', 'uint256'], [l2Deployer.address, submittedTimestamp]);
           await expect(test.connect(signer).setTimestamp(state)).to.be.revertedWith(
             'InvalidAddress'
@@ -136,8 +141,7 @@ describe('AnteOptimismMessageDelayTest', function () {
 
     it('should fail if more than 20 minutes passed until message is relayed', async () => {
       expect(await test.checkTestPasses()).to.be.true;
-
-      await test.connect(l2Deployer).setController(l1Controller.address);
+      expect(await test.submittedTimestamps(l2Deployer.address)).to.be.eq(0);
 
       const L2CrossDomainMessenger = (await ethers.getContractFactory("L2CrossDomainMessenger", l2Deployer)) as L2CrossDomainMessenger__factory;
       const l2CrossDomainMessenger = L2CrossDomainMessenger.attach(L2_CROSS_DOMAIN_MESSENGER_ADDRESS);
@@ -146,13 +150,13 @@ describe('AnteOptimismMessageDelayTest', function () {
         const signer = l2Provider.getSigner(L1ToL2Alias);
         await providerFundSigner(l2Provider, await signer.getAddress());
 
-        const submittedTimestamp = await blockTimestamp();
+        const submittedTimestamp = await blockTimestamp(l2Provider);
         const state = defaultAbiCoder.encode(['address', 'uint256'], [l2Deployer.address, submittedTimestamp]);
 
         const anteTestInterface = new ethers.utils.Interface(AnteOptimismMessageDelayTestAbi);
         const message = anteTestInterface.encodeFunctionData('setTimestamp', [state]);
 
-        await evmSetNextBlockTimestamp(submittedTimestamp + 21 * 60);
+        await evmSetNextBlockTimestamp(submittedTimestamp + 21 * 60, l2Provider);
 
         await expect(
           l2CrossDomainMessenger.connect(signer).relayMessage(
@@ -172,7 +176,8 @@ describe('AnteOptimismMessageDelayTest', function () {
 
     it('should pass if less than 20 minutes passed until message is relayed', async () => {
       expect(await test.checkTestPasses()).to.be.true;
-
+      expect(await test.submittedTimestamps(l2Deployer.address)).to.be.eq(0);
+      
       const L2CrossDomainMessenger = (await ethers.getContractFactory("L2CrossDomainMessenger", l2Deployer)) as L2CrossDomainMessenger__factory;
       const l2CrossDomainMessenger = L2CrossDomainMessenger.attach(L2_CROSS_DOMAIN_MESSENGER_ADDRESS);
 
@@ -180,10 +185,10 @@ describe('AnteOptimismMessageDelayTest', function () {
         const signer = l2Provider.getSigner(L1ToL2Alias);
         await providerFundSigner(l2Provider, await signer.getAddress());
 
-        const submittedTimestamp = await blockTimestamp();
+        const submittedTimestamp = await blockTimestamp(l2Provider);
         const state = defaultAbiCoder.encode(['address', 'uint256'], [l2Deployer.address, submittedTimestamp]);
 
-        await evmSetNextBlockTimestamp(submittedTimestamp + 19 * 60);
+        await evmSetNextBlockTimestamp(submittedTimestamp + 19 * 60, l2Provider);
 
         const anteTestInterface = new ethers.utils.Interface(AnteOptimismMessageDelayTestAbi);
         const message = anteTestInterface.encodeFunctionData('setTimestamp', [state]);
@@ -209,6 +214,7 @@ describe('AnteOptimismMessageDelayTest', function () {
     it('enqueues the message in CTC', async () => {
       const canonicalTransacationChain = (await ethers.getContractAt("ICanonicalTransactionChain", L1_CANONICAL_TRANSACTION_CHAIN)) as ICanonicalTransactionChain;
       const initNumElements = await canonicalTransacationChain.getQueueLength();
+      expect(await l1Controller.anteTestL2Addr()).to.be.eq(test.address);
       await expect(l1Controller.connect(l1Deployer).sendState()).to.not.be.reverted;
 
       expect(await canonicalTransacationChain.getQueueLength()).to.be.eq(initNumElements + 1);

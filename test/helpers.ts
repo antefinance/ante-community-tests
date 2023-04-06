@@ -10,12 +10,15 @@ export function expectAlmostEqual(num1: BigNumber, num2: BigNumber, tolerance: n
   expect(num1.sub(num2).abs()).to.be.lt(tolerance);
 }
 
-export async function blockTimestamp(): Promise<number> {
-  return (await waffle.provider.getBlock('latest')).timestamp;
+export async function blockTimestamp(provider?: providers.JsonRpcProvider): Promise<number> {
+  return provider ?
+    (await provider.getBlock('latest')).timestamp :
+    (await waffle.provider.getBlock('latest')).timestamp;
 }
 
-export async function blockNumber(): Promise<number> {
-  return (await waffle.provider.getBlock('latest')).number;
+export async function blockNumber(provider?: providers.JsonRpcProvider): Promise<number> {
+  return provider ? (await provider.getBlock('latest')).number :
+    (await waffle.provider.getBlock('latest')).number;
 }
 
 export async function evmSnapshot(): Promise<any> {
@@ -36,8 +39,10 @@ export async function evmIncreaseTime(seconds: number) {
   await hre.network.provider.send('evm_increaseTime', [seconds]);
 }
 
-export async function evmSetNextBlockTimestamp(timestamp: number) {
-  await hre.network.provider.send('evm_setNextBlockTimestamp', [timestamp]);
+export async function evmSetNextBlockTimestamp(timestamp: number, provider?: providers.JsonRpcProvider) {
+  provider ?
+    await provider.send('evm_setNextBlockTimestamp', [timestamp]) :
+    await hre.network.provider.send('evm_setNextBlockTimestamp', [timestamp]);
 }
 
 export async function evmMineBlocks(numBlocks: number) {
