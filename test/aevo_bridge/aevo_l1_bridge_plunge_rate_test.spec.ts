@@ -1,7 +1,7 @@
 import hre from 'hardhat';
 const { waffle } = hre;
 
-import { IERC20Metadata, OPStackL1BridgePlungeRateTest, OPStackL1BridgePlungeRateTest__factory } from '../../typechain';
+import { IERC20Metadata, AevoL1BridgePlungeRateTest, AevoL1BridgePlungeRateTest__factory } from '../../typechain';
 
 import { runAsSigner, evmSnapshot, evmRevert, blockTimestamp, evmMineBlocks, evmIncreaseTime } from '../helpers';
 import { expect } from 'chai';
@@ -10,7 +10,7 @@ import { BigNumber } from 'ethers';
 describe('AevoL1BridgePlungeRateTest', function () {
   let topToken: IERC20Metadata;
 
-  let test: OPStackL1BridgePlungeRateTest;
+  let test: AevoL1BridgePlungeRateTest;
 
   let checkpointTime;
 
@@ -31,11 +31,10 @@ describe('AevoL1BridgePlungeRateTest', function () {
     });
 
     const [deployer] = waffle.provider.getWallets();
-    console.log(deployer.address, await deployer.getBalance(), process.env.NETWORK);
     const factory = (await hre.ethers.getContractFactory(
-      'OPStackL1BridgePlungeRateTest',
+      'AevoL1BridgePlungeRateTest',
       deployer
-    )) as OPStackL1BridgePlungeRateTest__factory;
+    )) as AevoL1BridgePlungeRateTest__factory;
     test = await factory.deploy({ gasLimit: 8000000 });
     await test.deployed();
 
@@ -124,6 +123,13 @@ describe('AevoL1BridgePlungeRateTest', function () {
     await expect(test.checkpoint()).to.be.reverted;
     // check checkpoint state didn't change
     expect(await test.lastCheckpointTime()).to.equal(checkpointTime);
+  });
+
+  it('should emit an event when checkpointing', async () => {
+    checkpointTime = await test.lastCheckpointTime();
+    await evmIncreaseTime(60 * 60 * 48 + 1);
+    await evmMineBlocks(1);
+    await expect(test.checkpoint()).to.be.emit(test, 'AevoL1BridgeCheckpointUpdated');
   });
 
   it('should reset checkpoint data when calling checkpoint() after checkpoint interval', async () => {

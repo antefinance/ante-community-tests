@@ -8,6 +8,16 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 /// @title Aevo L1 Bridge doesn't plunge by X% within a fixed time window
 /// @notice Ante Test to check if Aevo L1 Bridge token balances drop by 95% in a 72-hour window
 contract AevoL1BridgePlungeRateTest is AnteTest("Aevo L1 Bridge top token balances don't drop by 95% in 72 hours") {
+    /// @notice Emitted when anyone succesfully calls checkpoint
+    /// @param timestamp The timestamp of the checkpoint
+    /// @param newEtherThreshold the new ether failure threshold
+    /// @param newTopTokenThreshold the new threshold for the top token
+    event AevoL1BridgeCheckpointUpdated(
+        uint256 indexed timestamp,
+        uint256 newEtherThreshold,
+        uint256 newTopTokenThreshold
+    );
+
     /// @notice minimum period after checkpointing before checkTestPasses call
     /// is allowed to fail
     uint32 public constant MIN_CHECKPOINT_AGE = 12 hours;
@@ -59,6 +69,8 @@ contract AevoL1BridgePlungeRateTest is AnteTest("Aevo L1 Bridge top token balanc
         );
 
         _updateThresholds();
+
+        emit AevoL1BridgeCheckpointUpdated(lastCheckpointTime, etherThreshold, thresholds[0]);
     }
 
     /// @notice test to check value of top 1 asset on Aevo Bridge hasn't dropped below a certain threshold
