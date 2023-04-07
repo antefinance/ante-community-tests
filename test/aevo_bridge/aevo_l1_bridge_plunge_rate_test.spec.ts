@@ -14,7 +14,7 @@ describe('AevoL1BridgePlungeRateTest', function () {
 
   let checkpointTime;
 
-  const BRIDGE_ADDR = '0x99C9fc46f92E8a1c0deC1b1747d010903E884bE1';
+  const BRIDGE_ADDR = '0x4082C9647c098a6493fb499EaE63b5ce3259c574';
   const INITIAL_TESTING_ETH = hre.ethers.utils.parseEther('1000.0').toHexString();
 
   let globalSnapshotId: string;
@@ -145,12 +145,18 @@ describe('AevoL1BridgePlungeRateTest', function () {
 
     await evmIncreaseTime(60 * 60 * 48 + 1);
     await evmMineBlocks(1);
+    const percentDrop = 95;
 
-    expect(await test.thresholds(0)).to.equal(topTokenBalance.mul(30).div(100));
+    expect(await test.thresholds(0)).to.equal(topTokenBalance.mul(100 - percentDrop).div(100));
     await test.checkpoint();
 
     expect(await test.lastCheckpointTime()).to.equal(await blockTimestamp());
     expect(await test.lastCheckpointTime()).to.be.gt(checkpointTime);
-    expect(await test.thresholds(0)).to.equal(topTokenBalance.sub(toRemove).mul(30).div(100));
+    expect(await test.thresholds(0)).to.equal(
+      topTokenBalance
+        .sub(toRemove)
+        .mul(100 - percentDrop)
+        .div(100)
+    );
   });
 });
