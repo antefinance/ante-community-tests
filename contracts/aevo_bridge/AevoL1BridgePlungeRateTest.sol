@@ -67,6 +67,7 @@ contract AevoL1BridgePlungeRateTest is AnteTest("Aevo L1 Bridge top token balanc
             (block.timestamp - lastCheckpointTime) > MIN_CHECKPOINT_INTERVAL,
             "Cannot call checkpoint more than once every 48 hours"
         );
+        require(checkTestPasses(), "Cannot call checkpoint with test in a failing state");
 
         _updateThresholds();
 

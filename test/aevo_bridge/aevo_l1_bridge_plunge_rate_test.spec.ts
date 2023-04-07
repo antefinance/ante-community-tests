@@ -114,6 +114,24 @@ describe('AevoL1BridgePlungeRateTest', function () {
     expect(await test.checkTestPasses()).to.be.true;
   });
 
+  it('should not allow checkpointing if the test is in a failing state', async () => {
+    await evmIncreaseTime(60 * 60 * 48 + 1);
+    await evmMineBlocks(1);
+
+    const topTokenBalance = await topToken.balanceOf(BRIDGE_ADDR);
+    const [deployer] = waffle.provider.getWallets();
+    await runAsSigner(BRIDGE_ADDR, async () => {
+      const topTokenHolder = await hre.ethers.getSigner(BRIDGE_ADDR);
+
+      const toRemove = topTokenBalance.sub(topTokenThreshold);
+      await topToken.connect(topTokenHolder).transfer(deployer.address, toRemove.add(1));
+    });
+
+    expect(await topToken.balanceOf(BRIDGE_ADDR)).to.equal(topTokenThreshold.sub(1));
+    expect(await test.checkTestPasses()).to.be.false;
+    await expect(test.checkpoint()).to.be.revertedWith('Cannot call checkpoint with test in a failing state');
+  });
+
   it('should not allow checkpointing again within checkpoint interval', async () => {
     // increase time by 47 hours
     checkpointTime = await test.lastCheckpointTime();
