@@ -64,11 +64,7 @@ contract AnteOptimismMessageDelayTest is
         // Pass the test on chains that are not Optimism L2
         if (block.chainid != 10 && block.chainid != 420 && block.chainid != 31337) return true;
 
-        if (receivedTimestamps[caller] - submittedTimestamps[caller] > 20 minutes) {
-            return false;
-        }
-
-        return true;
+        return receivedTimestamps[caller] - submittedTimestamps[caller] < 20 minutes;
     }
 
     function _setState(bytes memory _state) internal override {

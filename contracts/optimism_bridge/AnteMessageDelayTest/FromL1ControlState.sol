@@ -43,7 +43,7 @@ contract FromL1ControlState {
 
         bytes memory message;
 
-        bytes memory state = abi.encodePacked(msg.sender, block.timestamp);
+        bytes memory state = abi.encode(msg.sender, block.timestamp);
         message = abi.encodeWithSignature("setTimestamp(bytes)", state);
 
         ICrossDomainMessenger(getCrossDomainMessengerAddr()).sendMessage(
