@@ -5,7 +5,7 @@ import {
   AnteOptimismMessageDelayTest__factory, AnteOptimismMessageDelayTest,
   FromL1ControlState__factory, FromL1ControlState,
   ICanonicalTransactionChain,
-  L2CrossDomainMessenger__factory
+  IL2CrossDomainMessenger
 } from '../../../typechain';
 import AnteOptimismMessageDelayTestAbi from '../../../abi/contracts/optimism_bridge/AnteMessageDelayTest/AnteOptimismMessageDelayTest.sol/AnteOptimismMessageDelayTest.json'
 import { evmSnapshot, evmRevert, blockTimestamp, evmSetNextBlockTimestamp, runAsSignerProvider, providerFundSigner } from '../../helpers';
@@ -143,8 +143,7 @@ describe('AnteOptimismMessageDelayTest', function () {
       expect(await test.checkTestPasses()).to.be.true;
       expect(await test.submittedTimestamps(l2Deployer.address)).to.be.eq(0);
 
-      const L2CrossDomainMessenger = (await ethers.getContractFactory("L2CrossDomainMessenger", l2Deployer)) as L2CrossDomainMessenger__factory;
-      const l2CrossDomainMessenger = L2CrossDomainMessenger.attach(L2_CROSS_DOMAIN_MESSENGER_ADDRESS);
+      const l2CrossDomainMessenger = (await ethers.getContractAt("IL2CrossDomainMessenger", L2_CROSS_DOMAIN_MESSENGER_ADDRESS, l2Deployer)) as IL2CrossDomainMessenger;
 
       await runAsSignerProvider(l2Provider, L1ToL2Alias, async () => {
         const signer = l2Provider.getSigner(L1ToL2Alias);
@@ -178,8 +177,7 @@ describe('AnteOptimismMessageDelayTest', function () {
       expect(await test.checkTestPasses()).to.be.true;
       expect(await test.submittedTimestamps(l2Deployer.address)).to.be.eq(0);
       
-      const L2CrossDomainMessenger = (await ethers.getContractFactory("L2CrossDomainMessenger", l2Deployer)) as L2CrossDomainMessenger__factory;
-      const l2CrossDomainMessenger = L2CrossDomainMessenger.attach(L2_CROSS_DOMAIN_MESSENGER_ADDRESS);
+      const l2CrossDomainMessenger = (await ethers.getContractAt("IL2CrossDomainMessenger", L2_CROSS_DOMAIN_MESSENGER_ADDRESS, l2Deployer)) as IL2CrossDomainMessenger;
 
       await runAsSignerProvider(l2Provider, L1ToL2Alias, async () => {
         const signer = l2Provider.getSigner(L1ToL2Alias);

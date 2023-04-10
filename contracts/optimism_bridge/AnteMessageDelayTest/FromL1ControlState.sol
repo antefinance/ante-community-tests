@@ -10,11 +10,6 @@ error AddressNotSet();
 
 /// @title Control the state of the Ante Test on L2
 contract FromL1ControlState {
-    /// @notice L1 address of Optimism Bridge Cross Domain Messenger
-    /// Ethereum Mainnet - 0x25ace71c97B33Cc4729CF772ae268934F7ab5fA1
-    /// Ethereum Goerli - 0x5086d1eEF304eb5284A0f6720f79403b4e9bE294
-    address public crossDomainMessengerAddr = 0x25ace71c97B33Cc4729CF772ae268934F7ab5fA1;
-
     /// @notice L2 address of the deployed Ante Test
     address public anteTestL2Addr;
 
@@ -51,10 +46,18 @@ contract FromL1ControlState {
         bytes memory state = abi.encodePacked(msg.sender, block.timestamp);
         message = abi.encodeWithSignature("setTimestamp(bytes)", state);
 
-        ICrossDomainMessenger(crossDomainMessengerAddr).sendMessage(
+        ICrossDomainMessenger(getCrossDomainMessengerAddr()).sendMessage(
             anteTestL2Addr,
             message,
             1000000 // within the free gas limit amount
         );
+    }
+
+    /// @notice Returns the L1 address of Optimism Bridge Cross Domain Messenger
+    function getCrossDomainMessengerAddr() internal view returns (address addr) {
+        // Goerli
+        if (block.chainid == 5) return 0x5086d1eEF304eb5284A0f6720f79403b4e9bE294;
+
+        return 0x25ace71c97B33Cc4729CF772ae268934F7ab5fA1;
     }
 }
