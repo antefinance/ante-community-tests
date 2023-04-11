@@ -39,7 +39,9 @@
   },
   "dependencies": {
     "hardhat-abi-exporter": "^2.2.1",
-    "hardhat-gas-reporter": "^1.0.4"
+    "hardhat-gas-reporter": "^1.0.4",
+    "merkle-patricia-tree": "^4.2.4",
+    "rlp": "^3.0.0"
   },
   "scripts": {
     "prepare": "husky install",
