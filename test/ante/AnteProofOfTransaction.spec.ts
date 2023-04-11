@@ -46,22 +46,11 @@ describe('AnteProofOfTransaction', function () {
     
     
     
-    const fullProof = Buffer.concat([...proof]);
+    const fullProof = proof;
     
     const proofEncoded = `${fullProof.toString('hex')}`;
-    console.log(proofEncoded);
 
     console.log(txProof.tx);
-    let i = 0;
-    while (true) {
-      try {
-        const info = await test.getRLPItem(i);
-        console.log(`Item ${i}:`, info);
-        i += 1;
-      } catch (e) {
-        break;
-      }
-    }
 
     await test.testSetState({
       blockNumber: witness.blockNumber,
@@ -69,9 +58,31 @@ describe('AnteProofOfTransaction', function () {
       prevHash: witness.prevHash,
       numFinal: witness.numFinal,
       merkleProof: witness.merkleProof,
-    }, `0x${proofEncoded}`, {
+    }, fullProof, {
       gasLimit: 5000000
     });
+    let i = 0;
+    console.log(`${proofEncoded}`);
+    const transactionType = await test.getTransactionType();
+    console.log(`Transaction type: ${transactionType}`);
+    while (true) {
+      try {
+        const rlpItem = await test.getRLPItem(i);
+        console.log(i, rlpItem);
+        try {
+          const calledAddress = await test.getCalledAddress(i);
+          console.log(calledAddress, i);
+          expect(calledAddress).to.equal(txProof.tx.to);
+        } catch (e) {
+          console.log(`not ${i}`);
+        }
+      } catch (e) {
+        console.log(i, e);
+        break;
+      }
+      i += 1;
+    }
+    
 
     await test.checkTestPasses({
       gasLimit: 10000000

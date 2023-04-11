@@ -59,8 +59,27 @@ contract AnteProofOfTransaction is AnteTest("Ante Pool cannot pay out before fai
     }
 
     function getRLPItem(uint256 index) public view returns(RLPReader.RLPItem memory){
-      RLPReader.RLPItem[] memory proofItems = proof.toRlpItem().toList();
-      return proofItems[index];
+      RLPReader.RLPItem[] memory proofItems = RLPReader.toRlpItem(header).toList();
+      bytes memory txInfo = proofItems[proofItems.length-1].toBytes();
+      RLPReader.RLPItem[] memory txInfoItems = RLPReader.toRlpItem(txInfo).toList();
+      //uint256 txType = txInfoItems[0].toUint();
+      bytes memory txBytes = txInfoItems[1].toBytes();
+      RLPReader.RLPItem[] memory txItems = RLPReader.toRlpItem(txBytes).toList();
+      return txItems[index];
+    }
+
+    function getTransactionType() public view returns(bytes1) {
+      RLPReader.RLPItem[] memory proofItems = RLPReader.toRlpItem(header).toList();
+      bytes memory txInfo = proofItems[proofItems.length-1].toBytes();
+      
+      // first byte is the transaction type
+      return txInfo[0];
+    
+    }
+
+    function getCalledAddress(uint256 index) public view returns(address) {
+      address to = getRLPItem(index).toAddress();
+      return to;
     }
 
     /// @notice test checks that payouts do not happen before failure

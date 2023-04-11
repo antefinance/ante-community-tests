@@ -77,7 +77,11 @@ export async function getTransactionProof(txHash: string) {
     numFinal: 0,
     merkleProof: merkleProof,
   };
-
+  console.log(proof.map(
+    (proofValue) => {
+      return proofValue.toString('hex');
+    }
+  ));
   return {
     tx: tx,
     blockInfo,
@@ -85,7 +89,7 @@ export async function getTransactionProof(txHash: string) {
     path: pathResult,
     rawProof,
     merkleProof,
-    proof,
+    proof: rlp.encode(proof),
     txFromProof,
   };
 }
