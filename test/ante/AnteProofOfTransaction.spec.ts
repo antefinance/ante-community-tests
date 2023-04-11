@@ -44,19 +44,32 @@ describe('AnteProofOfTransaction', function () {
     //  [proof]
     //);
     
-    const txSerialized = txProof.txFromProof.serialize();
-    console.log(`serialized tx: ${txSerialized.toString('hex')}`);
-    const fullProof = Buffer.concat([txSerialized, ...proof]);
-    //console.log(`${proofEncoded}`);
-    const proofEncoded = `0x${fullProof.toString('hex')}`;
+    
+    
+    const fullProof = Buffer.concat([...proof]);
+    
+    const proofEncoded = `${fullProof.toString('hex')}`;
     console.log(proofEncoded);
+
+    console.log(txProof.tx);
+    let i = 0;
+    while (true) {
+      try {
+        const info = await test.getRLPItem(i);
+        console.log(`Item ${i}:`, info);
+        i += 1;
+      } catch (e) {
+        break;
+      }
+    }
+
     await test.testSetState({
       blockNumber: witness.blockNumber,
       claimedBlockHash: witness.claimedBlockHash,
       prevHash: witness.prevHash,
       numFinal: witness.numFinal,
       merkleProof: witness.merkleProof,
-    }, proofEncoded, {
+    }, `0x${proofEncoded}`, {
       gasLimit: 5000000
     });
 
