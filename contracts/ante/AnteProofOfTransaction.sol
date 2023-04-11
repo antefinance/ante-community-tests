@@ -12,7 +12,7 @@
 pragma solidity ^0.8.0;
 
 import "../libraries/ante-v06-core/AnteTest.sol";
-import {RLPReader} from('./RLPReader.sol');
+import {RLPReader} from './RLPReader.sol';
 
 interface IAxiomV0 {
   function historicalRoots(uint32 startBlockNumber) external view returns (bytes32);
