@@ -1,0 +1,17 @@
+[profile.default]
+src = 'contracts'
+out = 'artifacts'
+libs = ['node_modules', 'lib']
+test = 'test'
+cache_path  = 'cache_forge'
+match_path = "./test/*"
+
+[rpc_endpoints]
+mainnet = "https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}"
+avalanche = "https://api.avax.network/ext/bc/C/rpc"
+polygon = "https://polygon-rpc.com"
+bsc = "https://bsc-dataseed.binance.org/"
+fantom = "https://rpc.fantom.network"
+arbitrumOne = "https://arb1.arbitrum.io/rpc"
+optimism = "https://mainnet.optimism.io"
+aurora = "https://mainnet.aurora.dev"

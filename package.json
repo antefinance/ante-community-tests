@@ -4,6 +4,7 @@
   "description": "Repository for community AnteTest contributions",
   "devDependencies": {
     "@chainlink/contracts": "^0.2.2",
+    "@nomicfoundation/hardhat-foundry": "^1.0.0",
     "@nomiclabs/hardhat-ethers": "^2.0.2",
     "@nomiclabs/hardhat-etherscan": "^3.1.0",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
