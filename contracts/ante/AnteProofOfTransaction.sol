@@ -49,16 +49,23 @@ contract AnteProofOfTransaction is AnteTest("Ante Pool cannot pay out before fai
       return "witness,header";
     }
 
+    function testSetState(IAxiomV0.BlockHashWitness memory _witness, bytes memory _header) public {
+        witness = _witness;
+        header = _header;
+    }
+
     /// @notice test checks that payouts do not happen before failure
     /// @return true if no payouts have happened on unfailed tests
     function checkTestPasses() public view override returns (bool) {
         if(witness.blockNumber == 0) {
             return true;
         }
-        if(witness.blockNumber > block.number - 256) {
-            require(IAxiomV0(AXIOM_V0).isBlockHashValid(witness), "Ante: Witness is invalid");
+        if(witness.blockNumber < block.number - 256) {
+            require(IAxiomV0(AXIOM_V0).isBlockHashValid(witness), 
+            "Ante: Witness is invalid");
         } else {
-            require(IAxiomV0(AXIOM_V0).isRecentBlockHashValid(witness.blockNumber, witness.claimedBlockHash), "Ante: Witness is invalid - recent");
+            require(IAxiomV0(AXIOM_V0).isRecentBlockHashValid(witness.blockNumber, witness.claimedBlockHash), 
+            "Ante: Witness is invalid - recent");
         }
 
         return true;

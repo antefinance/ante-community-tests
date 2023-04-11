@@ -7,6 +7,7 @@ import { evmSnapshot, evmRevert, evmIncreaseTime, evmMineBlocks } from '../helpe
 import { expect } from 'chai';
 import { getTransactionProof } from '../proofs';
 import { Interface, ParamType } from '@ethersproject/abi';
+import { BytesLike } from 'ethers';
 
 
 describe('AnteProofOfTransaction', function () {
@@ -34,10 +35,38 @@ describe('AnteProofOfTransaction', function () {
     const randomTransaction = latestBlock.transactions[Math.floor(Math.random() * latestBlock.transactions.length)];
     const txProof = await getTransactionProof(randomTransaction);
     const { witness } = txProof;
+    
+
+    await test.testSetState({
+      blockNumber: witness.blockNumber,
+      claimedBlockHash: witness.claimedBlockHash,
+      prevHash: witness.prevHash,
+      numFinal: witness.numFinal,
+      merkleProof: [
+        witness.merkleProof[0] || hre.ethers.constants.HashZero,
+        witness.merkleProof[1] || hre.ethers.constants.HashZero,
+        witness.merkleProof[2] || hre.ethers.constants.HashZero,
+        witness.merkleProof[3] || hre.ethers.constants.HashZero,
+        witness.merkleProof[4] || hre.ethers.constants.HashZero,
+        witness.merkleProof[5] || hre.ethers.constants.HashZero,
+        witness.merkleProof[6] || hre.ethers.constants.HashZero,
+        witness.merkleProof[7] || hre.ethers.constants.HashZero,
+        witness.merkleProof[8] || hre.ethers.constants.HashZero,
+        witness.merkleProof[9] || hre.ethers.constants.HashZero,
+      ],
+    }, "0x", {
+      gasLimit: 1000000
+    });
+
+    await test.checkTestPasses({
+      gasLimit: 1000000
+    });
+    
+    /*
+    try {
     const encodedState = hre.ethers.utils.defaultAbiCoder.encode(
       [ ParamType.fromObject({
         type: "tuple",
-        name: "witness",
         components: [
           ParamType.fromString("uint32"),
           ParamType.fromString("bytes32"),
@@ -47,14 +76,8 @@ describe('AnteProofOfTransaction', function () {
         ],
       })
         , ParamType.fromString("bytes")],
-      [[
-        witness.blockNumber,
-        witness.claimedBlockHash,
-        witness.prevHash,
-        witness.numFinal,
-        witness.merkleProof,
-      ], "0x"]);
-    try {
+      []);
+    
       const response = await test.setStateAndCheckTestPasses(encodedState, {
         gasLimit: 1000000,
       });
@@ -64,6 +87,7 @@ describe('AnteProofOfTransaction', function () {
       console.log(e);
       
     }
+    */
     expect(true).to.be.true;
   })
 });
