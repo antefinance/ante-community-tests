@@ -38,11 +38,18 @@ describe('AnteProofOfTransaction', function () {
     const txProof = await getTransactionProof(randomTransaction);
     const { witness, proof } = txProof;
     
-    const proofEncoded = hre.ethers.utils.defaultAbiCoder.encode(
-      ["bytes[]"],
-      [proof]
-    );
 
+    //const proofEncoded = hre.ethers.utils.defaultAbiCoder.encode(
+    //  ["bytes[]"],
+    //  [proof]
+    //);
+    
+    const txSerialized = txProof.txFromProof.serialize();
+    console.log(`serialized tx: ${txSerialized.toString('hex')}`);
+    const fullProof = Buffer.concat([txSerialized, ...proof]);
+    //console.log(`${proofEncoded}`);
+    const proofEncoded = `0x${fullProof.toString('hex')}`;
+    console.log(proofEncoded);
     await test.testSetState({
       blockNumber: witness.blockNumber,
       claimedBlockHash: witness.claimedBlockHash,
@@ -54,7 +61,7 @@ describe('AnteProofOfTransaction', function () {
     });
 
     await test.checkTestPasses({
-      gasLimit: 1000000
+      gasLimit: 10000000
     });
     
     

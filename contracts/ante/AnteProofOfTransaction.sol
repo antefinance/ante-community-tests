@@ -33,7 +33,8 @@ interface IAxiomV0 {
 /// @notice Checks if a transaction was included in a block
 contract AnteProofOfTransaction is AnteTest("Ante Pool cannot pay out before failure") {
     address public constant AXIOM_V0 = 0x01d5b501C1fc0121e1411970fb79c322737025c2;
-    
+    address public constant AXIOM_VERIFIER = 0xf0E3B9aAdA6D89DdEb34aaB7E9cd1744CF90D82f;
+    address public constant AXIOM_HISTORICAL_VERIFIER = 0xBF2c05D0362a640629b9b98Be4c4E4f9a8E22841;
     IAxiomV0.BlockHashWitness public witness;
     bytes public header;
 
@@ -50,8 +51,25 @@ contract AnteProofOfTransaction is AnteTest("Ante Pool cannot pay out before fai
     }
 
     function testSetState(IAxiomV0.BlockHashWitness memory _witness, bytes memory _header) public {
-        witness = _witness;
-        header = _header;
+      witness = _witness;
+      header = _header;
+
+      if(witness.blockNumber < block.number - 256) {
+        require(IAxiomV0(AXIOM_V0).isBlockHashValid(witness), 
+        "Ante: Witness is invalid");
+
+          (bool success, bytes memory rsp) = AXIOM_VERIFIER.staticcall(header);
+          require(success, abi.decode(rsp, (string)));
+      } else {
+        require(IAxiomV0(AXIOM_V0).isRecentBlockHashValid(witness.blockNumber, witness.claimedBlockHash), 
+        "Ante: Witness is invalid - recent");
+        
+        (bool success, bytes memory rsp) = AXIOM_HISTORICAL_VERIFIER.staticcall(header);
+        require(success, abi.decode(rsp, (string)));
+      
+      }
+
+      
     }
 
     /// @notice test checks that payouts do not happen before failure
@@ -63,9 +81,11 @@ contract AnteProofOfTransaction is AnteTest("Ante Pool cannot pay out before fai
         if(witness.blockNumber < block.number - 256) {
             require(IAxiomV0(AXIOM_V0).isBlockHashValid(witness), 
             "Ante: Witness is invalid");
+
         } else {
             require(IAxiomV0(AXIOM_V0).isRecentBlockHashValid(witness.blockNumber, witness.claimedBlockHash), 
             "Ante: Witness is invalid - recent");
+        
         }
 
         return true;
