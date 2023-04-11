@@ -38,6 +38,9 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
+    "@ethereumjs/block": "^4.2.1",
+    "@ethereumjs/trie": "^5.0.4",
+    "@ethereumjs/tx": "^4.1.1",
     "hardhat-abi-exporter": "^2.2.1",
     "hardhat-gas-reporter": "^1.0.4",
     "merkle-patricia-tree": "^4.2.4",

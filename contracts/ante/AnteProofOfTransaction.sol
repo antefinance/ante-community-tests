@@ -21,7 +21,7 @@ interface IAxiomV0 {
       bytes32 claimedBlockHash;
       bytes32 prevHash;
       uint32 numFinal;
-      bytes32[10] merkleProof;
+      bytes32[] merkleProof;
   }
   function getEmptyHash(uint256 depth) external pure returns (bytes32);
   function isRecentBlockHashValid(uint32 blockNumber, bytes32 claimedBlockHash) external view returns (bool);
