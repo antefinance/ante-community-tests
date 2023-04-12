@@ -116,7 +116,6 @@ library ProofOfTransactionLib {
     Transaction memory transaction;
     transaction.txType = 0;
     RLPReader.RLPItem[] memory rlpTx = RLPReader.toRlpItem(transactionData).toList();
-    
     transaction.nonce = rlpTx[0].toUint();
     transaction.gasPrice = rlpTx[1].toUint();
     transaction.gasLimit = rlpTx[2].toUint();
@@ -134,6 +133,7 @@ library ProofOfTransactionLib {
       bytes32(transaction.s)
     );
     transaction.from = from;
+    
     return transaction;
   }
 
@@ -196,19 +196,15 @@ library ProofOfTransactionLib {
     RLPReader.RLPItem[] memory proofItems = RLPReader.toRlpItem(proof).toList();
       RLPReader.RLPItem[] memory items = RLPReader.toRlpItem(proofItems[proofItems.length-1].toBytes()).toList();
       uint256 transactionType = 0;
-      if(items.length == 2){
-        // transaction with type
-        bytes memory rlpEncodedTransactionBytes = items[1].toBytes();
-        transactionType = uint256(uint8(rlpEncodedTransactionBytes[0]));
-      } 
-
+      bytes memory rlpEncodedTransactionBytes = items[1].toBytes();
+      transactionType = uint256(uint8(rlpEncodedTransactionBytes[0]));
       if(transactionType == 2) {
         return decodeEIP1559TransactionFromBytes(items[items.length-1].toBytes());
       }
       if (transactionType == 1) {
         return decodeEIP2930TransactionFromBytes(items[items.length-1].toBytes());
       }
-      return decodeLegacyTransactionFromBytes(proofItems[proofItems.length-1].toBytes());
+      return decodeLegacyTransactionFromBytes(items[items.length-1].toBytes());
       
   }
 
