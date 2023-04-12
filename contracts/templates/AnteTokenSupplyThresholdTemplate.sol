@@ -5,11 +5,11 @@ pragma solidity ^0.8.0;
 import {AnteTest} from "../AnteTest.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-/// @title GLP Token used by Yama does not exceed more than 5%
-/// @author jseam.eth
+/// @title Total supply threshold test for token [TOKEN]
+/// @author [AUTHOR]
 /// @notice Ante Test to check that the total supply of [TOKEN] does not
 ///      exceed [THRESHOLD]
-contract AnteYamaPegTest is AnteTest("[TOKEN] supply doesn't exceed [THRESHOLD]") {
+contract AnteTokenSupplyThresholdTestTemplate is AnteTest("[TOKEN] supply doesn't exceed [THRESHOLD]") {
     // TODO update token address
     IERC20 public constant TOKEN = IERC20(0xdAC17F958D2ee523a2206206994597C13D831ec7);
 
