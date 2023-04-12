@@ -61,6 +61,7 @@ export async function getTransactionProof(txHash: string) {
     rlp.encode(tx.transactionIndex),
     proof,
   );
+  console.log(proved);
   if (!proved) {
     throw new Error('Invalid proof');
   }
@@ -85,8 +86,9 @@ export async function getTransactionProof(txHash: string) {
     path: pathResult,
     rawProof,
     merkleProof,
-    proof: rlp.encode(proof),
+    proof: proof,
     txFromProof,
+    key: rlp.encode(tx.transactionIndex),
   };
 }
 

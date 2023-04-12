@@ -10,9 +10,10 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 pragma solidity ^0.8.0;
-
+import "hardhat/console.sol";
 import "../libraries/ante-v06-core/AnteTest.sol";
 import {ProofOfTransactionLib} from './lib/ProofOfTransactionLib.sol';
+import {MPT} from './lib/MPT.sol';
 
 interface IAxiomV0 {
   function historicalRoots(uint32 startBlockNumber) external view returns (bytes32);
@@ -29,63 +30,98 @@ interface IAxiomV0 {
   function isBlockHashValid(BlockHashWitness calldata witness) external view returns (bool);
 }
 
+error InvalidWitnessBlockNumber();
+error InvalidWitness();
+error InvalidHeader();
+
 
 /// @title Ante Proof Of Transaction
 /// @notice Checks if a transaction was included in a block
 contract AnteProofOfTransaction is AnteTest("Ante Pool cannot pay out before failure") {
     
     address public constant AXIOM_V0 = 0x01d5b501C1fc0121e1411970fb79c322737025c2;
-    address public constant AXIOM_VERIFIER = 0xf0E3B9aAdA6D89DdEb34aaB7E9cd1744CF90D82f;
-    address public constant AXIOM_HISTORICAL_VERIFIER = 0xBF2c05D0362a640629b9b98Be4c4E4f9a8E22841;
-    IAxiomV0.BlockHashWitness public witness;
-    bytes public header;
-
+  
     constructor() {
         testedContracts = [address(0)];
         protocolName = "Ante";
     }
-    function getStateTypes() external pure override returns(string memory) {
-      return "IAxiomV0.BlockHashWitness,bytes";
-    }
 
-    function getStateNames() external pure override returns(string memory) {
-      return "witness,header";
-    }
-
-    function testSetState(IAxiomV0.BlockHashWitness memory _witness, bytes calldata proof) public {
-      witness = _witness;
-      header = proof;
+    function verifyTransaction(
+      IAxiomV0.BlockHashWitness memory witness, 
+      bytes memory header, 
+      bytes[] memory proof, 
+      bytes memory key
+    ) public view returns(uint256, uint256, ProofOfTransactionLib.Transaction memory) {
+      console.log("starting to verify transaction", proof[proof.length - 1].length, "bytes long");
+      uint256 verificationFailureType = 0;  
       
-    }
-
-    
-
-    function geTransactionFromProof(bytes memory proof) public pure returns(ProofOfTransactionLib.Transaction memory) {
-      return ProofOfTransactionLib.getTransactionFromProof(proof);  
+      if(witness.blockNumber == 0) {
+          console.log("InvalidWitnessBlock 0");
+          //revert InvalidWitnessBlockNumber();
+          verificationFailureType = 70;
+      }
+      if(witness.blockNumber < block.number - 256) {
+        console.log("Checking historic block");
+        try IAxiomV0(AXIOM_V0).isBlockHashValid(witness) returns (bool blockValidation) {
+          if(!blockValidation) {
+            //revert InvalidWitness();
+            console.log("InvalidWitness Historic");
+            verificationFailureType = 1;
+          }
+        } catch {
+          console.log("InvalidWitness Historic");
+          verificationFailureType = 1;
+        }
+        
+      } else {
+        console.log("Checking recent block");
+        try IAxiomV0(AXIOM_V0).isRecentBlockHashValid(witness.blockNumber, witness.claimedBlockHash) returns (bool blockValidation) {
+          if(!blockValidation) {
+            //revert InvalidWitness();
+            console.log("InvalidWitness Recent");
+            verificationFailureType = 2;
+          }
+        
+        }catch {
+          console.log("InvalidWitness Recent");
+          verificationFailureType = 2;
+        }
+      }
+      bytes32 blockHashFromHeader = keccak256(header);
+      if(blockHashFromHeader != witness.claimedBlockHash) {
+        //revert InvalidHeader();
+        verificationFailureType = 3;
+        console.log("Invalid Header");
+      }
+      
+      bytes32 transactionsRoot = ProofOfTransactionLib.getTransactionsTrieRootFromHeader(header);
+      console.log("transactionsRoot pulled from header");
+      bytes memory txEncodedData = proof[proof.length - 1];
+      MPT.MerkleProof memory merkleProof = MPT.MerkleProof({
+        key: key,
+        proof: proof,
+        expectedRoot: transactionsRoot,
+        keyIndex: 0,
+        proofIndex: 0,
+        expectedValue: txEncodedData
+      });
+      console.log("merkle proof created");
+      uint256 verified = MPT.verifyTrieProof(merkleProof);
+      if(verified == 0){
+        console.log("verification passed");
+      } else {
+        console.log("verification failed", verified);
+      }
+      return(verificationFailureType, verified, 
+        ProofOfTransactionLib.decodeTransactionFromProof(txEncodedData));
     }
 
 
     /// @notice test checks that payouts do not happen before failure
     /// @return true if no payouts have happened on unfailed tests
     function checkTestPasses() public view override returns (bool) {
-        if(witness.blockNumber == 0) {
-            return true;
-        }
-        if(witness.blockNumber < block.number - 256) {
-            require(IAxiomV0(AXIOM_V0).isBlockHashValid(witness), 
-            "Ante: Witness is invalid");
-
-        } else {
-            require(IAxiomV0(AXIOM_V0).isRecentBlockHashValid(witness.blockNumber, witness.claimedBlockHash), 
-            "Ante: Witness is invalid - recent");
         
-        }
-
         return true;
     }
 
-    function _setState(bytes memory _state) internal override {
-        (witness, header) = abi.decode(_state, (IAxiomV0.BlockHashWitness, bytes));
-        
-    }
 }

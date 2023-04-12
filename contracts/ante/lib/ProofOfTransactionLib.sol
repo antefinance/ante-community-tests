@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 import {RLPReader} from './RLPReader.sol';
 import {RLPEncode} from './RLPEncode.sol';
 import {ECDSA} from '@openzeppelin/contracts/utils/cryptography/ECDSA.sol';
+import "hardhat/console.sol";
 library ProofOfTransactionLib {
   struct Transaction {
     uint256 txType;
@@ -25,7 +26,7 @@ library ProofOfTransactionLib {
   }
   using RLPReader for RLPReader.RLPItem;
   
-  function copyBytes(bytes memory source, uint256 start, uint256 end) internal pure returns(bytes memory) {
+  function copyBytes(bytes memory source, uint256 start, uint256 end) internal view returns(bytes memory) {
     if(end == 0){
       end = source.length;
     }
@@ -36,37 +37,27 @@ library ProofOfTransactionLib {
     return result;
   }
 
-  function copyBytes(bytes memory source, uint256 start) internal pure returns(bytes memory) {
+  function copyBytes(bytes memory source, uint256 start) internal view returns(bytes memory) {
     return copyBytes(source, start, source.length);
   }
 
-  function getTransactionTypeFromProof(bytes memory proof) internal pure returns(uint256) {
-    RLPReader.RLPItem[] memory proofItems = RLPReader.toRlpItem(proof).toList();
-    RLPReader.RLPItem[] memory items = RLPReader.toRlpItem(proofItems[proofItems.length-1].toBytes()).toList();
-    if(items.length == 2){
-      // transaction with type
-      bytes memory rlpEncodedTransactionBytes = items[1].toBytes();
-      uint256 transactionType = uint256(uint8(rlpEncodedTransactionBytes[0]));
-      return transactionType;
-    }
+  function getTransactionUnsignedBytesLegacy(Transaction memory transaction) internal view returns(bytes memory) {
     
-    return 0;
-  }
-
-  function getTransactionUnsignedHashLegacy(Transaction memory transaction) internal pure returns(bytes32) {
-    
-    bytes[] memory items = new bytes[](6);
+    bytes[] memory items = new bytes[](9);
     items[0] = RLPEncode.encodeUint(transaction.nonce);
     items[1] = RLPEncode.encodeUint(transaction.gasPrice);
     items[2] = RLPEncode.encodeUint(transaction.gasLimit);
     items[3] = RLPEncode.encodeAddress(transaction.to);
     items[4] = RLPEncode.encodeUint(transaction.value);
     items[5] = RLPEncode.encodeBytes(transaction.data);
+    items[6] = RLPEncode.encodeUint(1);
+    items[7] = RLPEncode.encodeUint(0);
+    items[8] = RLPEncode.encodeUint(0);
     bytes memory txSerialized = RLPEncode.encodeList(items);
-    return keccak256(txSerialized);
+    return txSerialized;
   }
 
-  function getTransactionUnsignedHashEIP1559(Transaction memory transaction) internal pure returns(bytes32) {
+  function getTransactionUnsignedBytesEIP1559(Transaction memory transaction) internal view returns(bytes memory) {
     bytes[] memory items = new bytes[](9);
     items[0] = RLPEncode.encodeUint(transaction.chainId);
     items[1] = RLPEncode.encodeUint(transaction.nonce);
@@ -79,12 +70,12 @@ library ProofOfTransactionLib {
     items[8] = RLPEncode.encodeBytes(transaction.accessList);
     bytes memory txSerialized = RLPEncode.encodeList(items);
     bytes[] memory enveloped = new bytes[](2);
-    enveloped[0] = abi.encodePacked(transaction.txType);
+    enveloped[0] = RLPEncode.encodeUint(transaction.txType);
     enveloped[1] = txSerialized;
-    return keccak256(abi.encodePacked(enveloped[0], enveloped[1]));
+    return RLPEncode.encodeList(enveloped);
   }
 
-  function getTransactionUnsignedHashEIP2930(Transaction memory transaction) internal pure returns(bytes32) {
+  function getTransactionUnsignedBytesEIP2930(Transaction memory transaction) internal view returns(bytes memory) {
     bytes[] memory items = new bytes[](8);
     items[0] = RLPEncode.encodeUint(transaction.chainId);
     items[1] = RLPEncode.encodeUint(transaction.nonce);
@@ -96,23 +87,23 @@ library ProofOfTransactionLib {
     items[7] = RLPEncode.encodeBytes(transaction.accessList);
     bytes memory txSerialized = RLPEncode.encodeList(items);
     bytes[] memory enveloped = new bytes[](2);
-    enveloped[0] = abi.encodePacked(transaction.txType);
+    enveloped[0] = RLPEncode.encodeUint(transaction.txType);
     enveloped[1] = txSerialized;
-    return keccak256(abi.encodePacked(enveloped[0], enveloped[1]));
+    return RLPEncode.encodeList(enveloped);
   }
 
-  function getTransactionUnsignedHash(Transaction memory transaction) internal pure returns(bytes32) {
+  function getTransactionUnsignedBytes(Transaction memory transaction) internal view returns(bytes memory) {
     if(transaction.txType == 0){
-      return getTransactionUnsignedHashLegacy(transaction);
+      return getTransactionUnsignedBytesLegacy(transaction);
     } else if(transaction.txType == 1){
-      return getTransactionUnsignedHashEIP1559(transaction);
+      return getTransactionUnsignedBytesEIP1559(transaction);
     } else if(transaction.txType == 2){
-      return getTransactionUnsignedHashEIP2930(transaction);
+      return getTransactionUnsignedBytesEIP2930(transaction);
     }
-    return bytes32(0);
+    return new bytes(0);
   }
 
-  function decodeLegacyTransactionFromBytes(bytes memory transactionData) internal pure returns(Transaction memory) {
+  function decodeLegacyTransactionFromBytes(bytes memory transactionData) internal view returns(Transaction memory) {
     Transaction memory transaction;
     transaction.txType = 0;
     RLPReader.RLPItem[] memory rlpTx = RLPReader.toRlpItem(transactionData).toList();
@@ -126,18 +117,16 @@ library ProofOfTransactionLib {
     transaction.r = rlpTx[7].toUint();
     transaction.s = rlpTx[8].toUint();
     transaction.txHash = keccak256(transactionData);
-
-    (address from,) = ECDSA.tryRecover(getTransactionUnsignedHash(transaction), 
-      uint8(transaction.v), 
-      bytes32(transaction.r), 
+    transaction.from = ecrecover(
+      keccak256(getTransactionUnsignedBytes(transaction)),
+      uint8(transaction.v),
+      bytes32(transaction.r),
       bytes32(transaction.s)
     );
-    transaction.from = from;
-    
     return transaction;
   }
 
-  function decodeEIP1559TransactionFromBytes(bytes memory transactionData) internal pure returns(Transaction memory) {
+  function decodeEIP1559TransactionFromBytes(bytes memory transactionData) internal view returns(Transaction memory) {
     Transaction memory transaction;
     transaction.txType = uint256(uint8(transactionData[0]));
 
@@ -156,16 +145,16 @@ library ProofOfTransactionLib {
     transaction.r = rlpTx[10].toUint();
     transaction.s = rlpTx[11].toUint();
     transaction.txHash = keccak256(transactionData);
-    (address from,) = ECDSA.tryRecover(getTransactionUnsignedHash(transaction), 
-      uint8(transaction.v), 
-      bytes32(transaction.r), 
+    transaction.from = ecrecover(
+      keccak256(getTransactionUnsignedBytes(transaction)),
+      uint8(transaction.v),
+      bytes32(transaction.r),
       bytes32(transaction.s)
     );
-    transaction.from = from;
     return transaction;
   }
 
-  function decodeEIP2930TransactionFromBytes(bytes memory transactionData) internal pure returns(Transaction memory) {
+  function decodeEIP2930TransactionFromBytes(bytes memory transactionData) internal view returns(Transaction memory) {
     Transaction memory transaction;
     transaction.txType = uint256(uint8(transactionData[0]));
 
@@ -183,18 +172,17 @@ library ProofOfTransactionLib {
     transaction.r = rlpTx[9].toUint();
     transaction.s = rlpTx[10].toUint();
     transaction.txHash = keccak256(transactionData);
-    (address from,) = ECDSA.tryRecover(getTransactionUnsignedHash(transaction), 
-      uint8(transaction.v), 
-      bytes32(transaction.r), 
+    transaction.from = ecrecover(
+      keccak256(getTransactionUnsignedBytes(transaction)),
+      uint8(transaction.v),
+      bytes32(transaction.r),
       bytes32(transaction.s)
     );
-    transaction.from = from;
     return transaction;
   }
 
-  function getTransactionFromProof(bytes memory proof) internal pure returns(Transaction memory) {
-    RLPReader.RLPItem[] memory proofItems = RLPReader.toRlpItem(proof).toList();
-      RLPReader.RLPItem[] memory items = RLPReader.toRlpItem(proofItems[proofItems.length-1].toBytes()).toList();
+  function decodeTransactionFromProof(bytes memory txRlpEncoded) internal view returns(Transaction memory) {
+      RLPReader.RLPItem[] memory items = RLPReader.toRlpItem(txRlpEncoded).toList();
       uint256 transactionType = 0;
       bytes memory rlpEncodedTransactionBytes = items[1].toBytes();
       transactionType = uint256(uint8(rlpEncodedTransactionBytes[0]));
@@ -206,6 +194,11 @@ library ProofOfTransactionLib {
       }
       return decodeLegacyTransactionFromBytes(items[items.length-1].toBytes());
       
+  }
+
+  function getTransactionsTrieRootFromHeader(bytes memory header) internal view returns(bytes32) {
+    RLPReader.RLPItem[] memory headerRLP = RLPReader.toRlpItem(header).toList();
+    return bytes32(headerRLP[4].toUint());
   }
 
 }
