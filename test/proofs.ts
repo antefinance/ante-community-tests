@@ -77,11 +77,7 @@ export async function getTransactionProof(txHash: string) {
     numFinal: 0,
     merkleProof: merkleProof,
   };
-  console.log(proof.map(
-    (proofValue) => {
-      return proofValue.toString('hex');
-    }
-  ));
+  
   return {
     tx: tx,
     blockInfo,

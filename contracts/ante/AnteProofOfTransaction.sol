@@ -12,7 +12,7 @@
 pragma solidity ^0.8.0;
 
 import "../libraries/ante-v06-core/AnteTest.sol";
-import {RLPReader} from './RLPReader.sol';
+import {ProofOfTransactionLib} from './lib/ProofOfTransactionLib.sol';
 
 interface IAxiomV0 {
   function historicalRoots(uint32 startBlockNumber) external view returns (bytes32);
@@ -33,7 +33,7 @@ interface IAxiomV0 {
 /// @title Ante Proof Of Transaction
 /// @notice Checks if a transaction was included in a block
 contract AnteProofOfTransaction is AnteTest("Ante Pool cannot pay out before failure") {
-    using RLPReader for RLPReader.RLPItem;
+    
     address public constant AXIOM_V0 = 0x01d5b501C1fc0121e1411970fb79c322737025c2;
     address public constant AXIOM_VERIFIER = 0xf0E3B9aAdA6D89DdEb34aaB7E9cd1744CF90D82f;
     address public constant AXIOM_HISTORICAL_VERIFIER = 0xBF2c05D0362a640629b9b98Be4c4E4f9a8E22841;
@@ -58,29 +58,12 @@ contract AnteProofOfTransaction is AnteTest("Ante Pool cannot pay out before fai
       
     }
 
-    function getRLPItem(uint256 index) public view returns(RLPReader.RLPItem memory){
-      RLPReader.RLPItem[] memory proofItems = RLPReader.toRlpItem(header).toList();
-      bytes memory txInfo = proofItems[proofItems.length-1].toBytes();
-      RLPReader.RLPItem[] memory txInfoItems = RLPReader.toRlpItem(txInfo).toList();
-      //uint256 txType = txInfoItems[0].toUint();
-      bytes memory txBytes = txInfoItems[1].toBytes();
-      RLPReader.RLPItem[] memory txItems = RLPReader.toRlpItem(txBytes).toList();
-      return txItems[index];
-    }
-
-    function getTransactionType() public view returns(bytes1) {
-      RLPReader.RLPItem[] memory proofItems = RLPReader.toRlpItem(header).toList();
-      bytes memory txInfo = proofItems[proofItems.length-1].toBytes();
-      
-      // first byte is the transaction type
-      return txInfo[0];
     
+
+    function geTransactionFromProof(bytes memory proof) public pure returns(ProofOfTransactionLib.Transaction memory) {
+      return ProofOfTransactionLib.getTransactionFromProof(proof);  
     }
 
-    function getCalledAddress(uint256 index) public view returns(address) {
-      address to = getRLPItem(index).toAddress();
-      return to;
-    }
 
     /// @notice test checks that payouts do not happen before failure
     /// @return true if no payouts have happened on unfailed tests

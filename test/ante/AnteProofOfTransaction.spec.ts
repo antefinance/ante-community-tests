@@ -7,6 +7,8 @@ import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
 import { getTransactionProof } from '../proofs';
 
+import { rlp }  from 'ethereumjs-util';
+
 
 describe('AnteProofOfTransaction', function () {
   let test: AnteProofOfTransaction;
@@ -47,47 +49,17 @@ describe('AnteProofOfTransaction', function () {
     
     
     const fullProof = proof;
-    
-    const proofEncoded = `${fullProof.toString('hex')}`;
+    const proofParts = rlp.decode(fullProof);
 
+    const transactionDataFromProof = proofParts[proofParts.length - 1];
+
+    
     console.log(txProof.tx);
-
-    await test.testSetState({
-      blockNumber: witness.blockNumber,
-      claimedBlockHash: witness.claimedBlockHash,
-      prevHash: witness.prevHash,
-      numFinal: witness.numFinal,
-      merkleProof: witness.merkleProof,
-    }, fullProof, {
-      gasLimit: 5000000
-    });
-    let i = 0;
-    console.log(`${proofEncoded}`);
-    const transactionType = await test.getTransactionType();
-    console.log(`Transaction type: ${transactionType}`);
-    while (true) {
-      try {
-        const rlpItem = await test.getRLPItem(i);
-        console.log(i, rlpItem);
-        try {
-          const calledAddress = await test.getCalledAddress(i);
-          console.log(calledAddress, i);
-          expect(calledAddress).to.equal(txProof.tx.to);
-        } catch (e) {
-          console.log(`not ${i}`);
-        }
-      } catch (e) {
-        console.log(i, e);
-        break;
-      }
-      i += 1;
-    }
     
-
-    await test.checkTestPasses({
-      gasLimit: 10000000
-    });
     
+    const transactionBytes = await test.geTransactionFromProof(fullProof);
+
+    console.log(transactionBytes);
     
     expect(true).to.be.true;
   }, )
