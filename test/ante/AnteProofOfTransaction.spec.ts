@@ -34,19 +34,20 @@ describe('AnteProofOfTransaction', function () {
     
     const latestBlock = await hre.ethers.provider.getBlock('latest');
     const prevBlock = await hre.ethers.provider.getBlock(latestBlock.number - 1);
-  
-    const block = prevBlock; // await hre.ethers.provider.getBlock("0x4dc37b4331685511a3fd3950678e51691ad41c214d8c501bf941803b94956a2e");
+    // const block = prevBlock;
+    const block =  await hre.ethers.provider.getBlock("0x4dc37b4331685511a3fd3950678e51691ad41c214d8c501bf941803b94956a2e");
     console.log(`Block number: ${block.number}`);
     
-    const randomTransaction = block.transactions[Math.floor(Math.random() * block.transactions.length)];
-    //const randomTransaction = block.transactions[17];
+    //const randomTransaction = block.transactions[Math.floor(Math.random() * block.transactions.length)];
+    const randomTransaction = block.transactions[17];
     const txProof = await getTransactionProof(randomTransaction);
     
     const { witness, proof } = txProof;
     const blockHeader = txProof.blockInfo.block.header.serialize();
     console.log(rlp.decode(proof[0]));
 
-    const [failType, verified, transaction] = await test.verifyTransaction(
+    const [verificationFailureType,
+      verified, transaction] = await test.verifyTransaction(
       witness,
       blockHeader,
       proof,
@@ -54,11 +55,12 @@ describe('AnteProofOfTransaction', function () {
       {
         gasLimit: 5000000,
       }
-    );
-    console.log(transaction);
-    console.log(verified);
-    console.log(failType);
-    expect(true).to.be.true;
-      
+      );
+    
+    console.log('verificationFailureType', verificationFailureType);
+    console.log('verified', verified);
+    
+    expect(transaction.from.toLowerCase()).to.equal(txProof.tx.from.toLowerCase());
+    
   })
 });

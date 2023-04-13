@@ -3,7 +3,7 @@
 pragma solidity ^0.8.0;
 import {RLPReader} from './RLPReader.sol';
 import {RLPEncode} from './RLPEncode.sol';
-import {ECDSA} from '@openzeppelin/contracts/utils/cryptography/ECDSA.sol';
+import {ECVerify} from './ECVerify.sol';
 import "hardhat/console.sol";
 library ProofOfTransactionLib {
   struct Transaction {
@@ -117,7 +117,7 @@ library ProofOfTransactionLib {
     transaction.r = rlpTx[7].toUint();
     transaction.s = rlpTx[8].toUint();
     transaction.txHash = keccak256(transactionData);
-    transaction.from = ecrecover(
+    transaction.from = ECVerify.ecverify(
       keccak256(getTransactionUnsignedBytes(transaction)),
       uint8(transaction.v),
       bytes32(transaction.r),
@@ -145,7 +145,7 @@ library ProofOfTransactionLib {
     transaction.r = rlpTx[10].toUint();
     transaction.s = rlpTx[11].toUint();
     transaction.txHash = keccak256(transactionData);
-    transaction.from = ecrecover(
+    transaction.from = ECVerify.ecverify(
       keccak256(getTransactionUnsignedBytes(transaction)),
       uint8(transaction.v),
       bytes32(transaction.r),
@@ -172,7 +172,7 @@ library ProofOfTransactionLib {
     transaction.r = rlpTx[9].toUint();
     transaction.s = rlpTx[10].toUint();
     transaction.txHash = keccak256(transactionData);
-    transaction.from = ecrecover(
+    transaction.from = ECVerify.ecverify(
       keccak256(getTransactionUnsignedBytes(transaction)),
       uint8(transaction.v),
       bytes32(transaction.r),

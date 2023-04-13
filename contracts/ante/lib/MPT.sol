@@ -27,49 +27,50 @@ library MPT {
     ) view internal returns (uint256)
     {
       console.log("verifyTrieProof");
-        bytes memory node = data.proof[data.proofIndex];
+
+      bytes memory node = data.proof[data.proofIndex];
+      console.log("node length", node.length);
       console.log("VTP 1");
       RLPReader.Iterator memory dec = RLPReader.toRlpItem(node).iterator();
-        console.log("VTP 2");
-        if (data.keyIndex == 0) {
-          console.log("VTP 3");
-          if(keccak256(node) != data.expectedRoot){
-            console.log("VTP 4");
-            return 1;
+      console.log("VTP 2");
+      if (data.keyIndex == 0) {
+        console.log("VTP 3");
+        if(keccak256(node) != data.expectedRoot){
+          console.log("VTP 4");
+          return 0;
+        }
+      } else if (node.length < 32) {
+        console.log("VTP 5");
+          bytes32 root = bytes32(dec.next().toUint());
+          console.log("VTP 6");
+          if(root != data.expectedRoot) {
+            console.log("VTP 7");
+              return 2;
           }
-        }
-        else if (node.length < 32) {
-          console.log("VTP 5");
-            bytes32 root = bytes32(dec.next().toUint());
-            console.log("VTP 6");
-            if(root != data.expectedRoot) {
-              console.log("VTP 7");
-                return 2;
-            }
-        }
-        else {
-          console.log("VTP 8");
-            if(keccak256(node) != data.expectedRoot){
-              console.log("VTP 9");
-                return 3;
-            }
-        }
-        console.log("VTP 10");
-        uint256 numberItems = RLPReader.numItems(dec.item);
-        console.log("VTP 11");
-        // branch
-        if (numberItems == 17) {
-          console.log("VTP 12");
-            return verifyTrieProofBranch(data);
-        }
-        // leaf / extension
-        else if (numberItems == 2) {
-          console.log("VTP 13");
-            return verifyTrieProofLeafOrExtension(dec, data);
-        }
-        console.log("VTP 14");
-        if (data.expectedValue.length == 0) return 0;
-        else return 1001;
+      } else {
+        console.log("VTP 8");
+          if(keccak256(node) != data.expectedRoot){
+            console.log("VTP 9");
+              return 3;
+          }
+      }
+      
+      console.log("VTP 10");
+      uint256 numberItems = RLPReader.numItems(dec.item);
+      console.log("VTP 11");
+      // branch
+      if (numberItems == 17) {
+        console.log("VTP 12");
+          return verifyTrieProofBranch(data);
+      }
+      // leaf / extension
+      else if (numberItems == 2) {
+        console.log("VTP 13");
+          return verifyTrieProofLeafOrExtension(dec, data);
+      }
+      console.log("VTP 14");
+      if (data.expectedValue.length == 0) return 0;
+      else return 1001;
     }
 
     function verifyTrieProofBranch(
@@ -89,11 +90,12 @@ library MPT {
             }
         }
         else {
-          console.log("VTP 20");
+          console.log("VTP 20", data.key.length, data.keyIndex);
             uint256 index = uint256(uint8(data.key[data.keyIndex]));
             console.log("VTP 21", index, data.keyIndex, data.proofIndex);
             RLPReader.RLPItem[] memory items = RLPReader.toRlpItem(node).toList();
             console.log("VTP 21.5", items.length, index);
+            if(items.length <= index) return 8888;
             bytes memory _newExpectedRoot = items[index].toBytes();
             console.log("VTP 22");
             if (!(_newExpectedRoot.length == 0)) {
