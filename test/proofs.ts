@@ -48,26 +48,6 @@ export async function getTransactionsTrie(blockHash: string): Promise<BlockTrieI
 }
 
 
-function buffer2hex(buffer: Buffer) {
-  return '0x' + buffer.toString('hex');
-}
-
-function index2key(index: number, proofLength: number) {
-  const actualkey: Buffer[] = [];
-  const encoded = buffer2hex(rlp.encode(index)).slice(2);
-  let key = [...new Array(encoded.length / 2).keys()].map(i => parseInt(encoded[i * 2] + encoded[i * 2 + 1], 16));
-
-  key.forEach(val => {
-      if (actualkey.length + 1 === proofLength) {
-          actualkey.push(val);
-      } else {
-          actualkey.push(val >> 4));
-          actualkey.push(val % 16);
-      }
-  });
-  return '0x' + actualkey.map(v => v.toString(16).padStart(2, '0')).join('');
-}
-
 export async function getTransactionProof(txHash: string) {
   const tx = await hre.ethers.provider.send('eth_getTransactionByHash', [txHash]);
   if(!tx) {
