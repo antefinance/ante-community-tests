@@ -5,7 +5,7 @@ pragma solidity ^0.8.0;
 import {AnteTest} from "../AnteTest.sol";
 import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
-/// @title Checks $PEPE balance in Top 5 holders is greater than 10% of holdings recorded at deployment of AnteTest
+/// @title Checks $PEPE balance in Top 5 holders is greater than 90% of holdings recorded at deployment of AnteTest
 /// @author jseam.eth
 /// @notice Ante Test to check if top PEPE holders are going to dump
 // TODO Change AnteTokenBalanceTestTemplate to the filename of the test,
@@ -39,8 +39,8 @@ contract AntePepeDumpTest is AnteTest("Top 5 Holders don't dump > ~10% as of dep
         testedContracts = [address(TOKEN)];
     }
 
-    /// @notice test to check if $PEPE balance in HOLDERS_ADDRESS is more than 10% at deployment of the AnteTest
-    /// @return true if all $PEPE balance in HOLDERS_ADDRESS is more than 10% at deployment of the AnteTest
+    /// @notice test to check if $PEPE balance in HOLDERS_ADDRESS is more than 90% at deployment of the AnteTest
+    /// @return true if all $PEPE balance in HOLDERS_ADDRESS is more than 90% at deployment of the AnteTest
     function checkTestPasses() public view override returns (bool) {
         for (uint256 i = 0; i < 5;) {
             if (!(TOKEN.balanceOf(HOLDERS_ADDRESS[i]) >= THRESHOLD_BALANCE[i])) {
