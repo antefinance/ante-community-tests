@@ -8,7 +8,7 @@ import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IER
 /// @title Checks $NARUTO balance in Top 10 holders is greater than 90% of holdings recorded at deployment of AnteTest
 /// @author jseam.eth
 /// @notice Ante Test to check if top NARUTO holders are going to dump
-contract AntePepeDumpTest is AnteTest("Top 10 Holders don't dump > ~10% as of deployment") {
+contract AnteNarutoDumpTest is AnteTest("Top 10 Holders don't dump > ~10% as of deployment") {
     // https://etherscan.io/address/0xAD8D0de33C43eEFe104A279cDB6Ae250C12e6214
     address[] public HOLDERS_ADDRESS;
 
