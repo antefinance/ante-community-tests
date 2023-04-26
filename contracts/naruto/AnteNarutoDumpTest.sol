@@ -9,14 +9,14 @@ import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IER
 /// @author jseam.eth
 /// @notice Ante Test to check if top NARUTO holders are going to dump
 contract AntePepeDumpTest is AnteTest("Top 10 Holders don't dump > ~10% as of deployment") {
-    // https://etherscan.io/address/0xdaeada3d210d2f45874724beea03c7d4bbd41674
+    // https://etherscan.io/address/0xAD8D0de33C43eEFe104A279cDB6Ae250C12e6214
     address[] public HOLDERS_ADDRESS;
 
     // set in constructor
     uint256[] public THRESHOLD_BALANCE;
 
-    // https://etherscan.io/address/0x6982508145454Ce325dDbE47a25d4ec3d2311933
-    IERC20Metadata public constant TOKEN = IERC20Metadata(0x6982508145454Ce325dDbE47a25d4ec3d2311933);
+    // https://etherscan.io/address/0xAD8D0de33C43eEFe104A279cDB6Ae250C12e6214
+    IERC20Metadata public constant TOKEN = IERC20Metadata(0xAD8D0de33C43eEFe104A279cDB6Ae250C12e6214);
 
     constructor() {
         HOLDERS_ADDRESS.push(0x444D134981cB23649CA603E98f9424960BCcECBC);
