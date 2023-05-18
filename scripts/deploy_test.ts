@@ -28,7 +28,7 @@ const main = async () => {
   await test.deployed();
 
   console.log('Ante test successfully deployed!');
-  console.log('Visit', chalk.cyan('app.ante.finance/#/create-pool'), 'to deploy an Ante Pool for this test');
+  console.log('Visit', chalk.cyan('app.ante.finance/create-pool'), 'to deploy an Ante Pool for this test');
   console.log(
     'Check out our docs (',
     chalk.magenta('docs.ante.finance'),

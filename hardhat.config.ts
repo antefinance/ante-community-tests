@@ -8,15 +8,23 @@ import 'hardhat-gas-reporter';
 import '@typechain/hardhat';
 import '@nomiclabs/hardhat-waffle';
 import '@nomiclabs/hardhat-etherscan';
+import "@matterlabs/hardhat-zksync-deploy";
+import "@matterlabs/hardhat-zksync-solc";
 
 import { TASK_COMPILE_SOLIDITY_GET_SOURCE_PATHS } from 'hardhat/builtin-tasks/task-names';
 
 /* 
   Skip contracts/templates files from compilation
 */
-subtask(TASK_COMPILE_SOLIDITY_GET_SOURCE_PATHS).setAction(async (_, __, runSuper) => {
+subtask(TASK_COMPILE_SOLIDITY_GET_SOURCE_PATHS).setAction(async (_, hre, runSuper) => {
   const paths = await runSuper();
-  return paths.filter((path: string) => !path.includes('contracts/templates'));
+
+  const isZkNetwork = ['zkSyncMainnet', 'zkSyncTestnet'].includes(hre.network.name);
+
+  return paths.filter((path: string) =>
+    !path.includes('contracts/templates') &&
+    (isZkNetwork ? path.includes('contracts/zk') : !path.includes('contracts/zk'))
+  );
 });
 
 
@@ -29,6 +37,7 @@ interface ForkingNetworkRPC {
   arbitrumOne: { url: string };
   optimisticEthereum: { url: string };
   aurora: { url: string };
+  zkSyncMainnet: { url: string };
 }
 
 const forkingRPC: ForkingNetworkRPC = {
@@ -56,6 +65,9 @@ const forkingRPC: ForkingNetworkRPC = {
   aurora: {
     url: 'https://mainnet.aurora.dev',
   },
+  zkSyncMainnet: {
+    url: 'https://mainnet.era.zksync.io',
+  },
 };
 
 const config: HardhatUserConfig = {
@@ -66,24 +78,28 @@ const config: HardhatUserConfig = {
         blockNumber: 15300000,
       },
       url: 'http://localhost:8545',
+      zksync: false,
     },
     mainnet: {
       url: `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
       accounts: {
         mnemonic: process.env.MNEMONIC || '',
       },
+      zksync: false,
     },
     rinkeby: {
       url: `https://rinkeby.infura.io/v3/${process.env.INFURA_KEY}`,
       accounts: {
         mnemonic: process.env.MNEMONIC || '',
       },
+      zksync: false,
     },
     goerli: {
       url: `https://goerli.infura.io/v3/${process.env.INFURA_KEY}`,
       accounts: {
         mnemonic: process.env.MNEMONIC || '',
       },
+      zksync: false,
     },
     avalanche: {
       url: 'https://api.avax.network/ext/bc/C/rpc',
@@ -92,6 +108,7 @@ const config: HardhatUserConfig = {
       accounts: {
         mnemonic: process.env.MNEMONIC || '',
       },
+      zksync: false,
     },
     avalancheFujiTestnet: {
       url: 'https://api.avax-test.network/ext/bc/C/rpc',
@@ -100,6 +117,7 @@ const config: HardhatUserConfig = {
       accounts: {
         mnemonic: process.env.MNEMONIC || '',
       },
+      zksync: false,
     },
     polygon: {
       url: 'https://polygon-rpc.com',
@@ -108,6 +126,7 @@ const config: HardhatUserConfig = {
       accounts: {
         mnemonic: process.env.MNEMONIC || '',
       },
+      zksync: false,
     },
     polygonMumbai: {
       url: 'https://rpc-mumbai.maticvigil.com/',
@@ -116,6 +135,7 @@ const config: HardhatUserConfig = {
       accounts: {
         mnemonic: process.env.MNEMONIC || '',
       },
+      zksync: false,
     },
     bsc: {
       url: 'https://bsc-dataseed1.binance.org/',
@@ -124,6 +144,7 @@ const config: HardhatUserConfig = {
       accounts: {
         mnemonic: process.env.MNEMONIC || '',
       },
+      zksync: false,
     },
     bscTestnet: {
       url: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
@@ -132,6 +153,7 @@ const config: HardhatUserConfig = {
       accounts: {
         mnemonic: process.env.MNEMONIC || '',
       },
+      zksync: false,
     },
     fantom: {
       url: 'https://rpc.fantom.network',
@@ -139,6 +161,7 @@ const config: HardhatUserConfig = {
       accounts: {
         mnemonic: process.env.MNEMONIC || '',
       },
+      zksync: false,
     },
     fantomTestnet: {
       url: 'https://rpc.testnet.fantom.network',
@@ -146,6 +169,7 @@ const config: HardhatUserConfig = {
       accounts: {
         mnemonic: process.env.MNEMONIC || '',
       },
+      zksync: false,
     },
     arbitrumOne: {
       url: 'https://arb1.arbitrum.io/rpc',
@@ -153,6 +177,7 @@ const config: HardhatUserConfig = {
       accounts: {
         mnemonic: process.env.MNEMONIC || '',
       },
+      zksync: false,
     },
     arbitrumGoerli: {
       url: 'https://goerli-rollup.arbitrum.io/rpc',
@@ -160,6 +185,7 @@ const config: HardhatUserConfig = {
       accounts: {
         mnemonic: process.env.MNEMONIC || '',
       },
+      zksync: false,
     },
     optimisticEthereum: {
       url: 'https://mainnet.optimism.io',
@@ -167,6 +193,7 @@ const config: HardhatUserConfig = {
       accounts: {
         mnemonic: process.env.MAINNET_PRIVATE_KEY || '',
       },
+      zksync: false,
     },
     optimismGoerli: {
       url: 'https://goerli.optimism.io',
@@ -174,6 +201,7 @@ const config: HardhatUserConfig = {
       accounts: {
         mnemonic: process.env.TESTNET_MNEMONIC || '',
       },
+      zksync: false,
     },
     aurora: {
       url: 'https://mainnet.aurora.dev',
@@ -181,6 +209,7 @@ const config: HardhatUserConfig = {
       accounts: {
         mnemonic: process.env.TESTNET_MNEMONIC || '',
       },
+      zksync: false,
     },
     auroraTestnet: {
       url: 'https://testnet.aurora.dev',
@@ -188,11 +217,29 @@ const config: HardhatUserConfig = {
       accounts: {
         mnemonic: process.env.TESTNET_MNEMONIC || '',
       },
+      zksync: false,
+    },
+    zkSyncMainnet: {
+      url: 'https://mainnet.era.zksync.io',
+      ethNetwork: `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
+      accounts: {
+        mnemonic: process.env.MNEMONIC || '',
+      },
+      zksync: true,
+    },
+    zkSyncTestnet: {
+      url: 'https://testnet.era.zksync.dev',
+      ethNetwork: `https://goerli.infura.io/v3/${process.env.INFURA_KEY}`,
+      accounts: {
+        mnemonic: process.env.TESTNET_MNEMONIC || '',
+      },
+      zksync: true,
     },
     hardhat: {
       forking: {
         url: forkingRPC[process.env.NETWORK as keyof ForkingNetworkRPC].url,
       },
+      zksync: ['zkSyncMainnet', 'zkSyncTestnet'].includes(process.env.NETWORK || ''),
     },
   },
   solidity: {
@@ -216,6 +263,11 @@ const config: HardhatUserConfig = {
         },
       },
     ],
+  },
+  zksolc: {
+    version: "1.3.10",
+    compilerSource: "binary",
+    settings: {},
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_KEY,

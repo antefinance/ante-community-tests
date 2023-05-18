@@ -41,3 +41,5 @@ packages/react-app/src/contracts/*
 !packages/react-app/src/contracts/contracts.js
 cache
 .nvmrc
+artifacts-zk
+cache-zk
