@@ -3,28 +3,28 @@
 pragma solidity ^0.8.0;
 
 import {AnteTest} from "../AnteTest.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-/// @title Supply threshold test for token [TOKEN]
+/// @title Total supply threshold test for token [TOKEN]
 /// @author [AUTHOR]
-/// @notice Ante test to check that the supply of [TOKEN] does not
-///      exceed the threshold [THRESHOLD]
-contract AnteSupplyThresholdTestTemplate is AnteTest("[TOKEN] supply doesn't exceed [THRESHOLD]") {
-    address public immutable tokenAddress;
-    uint256 public constant THRESHOLD_SUPPLY = [THRESHOLD];
-    IERC20 public token;
+/// @notice Ante Test to check that the total supply of [TOKEN] does not
+///      exceed [THRESHOLD]
+contract AnteTokenSupplyThresholdTestTemplate is AnteTest("[TOKEN] supply doesn't exceed [THRESHOLD]") {
+    // TODO update token address
+    IERC20 public constant TOKEN = IERC20(0xdAC17F958D2ee523a2206206994597C13D831ec7);
 
+    // TODO replace with desired supply maximum (including decimals)
+    uint256 public constant MAX_SUPPLY_THRESHOLD = 10_000_000_000_000;
+    
     constructor() {
-        protocolName = [TOKEN];
-        testedContracts = [[TOKEN_ADDRESS]];
-
-        tokenAddress = [TOKEN_ADDRESS];
-        token = IERC20(tokenAddress);
+        // TODO update protocol name with token name
+        protocolName = "[TOKEN]";
+        testedContracts = [address(TOKEN)];
     }
 
-    /// @notice Test to check token supply against threshold
-    /// @return [TOKEN] supply is less than [THRESHOLD]
-    function checkTestPasses() external view override returns (bool) {
-        return (token.totalSupply() <= THRESHOLD_SUPPLY);
-    };
-};
+    /// @notice Checks token supply against threshold
+    /// @return [TOKEN] supply is less than or equal to [THRESHOLD]
+    function checkTestPasses() public view override returns (bool) {
+        return (TOKEN.totalSupply() <= MAX_SUPPLY_THRESHOLD);
+    }
+}
