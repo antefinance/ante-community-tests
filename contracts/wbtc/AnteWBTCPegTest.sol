@@ -6,18 +6,18 @@ import "../interfaces/IERC20.sol";
 import "../AnteTest.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
-/// @title Synthetix USD Peg Test
-/// @notice Ensures SUSD is pegged to USD +/- 2%
-contract AnteSUSDPegTest is AnteTest("SUSD is pegged to USD +- 2%") {
+/// @title WBTC Peg Test
+/// @notice Checks that WBTC is pegged to BTC +/- 2%
+contract AnteWBTCPegTest is AnteTest("WBTC is pegged to BTC +- 2%") {
     AggregatorV3Interface internal priceFeed;
 
     int256 private preCheckPrice = 0;
     uint256 private preCheckBlock = 0;
 
     constructor() {
-        protocolName = "Synthetix";
-        testedContracts = [0x6B175474E89094C44Da98b954EedeAC495271d0F];
-        priceFeed = AggregatorV3Interface(0xad35Bd71b9aFE6e4bDc266B345c198eaDEf9Ad94);
+        protocolName = "WBTC";
+        testedContracts = [0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599];
+        priceFeed = AggregatorV3Interface(0xfdFD9C85aD200c506Cf9e21F1FD8dd01932FBB23);
     }
 
     /// @notice Must be called 300-400 blocks (1hr) blocks before calling checkTestPasses to prevent flash loan attacks
@@ -39,7 +39,7 @@ contract AnteSUSDPegTest is AnteTest("SUSD is pegged to USD +- 2%") {
     }
 
     /// @notice Must call preCheck() 300 blocks prior to calling
-    /// @return true the SUSD is pegged to USD +/- 2%
+    /// @return true the WBTC is pegged to BTC +/- 2%
     function checkTestPasses() public view override returns (bool) {
         if (preCheckPrice == 0 || preCheckBlock == 0) return true;
         if (block.number - preCheckBlock < 300) return true;

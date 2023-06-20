@@ -70,9 +70,7 @@ const config: HardhatUserConfig = {
     },
     mainnet: {
       url: `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
-      accounts: {
-        mnemonic: process.env.MNEMONIC || '',
-      },
+      accounts: [process.env.MAINNET_PRIVATE_KEY || ''],
     },
     rinkeby: {
       url: `https://rinkeby.infura.io/v3/${process.env.INFURA_KEY}`,
@@ -82,9 +80,7 @@ const config: HardhatUserConfig = {
     },
     goerli: {
       url: `https://goerli.infura.io/v3/${process.env.INFURA_KEY}`,
-      accounts: {
-        mnemonic: process.env.MNEMONIC || '',
-      },
+      accounts: [process.env.TESTNET_PRIVATE_KEY || ''],
     },
     avalanche: {
       url: 'https://api.avax.network/ext/bc/C/rpc',
@@ -165,9 +161,7 @@ const config: HardhatUserConfig = {
     optimisticEthereum: {
       url: 'https://mainnet.optimism.io',
       chainId: 10,
-      accounts: {
-        mnemonic: process.env.MAINNET_PRIVATE_KEY || '',
-      },
+      accounts: [process.env.MAINNET_PRIVATE_KEY || ''],
     },
     optimismGoerli: {
       url: 'https://goerli.optimism.io',
@@ -216,10 +210,16 @@ const config: HardhatUserConfig = {
           },
         },
       },
+      {
+        version: '0.8.18'
+      }
     ],
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_KEY,
+    apiKey: {
+      mainnet: process.env.ETHERSCAN_KEY || '',
+      optimisticEthereum: process.env.OPTIMISTIC_ETHERSCAN_KEY || '',
+    },
   },
   mocha: {
     timeout: 60000,
