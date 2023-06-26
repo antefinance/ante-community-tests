@@ -6,8 +6,8 @@ import "../AnteTest.sol";
 import "../interfaces/IERC20.sol";
 
 /// @title AnteAmbientTVLDropTest
-/// @notice Ante Test to check that ETH and USDC in Ambient's Swap Dex remains above 90% of as of deployment
-contract AnteArbitrumPlungeTest is AnteTest("ETH in Arbitrum bridge does NOT drop below 7K") {
+/// @notice Ante Test that fails if either ETH or USDC balance in Ambient drop -90% from values as of this Ante Test deployment
+contract AnteAmbientPlungeTest is AnteTest("ETH and USDC individual balances in Ambient do NOT drop -90% from this Ante Test deployment") {
 
     // https://etherscan.io/address/0xAaAaAAAaA24eEeb8d57D431224f73832bC34f688
     address public constant ambientSwapDexAddr = 0xAaAaAAAaA24eEeb8d57D431224f73832bC34f688;
@@ -25,12 +25,12 @@ contract AnteArbitrumPlungeTest is AnteTest("ETH in Arbitrum bridge does NOT dro
         testedContracts = [ambientSwapDexAddr];
     }
 
-    /// @notice test to check balance of ETH and USDC in Ambient's Swap Dex
+    /// @notice test to check balance of ETH and USDC in Ambient Finance
     /// @return true if both ETH and USDC in Ambient's Swap Dex remains above 10% as of the deployment amount
     function checkTestPasses() public view override returns (bool) {
         return (
-            ambientSwapDexAddr.balance < thresholdEth / 10 &&
-            usdcToken.balanceOf(ambientSwapDexAddr) < thresholdUsdc / 10
+            !(ambientSwapDexAddr.balance < thresholdEth / 10 &&
+            usdcToken.balanceOf(ambientSwapDexAddr) < thresholdUsdc / 10)
         );
     }
 }
