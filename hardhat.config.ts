@@ -20,7 +20,6 @@ subtask(TASK_COMPILE_SOLIDITY_GET_SOURCE_PATHS).setAction(async (_, __, runSuper
   return paths.filter((path: string) => !path.includes('contracts/templates'));
 });
 
-
 interface ForkingNetworkRPC {
   mainnet: { url: string };
   avalanche: { url: string };
@@ -70,7 +69,9 @@ const config: HardhatUserConfig = {
     },
     mainnet: {
       url: `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
-      accounts: [process.env.MAINNET_PRIVATE_KEY || ''],
+      accounts: {
+        mnemonic: process.env.MNEMONIC || '',
+      },
     },
     rinkeby: {
       url: `https://rinkeby.infura.io/v3/${process.env.INFURA_KEY}`,
@@ -80,7 +81,9 @@ const config: HardhatUserConfig = {
     },
     goerli: {
       url: `https://goerli.infura.io/v3/${process.env.INFURA_KEY}`,
-      accounts: [process.env.TESTNET_PRIVATE_KEY || ''],
+      accounts: {
+        mnemonic: process.env.TESTNET_MNEMONIC || '',
+      },
     },
     avalanche: {
       url: 'https://api.avax.network/ext/bc/C/rpc',
@@ -161,7 +164,9 @@ const config: HardhatUserConfig = {
     optimisticEthereum: {
       url: 'https://mainnet.optimism.io',
       chainId: 10,
-      accounts: [process.env.MAINNET_PRIVATE_KEY || ''],
+      accounts: {
+        mnemonic: process.env.MNEMONIC || '',
+      },
     },
     optimismGoerli: {
       url: 'https://goerli.optimism.io',
@@ -211,8 +216,8 @@ const config: HardhatUserConfig = {
         },
       },
       {
-        version: '0.8.18'
-      }
+        version: '0.8.18',
+      },
     ],
   },
   etherscan: {
