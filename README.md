@@ -27,8 +27,8 @@ Learn about Ante: [ante.finance](https://www.ante.finance/) | [Twitter](https://
     npm install --save-dev
     ```
 
-4. Copy [`.env.example`](./.env.example) to `.env` and fill in any required values:
-    1. To run the testing suite, you'll need a free [Alchemy API key](https://auth.alchemy.com/signup)
+4. Copy the file [`.env.example`](./.env.example) to a new file named `.env` (`cp .env.example .env`) and edit it to fill in required values:
+    1. To run the testing suite, you'll need a free [Alchemy API key](https://auth.alchemy.com/signup) (after creating an account, you can copy it from https://auth.alchemy.com/)
     2. To deploy contracts, you'll need a free [Infura API key](https://app.infura.io/register) as well as a mnemonic/private key (if you do not have a mnemonic you can use `test test test test test test test test test test test junk`)
     3. To verify deployed contracts, you'll need free block explorer API keys (e.g. [Etherscan](https://etherscan.io/register))
     
