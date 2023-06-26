@@ -32,6 +32,9 @@ Learn about Ante: [ante.finance](https://www.ante.finance/) | [Twitter](https://
     2. To deploy contracts, you'll need a free [Infura API key](https://app.infura.io/register) as well as a mnemonic/private key (if you do not have a mnemonic you can use `test test test test test test test test test test test junk`)
     3. To verify deployed contracts, you'll need free block explorer API keys (e.g. [Etherscan](https://etherscan.io/register))
     
+5. Install Foundry ([Instructions](https://book.getfoundry.sh/getting-started/installation))
+
+
 ### Write your Ante Test
 
 Write an ante test for your desired protocol and put it in a file called `./contracts/[PROTOCOL_NAME]/[YOUR_TEST_NAME].sol`. For more information on writing Ante Tests, see our [docs](https://docs.ante.finance/). Ask questions in [Discord](https://discord.gg/yaJthzNdNG)!
