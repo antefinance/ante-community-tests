@@ -54,6 +54,8 @@ We recommend writing unit tests to make sure your Ante Test works. Unit tests li
     ```
     >Troubleshooting: If you are trying to run the testing suite with `npx hardhat test`, you must run `npx hardhat typechain` first to avoid an error where hardhat cannot find the typechain directory
 
+    >Troubleshooting: If you run into an error about `hardhat-foundry` (eg "Error in plugin hardhat-foundry: Couldn't run `forge`. Please check that your foundry installation is correct.") you may need to run `yarn add --dev hardhat-foundry`
+
 **Using Foundry**
 
 1. Create a file in the `./test/[PROTOCOL_NAME]` folder with filename `[YOUR_TEST_NAME].t.sol`
