@@ -3,19 +3,19 @@
 pragma solidity ^0.8.0;
 
 import "../AnteTest.sol";
-import "../interfaces/IERC20.sol";
+import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
-/// @title Curve 3Pool Distribution Test
-/// @notice Ensure USDC, USDT, DAI tokens are each < 90% of Curve USD 3Pool's total token balance.
-contract AnteCurveThreePoolDistributionTest is AnteTest("Ensure USDC, USDT, DAI token balances are each < 90% of Curve 3Pool token balance") {
-    address private constant CURVE_THREE_POOL_ADDRESS = 0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7;
-    address private constant USDC_ADDRESS = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
-    address private constant USDT_ADDRESS = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
-    address private constant DAI_ADDRESS = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
+/// @title Curve 3Pool Composition Test
+/// @notice Checks that USDC, USDT, DAI tokens are each < 90% of Curve USD 3Pool's total token balance.
+contract AnteCurveThreePoolCompositionTest is AnteTest("USDC, USDT, DAI balances are each < 90% of Curve 3Pool balance") {
+    address public constant CURVE_THREE_POOL_ADDRESS = 0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7;
+    address public constant USDC_ADDRESS = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
+    address public constant USDT_ADDRESS = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
+    address public constant DAI_ADDRESS = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
 
-    IERC20 private constant USDC = IERC20(USDC_ADDRESS);
-    IERC20 private constant USDT = IERC20(USDT_ADDRESS);
-    IERC20 private constant DAI = IERC20(DAI_ADDRESS);
+    IERC20Metadata private constant USDC = IERC20Metadata(USDC_ADDRESS);
+    IERC20Metadata private constant USDT = IERC20Metadata(USDT_ADDRESS);
+    IERC20Metadata private constant DAI = IERC20Metadata(DAI_ADDRESS);
 
     constructor() {
         testedContracts = [CURVE_THREE_POOL_ADDRESS];
@@ -26,9 +26,9 @@ contract AnteCurveThreePoolDistributionTest is AnteTest("Ensure USDC, USDT, DAI 
     function checkTestPasses() public view override returns (bool) {
         return
             isLessThanNinety(
-                USDC.balanceOf(CURVE_THREE_POOL_ADDRESS),
-                USDT.balanceOf(CURVE_THREE_POOL_ADDRESS),
-                DAI.balanceOf(CURVE_THREE_POOL_ADDRESS) / 1e12 // DAI has 18 decimals, so divide to reduce to 6
+                USDC.balanceOf(CURVE_THREE_POOL_ADDRESS) * 100 / 10**USDC.decimals(),
+                USDT.balanceOf(CURVE_THREE_POOL_ADDRESS) * 100 / 10**USDT.decimals(),
+                DAI.balanceOf(CURVE_THREE_POOL_ADDRESS) * 100 / 10**DAI.decimals()
             );
     }
 

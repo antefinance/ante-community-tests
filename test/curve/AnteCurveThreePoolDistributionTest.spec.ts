@@ -1,13 +1,13 @@
 import hre from 'hardhat';
 const { waffle } = hre;
 
-import { AnteCurveThreePoolDistributionTest, AnteCurveThreePoolDistributionTest__factory } from '../../typechain';
+import { AnteCurveThreePoolCompositionTest, AnteCurveThreePoolCompositionTest__factory } from '../../typechain';
 
 import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
 
-describe('AnteCurveThreePoolDistributionTest', function () {
-  let test: AnteCurveThreePoolDistributionTest;
+describe('AnteCurveThreePoolCompositionTest', function () {
+  let test: AnteCurveThreePoolCompositionTest;
 
   let globalSnapshotId: string;
 
@@ -16,9 +16,9 @@ describe('AnteCurveThreePoolDistributionTest', function () {
 
     const [deployer] = waffle.provider.getWallets();
     const factory = (await hre.ethers.getContractFactory(
-      'AnteCurveThreePoolDistributionTest',
+      'AnteCurveThreePoolCompositionTest',
       deployer
-    )) as AnteCurveThreePoolDistributionTest__factory;
+    )) as AnteCurveThreePoolCompositionTest__factory;
     test = await factory.deploy();
     await test.deployed();
   });
