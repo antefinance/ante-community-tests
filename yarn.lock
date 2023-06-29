@@ -854,10 +854,10 @@
   dependencies:
     chalk "^2.4.2"
 
-"@nomicfoundation/solidity-analyzer-darwin-arm64@0.1.1":
+"@nomicfoundation/solidity-analyzer-darwin-x64@0.1.1":
   version "0.1.1"
-  resolved "https://registry.npmjs.org/@nomicfoundation/solidity-analyzer-darwin-arm64/-/solidity-analyzer-darwin-arm64-0.1.1.tgz"
-  integrity sha512-KcTodaQw8ivDZyF+D76FokN/HdpgGpfjc/gFCImdLUyqB6eSWVaZPazMbeAjmfhx3R0zm/NYVzxwAokFKgrc0w==
+  resolved "https://registry.npmjs.org/@nomicfoundation/solidity-analyzer-darwin-x64/-/solidity-analyzer-darwin-x64-0.1.1.tgz"
+  integrity sha512-XhQG4BaJE6cIbjAVtzGOGbK3sn1BO9W29uhk9J8y8fZF1DYz0Doj8QDMfpMu+A6TjPDs61lbsmeYodIDnfveSA==
 
 "@nomicfoundation/solidity-analyzer@^0.1.0":
   version "0.1.1"
