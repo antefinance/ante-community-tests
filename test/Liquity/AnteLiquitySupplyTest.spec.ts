@@ -37,7 +37,6 @@ describe('AnteLiquitySupplyTest', function () {
 
   it('will fail if ETH balance drops', async() => {
     const balance = (await waffle.provider.getBalance(poolAddr));
-    console.log("Balance", balance);
     await fundSigner(poolAddr);
     await runAsSigner(poolAddr, async() => {
       const poolSigner = await hre.ethers.getSigner(poolAddr);
