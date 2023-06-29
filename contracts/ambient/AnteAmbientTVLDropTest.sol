@@ -18,7 +18,7 @@ contract AnteAmbientPlungeTest is AnteTest("ETH and USDC individual balances in 
         testedContracts = [ambientSwapDexAddr];
     }
 
-/// @notice test to check balance of ETH and USDC in Ambient Finance
+    /// @notice test to check balance of ETH and USDC in Ambient Finance
     /// @return true if both ETH and USDC in Ambient's Swap Dex remains above 10% as of the deployment amount
     function checkTestPasses() public view override returns (bool) {
         return (
