@@ -12,7 +12,6 @@
 pragma solidity ^0.8.0;
 
 import "../AnteTest.sol";
-import "@openzeppelin-contracts-old/contracts/token/ERC20/IERC20.sol";
 
 /// @title Hop Ethereum Bridge doesn't rug test on mainnet
 /// @author 0xa0e7Fb16cdE37Ebf2ceD6C89fbAe8780B8497e12
