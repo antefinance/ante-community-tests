@@ -31,7 +31,7 @@ contract AnteHopEthBridgeRugTest is AnteTest("Hop Ethereum Bridge Doesnt Rug 99%
 
     /// @notice test to check value of ether is not rugged
     /// @return true if bridge has more than 1% of assets from when it was deployed
-    function checkTestPasses() external view override returns (bool) {
-        return (etherBalanceAtDeploy / 100) < hopEthBridgeAddr.balance)
+    function checkTestPasses() public view override returns (bool) {
+        return (etherBalanceAtDeploy / 100) < hopEthBridgeAddr.balance;
     }
 }
