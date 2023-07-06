@@ -9,7 +9,7 @@ import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 /// @title Checks that Owls Nft Owner holds at least 10 OWLs
 /// @author 0x0b1C4725Fb3ff89d5E3172a67022b61c1127d014
 /// @notice Ante Test to check
-contract AnteNFTBalanceTestTemplate is AnteTest("Owls NFT Owner's Owls NFT balance remains >= 10") {
+contract AnteOwlsOwnerBalanceTest is AnteTest("Owls NFT Owner's Owls NFT balance remains >= 10") {
     // https://etherscan.io/address/0x74beEE74A44b713487D42473784b5CBDc547355E
     address public constant HOLDER_ADDRESS = 0x74beEE74A44b713487D42473784b5CBDc547355E;
 
