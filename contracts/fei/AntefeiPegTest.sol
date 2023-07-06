@@ -55,3 +55,4 @@ contract AnteFeiPegTest is AnteTest("Fei is above 90 cents on the dollar") {
         return (90000000 < price) || (90000000 < preCheckPrice);
     }
 }
+
