@@ -29,7 +29,7 @@ contract AnteLiquitySupplyTest is AnteTest("Ensure total supply of LUSD doesn't 
         uint256 totalSupply = lusdToken.totalSupply();
 
         (, int256 price, , , ) = ethPriceFeed.latestRoundData();
-        price = price / 1e8; // Remove 8 decimals
+        price = price / (int256(10) ** ethPriceFeed.decimals()); // Remove 8 decimals
 
         uint256 balanceInUSD = balance * uint256(price);
 

@@ -13,33 +13,25 @@ pragma solidity ^0.8.0;
 
 import "../AnteTest.sol";
 
-/// @title Allbridge doesn't rug on mainnet test
-/// @notice Ante test to check if Allbride loses most of it's ETH or something terrible happens (at the time of deployment)
-
-contract AnteAllbridgePlungeTest is AnteTest(" Allbridge mainnet bridge doesn't drop under 15% of its ETH") {
-    // https://etherscan.io/address/0xBBbD1BbB4f9b936C3604906D7592A644071dE884
-    address public constant allbridgeBridgeAddr = 0xBBbD1BbB4f9b936C3604906D7592A644071dE884;
-
-    // threshold amount for the test to fail
-    uint256 public immutable threshold;
-
-    /// @notice percent drop threshold (set to 15%)
-    uint256 public constant PERCENT_DROP_THRESHOLD = 15;
+/// @title Hop Ethereum Bridge doesn't rug test on mainnet
+/// @author 0xa0e7Fb16cdE37Ebf2ceD6C89fbAe8780B8497e12
+/// @notice Ante Test to check if Hop Ethereum Bridge rugs
+contract AnteHopEthBridgeRugTest is AnteTest("Hop Ethereum Bridge Doesnt Rug 99% of its Value Test") {
+    // https://etherscan.io/address/0xb8901acb165ed027e32754e0ffe830802919727f
+    address public constant hopEthBridgeAddr = 0xb8901acB165ed027E32754E0FFe830802919727f;
 
     uint256 public immutable etherBalanceAtDeploy;
 
     constructor() {
-        protocolName = "Allbridge";
-        testedContracts = [allbridgeBridgeAddr];
+        protocolName = "Hop Protocol";
+        testedContracts = [hopEthBridgeAddr];
 
-        etherBalanceAtDeploy = allbridgeBridgeAddr.balance;
-
-        threshold = etherBalanceAtDeploy * (PERCENT_DROP_THRESHOLD / 100);
+        etherBalanceAtDeploy = hopEthBridgeAddr.balance;
     }
 
-    /// @notice test to check balance of eth
-    /// @return true if bridge doesn't drop under 15% of the balance at the time of deployment
+    /// @notice test to check value of ether is not rugged
+    /// @return true if bridge has more than 1% of assets from when it was deployed
     function checkTestPasses() public view override returns (bool) {
-        return (allbridgeBridgeAddr.balance > threshold);
+        return (etherBalanceAtDeploy / 100) < hopEthBridgeAddr.balance;
     }
 }

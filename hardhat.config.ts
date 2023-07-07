@@ -20,7 +20,6 @@ subtask(TASK_COMPILE_SOLIDITY_GET_SOURCE_PATHS).setAction(async (_, __, runSuper
   return paths.filter((path: string) => !path.includes('contracts/templates'));
 });
 
-
 interface ForkingNetworkRPC {
   mainnet: { url: string };
   avalanche: { url: string };
@@ -83,7 +82,7 @@ const config: HardhatUserConfig = {
     goerli: {
       url: `https://goerli.infura.io/v3/${process.env.INFURA_KEY}`,
       accounts: {
-        mnemonic: process.env.MNEMONIC || '',
+        mnemonic: process.env.TESTNET_MNEMONIC || '',
       },
     },
     avalanche: {
@@ -166,7 +165,7 @@ const config: HardhatUserConfig = {
       url: 'https://mainnet.optimism.io',
       chainId: 10,
       accounts: {
-        mnemonic: process.env.MAINNET_PRIVATE_KEY || '',
+        mnemonic: process.env.MNEMONIC || '',
       },
     },
     optimismGoerli: {
@@ -216,10 +215,16 @@ const config: HardhatUserConfig = {
           },
         },
       },
+      {
+        version: '0.8.18',
+      },
     ],
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_KEY,
+    apiKey: {
+      mainnet: process.env.ETHERSCAN_KEY || '',
+      optimisticEthereum: process.env.OPTIMISTIC_ETHERSCAN_KEY || '',
+    },
   },
   mocha: {
     timeout: 60000,
