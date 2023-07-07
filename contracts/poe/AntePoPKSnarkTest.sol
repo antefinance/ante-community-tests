@@ -12,13 +12,13 @@ contract AntePoPKSnarkTest is AnteTest("Nobody knows the private key to this pub
     address public testAddress = 0x66c777464c62F125760f80254257ed8DFccB2921;
     PoPKVerifier private verifier;
     address private verifierAddress;
-    uint256[2] a;
-    uint256[2][2] b;
-    uint256[2] c;
-    uint256[1] input;
+    uint[2] a;
+    uint[2][2] b;
+    uint[2] c;
+    uint[1] input;
 
     constructor(address _verifierAddress) {
-        protocolName = "ProofOfExploit";
+        protocolName = "";
 
         testedContracts = [_verifierAddress];
 
@@ -27,15 +27,16 @@ contract AntePoPKSnarkTest is AnteTest("Nobody knows the private key to this pub
     }
 
     function checkTestPasses() public view override returns (bool) {
+        // Here is where the test logic lives!
         return !verifier.verifyProof(a, b, c, input);
     }
 
     /// This is known to be frontrunnable
     function setCalldata(
-        uint256[2] memory _a,
-        uint256[2][2] memory _b,
-        uint256[2] memory _c,
-        uint256[1] memory _input
+        uint[2] memory _a,
+        uint[2][2] memory _b,
+        uint[2] memory _c,
+        uint[1] memory _input
     ) public {
         a = _a;
         b = _b;

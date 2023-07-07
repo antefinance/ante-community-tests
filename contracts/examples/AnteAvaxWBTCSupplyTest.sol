@@ -37,7 +37,7 @@ contract AnteAvaxWBTCSupplyTest is AnteTest("Wrapped BTC (WBTC.e) supply doesn't
 
     /// @notice test to check WBTC token supply
     /// @return true if WBTC supply is less than 21 million
-    function checkTestPasses() external view override returns (bool) {
+    function checkTestPasses() public view override returns (bool) {
         return (wBTCToken.totalSupply() <= THRESHOLD_SUPPLY * wBTCToken.decimals());
     }
 }

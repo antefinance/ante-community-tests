@@ -14,7 +14,7 @@ pragma solidity ^0.7.0;
 import "@uniswap/v2-periphery/contracts/libraries/UniswapV2OracleLibrary.sol";
 import "@uniswap/lib/contracts/libraries/FixedPoint.sol";
 
-import "../AnteTest.sol";
+import "../libraries/ante-v05-core/AnteTest.sol";
 
 // checks the 12 to 24-hour TWAP price of IRON does not fall 10% below peg
 

@@ -48,7 +48,7 @@ contract AnteOptimismBridgeRugTest is AnteTest("Optimism Bridge Doesnt Rug 90% o
 
     /// @notice test to check value of top 5 assets on Optimism Bridge is not rugged
     /// @return true if bridge has more than 10% of assets from when it was deployed
-    function checkTestPasses() external view override returns (bool) {
+    function checkTestPasses() public view override returns (bool) {
         return
             optimismBridgeAddr.balance * 10 > etherBalanceAtDeploy &&
             usdcToken.balanceOf(optimismBridgeAddr) * 10 > usdcBalanceAtDeploy &&

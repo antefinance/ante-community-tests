@@ -11,9 +11,7 @@ contract AntePoHTest is AnteTest("Nobody knows the pre-image of this hash") {
     bytes32 public testHash = 0xc888c9ce9e098d5864d3ded6ebcc140a12142263bace3a23a36f9905f12bd64a;
 
     constructor() {
-        protocolName = "ProofOfExploit";
-
-        testedContracts = [address(0)];
+        protocolName = "";
     }
 
     function checkTestPasses() public view override returns (bool) {

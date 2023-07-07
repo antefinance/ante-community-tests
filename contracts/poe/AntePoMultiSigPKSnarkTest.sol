@@ -14,13 +14,13 @@ contract AntePoMultiSigPKSnarkTest is AnteTest("Nobody knows a private key for o
     address public testAddress3 = 0x3CF58a049f731E5F278304CAF98B4699129e6A1D;
     PoMultiSigPKVerifier private verifier;
     address private verifierAddress;
-    uint256[2] a;
-    uint256[2][2] b;
-    uint256[2] c;
-    uint256[5] input;
+    uint[2] a;
+    uint[2][2] b;
+    uint[2] c;
+    uint[5] input;
 
     constructor(address _verifierAddress) {
-        protocolName = "ProofOfExploit";
+        protocolName = "";
 
         testedContracts = [_verifierAddress];
 
@@ -34,10 +34,10 @@ contract AntePoMultiSigPKSnarkTest is AnteTest("Nobody knows a private key for o
 
     /// This is known to be frontrunnable
     function setCalldata(
-        uint256[2] memory _a,
-        uint256[2][2] memory _b,
-        uint256[2] memory _c,
-        uint256[5] memory _input
+        uint[2] memory _a,
+        uint[2][2] memory _b,
+        uint[2] memory _c,
+        uint[5] memory _input
     ) public {
         a = _a;
         b = _b;

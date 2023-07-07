@@ -54,7 +54,7 @@ describe('AnteCompoundTVLTest', function () {
     );
 
     // get a dai holding wallet to supply collateral
-    LARGE_DAI_HOLDER = '0xE78388b4CE79068e89Bf8aA7f218eF6b9AB0e9d0';
+    LARGE_DAI_HOLDER = '0x075e72a5eDf65F0A5f44699c7654C1a76941Ddc8';
     await runAsSigner(LARGE_DAI_HOLDER, async () => {
       const supplier = await hre.ethers.getSigner(LARGE_DAI_HOLDER);
 

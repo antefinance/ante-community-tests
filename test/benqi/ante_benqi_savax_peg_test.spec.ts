@@ -7,6 +7,8 @@ import { evmSnapshot, evmRevert, evmMineBlocks } from '../helpers';
 import { expect } from 'chai';
 
 describe('AnteBenqiSAVAXPegTest', function () {
+  if (process.env.NETWORK != 'avalanche') return;
+
   let test: AnteBenqiSAVAXPegTest;
 
   let globalSnapshotId: string;

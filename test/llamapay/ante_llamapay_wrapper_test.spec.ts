@@ -16,12 +16,13 @@ import {
 
 import { evmSnapshot, evmRevert, blockNumber, blockTimestamp } from '../helpers';
 import { expect } from 'chai';
+import { Contract } from 'ethers';
 
 describe('AnteLlamaPayTestChallengerWrapper', function () {
   let llamaFactory: MockLlamaPayFactory;
   let llama: MockLlamaPay;
   let test: AnteLlamaPayTest;
-  let pool: AntePool;
+  let pool: Contract;
   let poolFactory: AntePoolFactory;
   let wrapper: AnteLlamaPayTestChallengerWrapper;
 
@@ -53,7 +54,7 @@ describe('AnteLlamaPayTestChallengerWrapper', function () {
 
     // deploy AntePoolFactory
     const antePoolFactory = (await hre.ethers.getContractFactory(
-      'AntePoolFactory',
+      'contracts/libraries/ante-v05-core/AntePoolFactory.sol:AntePoolFactory',
       deployer
     )) as AntePoolFactory__factory;
     poolFactory = await antePoolFactory.deploy();
@@ -69,12 +70,12 @@ describe('AnteLlamaPayTestChallengerWrapper', function () {
     const receipt = await tx.wait();
     // @ts-ignore
     const testPoolAddress = receipt.events[0].args['testPool'];
-    pool = await hre.ethers.getContractAt('AntePool', testPoolAddress);
+    pool = await hre.ethers.getContractAt('contracts/libraries/ante-v05-core/AntePool.sol:AntePool', testPoolAddress);
     await pool.stake(false, { value: ONE_ETH });
 
     // deploy wrapper contract
     const wrapperFactory = (await hre.ethers.getContractFactory(
-      'AnteLlamaPayTestChallengerWrapper',
+      'contracts/llamapay/AnteLlamaPayTestChallengerWrapper.sol:AnteLlamaPayTestChallengerWrapper',
       deployer
     )) as AnteLlamaPayTestChallengerWrapper__factory;
     wrapper = await wrapperFactory.deploy(test.address, testPoolAddress);

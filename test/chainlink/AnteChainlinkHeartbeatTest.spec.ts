@@ -3,7 +3,7 @@ const { waffle } = hre;
 
 import { AnteChainlinkHeartbeatTest, AnteChainlinkHeartbeatTest__factory } from '../../typechain';
 
-import { evmSnapshot, evmRevert } from '../helpers';
+import { evmSnapshot, evmRevert, blockTimestamp } from '../helpers';
 import { expect } from 'chai';
 
 describe('AnteChainlinkHeartbeatTest', function () {
@@ -27,7 +27,12 @@ describe('AnteChainlinkHeartbeatTest', function () {
     await evmRevert(globalSnapshotId);
   });
 
-  it('should pass', async () => {
-    expect(await test.checkTestPasses()).to.be.true;
+  it("should pass, unless ran in 'npx hardhat test'", async () => {
+    const currentTimestamp = await blockTimestamp();
+    if (currentTimestamp > Math.floor(Date.now() / 1000) + 24 * 60 * 60) {
+      expect(await test.checkTestPasses()).to.be.false;
+    } else {
+      expect(await test.checkTestPasses()).to.be.true;
+    }
   });
 });

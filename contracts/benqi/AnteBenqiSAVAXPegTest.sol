@@ -59,7 +59,7 @@ contract AnteBenqiSAVAXPegTest is AnteTest("sAVAX maintains peg +/- 5% to AVAX")
 
     /// @notice Must be called after 20 blocks after preCheck()
     /// @return true if the peg is within 5%
-    function checkTestPasses() external view override returns (bool) {
+    function checkTestPasses() public view override returns (bool) {
         if (preCheckBlock == 0 || preCheckSlip == 0 || block.number - preCheckBlock < 20) {
             return true;
         }

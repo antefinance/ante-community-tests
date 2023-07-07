@@ -10,7 +10,9 @@ import { evmSnapshot, evmRevert, fundSigner, runAsSigner } from '../helpers';
 import { expect } from 'chai';
 import { BigNumber, Contract } from 'ethers';
 
-describe.only('AnteStargateArbitrumTotalTVLPlungeTest', function () {
+describe('AnteStargateArbitrumTotalTVLPlungeTest', function () {
+  if (process.env.NETWORK != 'arbitrum') return;
+
   let test: AnteStargateArbitrumTotalTVLPlungeTest;
   let usdt: Contract;
   let usdc: Contract;

@@ -38,7 +38,7 @@ contract AnteMetaStreetVaultSolvencyTest is AnteTest("Ensure that a MetaStreet V
 
     // @notice Check if a Vault's junior tranche is solvent
     // @return true if Vault's junior tranche is solvent, otherwise false
-    function checkTestPasses() external view override returns (bool) {
+    function checkTestPasses() public view override returns (bool) {
         (uint256 realizedValue, , uint256 pendingRedemptions, , , , ) = vault.trancheState(
             IVaultAbridged.TrancheId.Junior
         );

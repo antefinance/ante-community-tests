@@ -30,7 +30,7 @@ contract AnteAaveTvlPlungeTest is AnteTest("Ensure that AAVE Ethereum markets do
         }
     }
 
-    function checkTestPasses() external view override returns (bool) {
+    function checkTestPasses() public view override returns (bool) {
         for (uint256 i = 0; i < 5; i++) {
             if (tokens[i].totalSupply() < thresholds[i]) {
                 return false;

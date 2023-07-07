@@ -7,6 +7,8 @@ import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
 
 describe('AnteBscUSDCPegTest', function () {
+  if (process.env.NETWORK != 'bsc') return;
+
   let test: AnteBscUSDCPegTest;
 
   let globalSnapshotId: string;

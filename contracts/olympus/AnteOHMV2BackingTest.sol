@@ -14,29 +14,27 @@ import "./interfaces/IOlympusAuthority.sol";
 /// @dev OHM Backing formula: https://docs.olympusdao.finance/main/references/equations#backing-per-ohm
 contract AnteOHMv2BackingTest is AnteTest("Olympus OHMv2 fully backed by treasury reserves") {
     IERC20 public ohm;
-    IOlympusAuthority public authority;
+    ITreasury public treasury;
     address[] public liquidityTokens;
     address[] public reserveTokens;
 
-    /// @param _authorityAddress Olympus Authority contract address (0x1c21f8ea7e39e2ba00bc12d2968d63f4acb38b7a on mainnet)
+    /// @param _treasuryAddress Olympus TreasuryV2 contract address (0x9A315BdF513367C0377FB36545857d12e85813Ef) on mainnet)
     /// @param _ohmAddress Olympus OHMv2 Token contract address (0x64aa3364f17a4d01c6f1751fd97c2bd3d7e7f1d5 on  mainnet)
     /// @param _liquidityTokens array of approved liquidity tokens in the Olympus treasury,
     /// currently only 0xb612c37688861f1f90761dc7f382c2af3a50cc39)
     /// @param _reserveTokens array of approved reserve tokens in the Olympus treasury,
     /// currently 0x853d955acef822db058eb8505911ed77f175b99e and 0x6b175474e89094c44da98b954eedeac495271d0f
     constructor(
-        address _authorityAddress,
+        address _treasuryAddress,
         address _ohmAddress,
         address[] memory _liquidityTokens,
         address[] memory _reserveTokens
     ) {
         ohm = IERC20(_ohmAddress);
-        authority = IOlympusAuthority(_authorityAddress);
+        treasury = ITreasury(_treasuryAddress);
 
         protocolName = "OlympusDAO";
-        // treasury reserves being tested but treasury address is read through authority
-        // and could change in future
-        testedContracts = [_ohmAddress, _authorityAddress, authority.vault()];
+        testedContracts = [_ohmAddress, _treasuryAddress];
 
         liquidityTokens = _liquidityTokens;
         reserveTokens = _reserveTokens;
@@ -45,14 +43,13 @@ contract AnteOHMv2BackingTest is AnteTest("Olympus OHMv2 fully backed by treasur
     /// @notice convenience method for getting treasury interface from authority
     /// @return current treasury address initialized as ITreasury interface
     function olympusVault() public view returns (ITreasury) {
-        return ITreasury(authority.vault());
+        return treasury;
     }
 
     /// @notice test to check OHMv2 token supply against total treasury reserves
     /// @return true Olympus treasury reserves exceed OHMv2 supply
-    function checkTestPasses() external view override returns (bool) {
+    function checkTestPasses() public view override returns (bool) {
         uint256 reserves;
-        ITreasury treasury = olympusVault();
 
         for (uint256 i = 0; i < reserveTokens.length; i++) {
             if (treasury.permissions(ITreasury.STATUS.RESERVETOKEN, reserveTokens[i])) {

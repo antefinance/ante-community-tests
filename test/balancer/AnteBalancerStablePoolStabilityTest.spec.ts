@@ -20,7 +20,7 @@ describe('AnteBalancerStablePoolStabilityTest', function () {
       'AnteBalancerStablePoolStabilityTest',
       deployer
     )) as AnteBalancerStablePoolStabilityTest__factory;
-    test = await factory.deploy('0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063');
+    test = await factory.deploy('0x32296969ef14eb0c6d29669c550d4a0449130230000200000000000000000080');
     await test.deployed();
   });
 
