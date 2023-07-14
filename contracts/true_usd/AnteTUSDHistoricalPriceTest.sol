@@ -91,9 +91,23 @@ contract AnteCryptoPunksHistoricalSupplyTest is
         Transmission[] memory s_transmissions;
         for (uint256 i = 0; i < blockResponses.length; i++) {
             if (accountResponses[i].addr == aggregator && storageResponses[i].slot == S_HOTVARS_SLOT) {
-                s_hotvars = storageResponses[i].value;
+                bytes memory value_bytes = abi.encodePacked(storageResponses[i].value);
+                (
+                    s_hotvars.latestConfigDigest,
+                    s_hotvars.latestEpochAndRound,
+                    s_hotvars.threshold,
+                    s_hotvars.latestAggregatorRoundId
+                ) = abi.decode(
+                    value_bytes,
+                    (bytes16, uint40, uint8, uint32)
+                );
             }
             if (accountResponses[i].addr == aggregator && storageResponses[i].slot == S_TRANSMISSIONS_SLOT) {
+                bytes memory value_bytes = abi.encodePacked(storageResponses[i].value);
+                (
+                    s_transmissions.answer,
+                    s_transmissions.timestamp
+                ) = abi.decode(value_bytes, (int192, uint64));
                 s_transmissions = storageResponses[i].value;
             }
         }
