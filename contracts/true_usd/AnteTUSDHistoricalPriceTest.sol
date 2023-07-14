@@ -6,11 +6,12 @@ import {AnteTest} from "../libraries/ante-v06-core/AnteTest.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import {IAxiomV1Query} from "../interfaces/IAxiomV1Query.sol";
 
-
+/// @notice Extending the AggregatorV3Interface to grab the underlying aggregator address
 interface AggregatorV3InterfaceExtended is AggregatorV3Interface {
     function aggregator() external view returns (address);
 }
 
+/// @notice HotVars struct grabbed from Chainlinks OffchainAggregator.sol
 struct HotVars {
     bytes16 latestConfigDigest;
     uint40 latestEpochAndRound;
@@ -18,6 +19,7 @@ struct HotVars {
     uint32 latestAggregatorRoundId;
 }
 
+/// @notice Transmission struct grabbed from Chainlinks OffchainAggregator.sol
 struct Transmission {
     int192 answer;
     uint64 timestamp;
@@ -54,7 +56,7 @@ contract AnteTUSDHistoricalPriceTest is
         priceFeed = AggregatorV3InterfaceExtended(TRUE_USD_PRICE_FEED);
         aggregator = priceFeed.aggregator();
 
-        protocolName = "";
+        protocolName = "TrueUSD";
         testedContracts = [TRUE_USD];
     }
 
@@ -67,6 +69,7 @@ contract AnteTUSDHistoricalPriceTest is
     }
 
     function checkTestPasses() public view override returns (bool) {
+        // Check if the responses are valid against the AxiomV1Query contract
         bool validResponse = axiom_v1.areResponsesValid(
             keccakBlockResponse,
             keccakAccountResponse,
@@ -76,16 +79,19 @@ contract AnteTUSDHistoricalPriceTest is
             storageResponses
         );
 
+        // If not valid, don't fail Ante Test
         if (!validResponse) {
             return true;
         }
 
+        // Storage and data for Chainlink getting latestRoundData
         // roundId = s_hotVars.latestAggregatorRoundId;
         // Transmission memory transmission = s_transmission(roundId);
         // return (roundId, transmission.answer, transmission.timestamp, transmission.timestamp, roundId)
         // slot 0x2b = s_hotVars
         // slot 0x2c = s_transmissions mapping(uint32 => struct OffchainAggregator.Transmission)
 
+        // Go through storage responses to make grab the corresponding values from the slot
         HotVars memory s_hotvars;
         Transmission[] memory s_transmissions;
         for (uint256 i = 0; i < blockResponses.length; i++) {
@@ -99,11 +105,13 @@ contract AnteTUSDHistoricalPriceTest is
             }
         }
 
+        // Check if data was extracted from storageResponses and check if price holds
         if (s_hotvars.latestAggregatorRoundId > 0 && s_transmissions.length > 0) {
             uint80 roundId = s_hotvars.latestAggregatorRoundId;
             Transmission memory transmission = s_transmissions[uint32(roundId)];
             return (90000000 < transmission.answer);
         }
+
         return true;
     }
 
