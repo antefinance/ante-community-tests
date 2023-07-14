@@ -24,12 +24,11 @@ struct Transmission {
 }
 
 
-/// @title Checks that the total supply of CryptoPunks never exceeded 10,000
+/// @title Checks that the price of TUSD never dipped below 0.90 USD
 /// @author delalunia.eth
-/// @notice Ante Test to check the the total supply of CryptoPunks has never
-///         exceeded 10,000
-contract AnteCryptoPunksHistoricalSupplyTest is
-    AnteTest("")
+/// @notice Ante Test to check the historical pegging of TUSD
+contract AnteTUSDHistoricalPriceTest is
+    AnteTest("TUSD has always remained above 0.90 USD")
 {
     address public constant AXIOM_V1_QUERY = 0xd617ab7f787adF64C2b5B920c251ea10Cd35a952;
     address public constant TRUE_USD_PRICE_FEED = 0xec746eCF986E2927Abd291a2A1716c940100f8Ba;
@@ -92,27 +91,15 @@ contract AnteCryptoPunksHistoricalSupplyTest is
         for (uint256 i = 0; i < blockResponses.length; i++) {
             if (accountResponses[i].addr == aggregator && storageResponses[i].slot == S_HOTVARS_SLOT) {
                 bytes memory value_bytes = abi.encodePacked(storageResponses[i].value);
-                (
-                    s_hotvars.latestConfigDigest,
-                    s_hotvars.latestEpochAndRound,
-                    s_hotvars.threshold,
-                    s_hotvars.latestAggregatorRoundId
-                ) = abi.decode(
-                    value_bytes,
-                    (bytes16, uint40, uint8, uint32)
-                );
+                s_hotvars = abi.decode(value_bytes, (HotVars));
             }
             if (accountResponses[i].addr == aggregator && storageResponses[i].slot == S_TRANSMISSIONS_SLOT) {
                 bytes memory value_bytes = abi.encodePacked(storageResponses[i].value);
-                (
-                    s_transmissions.answer,
-                    s_transmissions.timestamp
-                ) = abi.decode(value_bytes, (int192, uint64));
-                s_transmissions = storageResponses[i].value;
+                s_transmissions = abi.decode(value_bytes, (Transmission[]));
             }
         }
 
-        if (s_hotvars.latestAggregatorRoundId && s_transmissions.answer) {
+        if (s_hotvars.latestAggregatorRoundId > 0 && s_transmissions.length > 0) {
             uint80 roundId = s_hotvars.latestAggregatorRoundId;
             Transmission memory transmission = s_transmissions[uint32(roundId)];
             return (90000000 < transmission.answer);
@@ -125,9 +112,9 @@ contract AnteCryptoPunksHistoricalSupplyTest is
             bytes32 keccakBlockResponse,
             bytes32 keccakAccountResponse,
             bytes32 keccakStorageResponse,
-            IAxiomV1Query.BlockResponse[] calldata blockResponses,
-            IAxiomV1Query.AccountResponse[] calldata accountResponse,
-            IAxiomV1Query.StorageResponse[] calldata storageResponse
+            IAxiomV1Query.BlockResponse[] memory blockResponses,
+            IAxiomV1Query.AccountResponse[] memory accountResponse,
+            IAxiomV1Query.StorageResponse[] memory storageResponse
         ) = abi.decode(
             _state,
             (
@@ -135,7 +122,7 @@ contract AnteCryptoPunksHistoricalSupplyTest is
                 bytes32,
                 bytes32,
                 IAxiomV1Query.BlockResponse[],
-                IAxiomV1Query.AccountRespose[],
+                IAxiomV1Query.AccountResponse[],
                 IAxiomV1Query.StorageResponse[]
             )
         );
