@@ -16,23 +16,21 @@ contract AnteInstadappTreasuryBalanceTest is AnteTest("Instadapp Treasury Balanc
     IERC20Metadata public INST = IERC20Metadata(tokenAddr);
 
     uint256 public immutable thresholdBalance;
-    uint256 public immutable decimals;
 
     constructor() {
         protocolName = "Instadapp";
         testedContracts = [treasuryAddr];
-        decimals = 6;
-        thresholdBalance = 2e6 * 10**decimals;
+        thresholdBalance = 2e6;
     }
 
-    /// @return thresholdBalance with 6 decimals
+    /// @return thresholdBalance adjusted with decimals
     function getThresholdBalance() public view returns (uint256) {
-        return thresholdBalance;
+        return thresholdBalance * 10**INST.decimals();
     }
 
-    /// @return Instadapp Treasury INST token Balance with 6 decimals
+    /// @return Instadapp Treasury INST token Balance with decimals
     function getTreasuryBalance() public view returns (uint256) {
-        return INST.balanceOf(treasuryAddr) / 10**(INST.decimals() - decimals);
+        return INST.balanceOf(treasuryAddr);
     }
 
     /// @return true if the Instadapp Treasury INST balance is > 2 million
