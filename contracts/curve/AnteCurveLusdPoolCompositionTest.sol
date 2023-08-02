@@ -7,7 +7,7 @@ import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IER
 
 /// @title Curve lusd Pool Composition Test
 /// @notice Checks that the LUSD balance, and the DAI, USDC, USDT balances in Curve 3Pool scaled by 
-///         the amount of 3CRV in Curve lusd, are each < 90% of Curve tusd pool's total token balance.
+///         the amount of 3CRV in Curve lusd, are each < 90% of Curve lusd pool's total token balance.
 contract AnteCurveLusdPoolCompositionTest is AnteTest("LUSD, DAI, USDC, USDT balances are each < 90% of Curve lusd pool balance") {
     address public constant CURVE_LUSD_POOL_ADDRESS = 0xEd279fDD11cA84bEef15AF5D39BB4d4bEE23F0cA;
     address public constant CURVE_3POOL_POOL_ADDRESS = 0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7;
@@ -30,17 +30,17 @@ contract AnteCurveLusdPoolCompositionTest is AnteTest("LUSD, DAI, USDC, USDT bal
 
     /// @return true if the balances of each token are < 90%
     function checkTestPasses() public view override returns (bool) {
-        uint256 LUSDBalance = LUSD.balanceOf(CURVE_LUSD_POOL_ADDRESS) / 10**LUSD.decimals();
-        uint256 DAIBalance = DAI.balanceOf(CURVE_3POOL_POOL_ADDRESS) / 10**DAI.decimals();
-        uint256 USDCBalance = USDC.balanceOf(CURVE_3POOL_POOL_ADDRESS) / 10**USDC.decimals();
-        uint256 USDTBalance = USDT.balanceOf(CURVE_3POOL_POOL_ADDRESS) / 10**USDT.decimals();
+        uint256 LUSDBalance_in_lusd = LUSD.balanceOf(CURVE_LUSD_POOL_ADDRESS) / 10**LUSD.decimals();
+        uint256 DAIBalance_in_3Pool = DAI.balanceOf(CURVE_3POOL_POOL_ADDRESS) / 10**DAI.decimals();
+        uint256 USDCBalance_in_3Pool = USDC.balanceOf(CURVE_3POOL_POOL_ADDRESS) / 10**USDC.decimals();
+        uint256 USDTBalance_in_3Pool = USDT.balanceOf(CURVE_3POOL_POOL_ADDRESS) / 10**USDT.decimals();
         uint256 CURVE_3CRV_SCALING_FACTOR = CURVE_3CRV.balanceOf(CURVE_LUSD_POOL_ADDRESS) * 1000 / CURVE_3CRV.totalSupply();
 
         return isLessThanNinety(
-            LUSDBalance,
-            DAIBalance * CURVE_3CRV_SCALING_FACTOR / 1000,
-            USDCBalance * CURVE_3CRV_SCALING_FACTOR / 1000,
-            USDTBalance * CURVE_3CRV_SCALING_FACTOR / 1000
+            LUSDBalance_in_lusd,
+            DAIBalance_in_3Pool * CURVE_3CRV_SCALING_FACTOR / 1000,
+            USDCBalance_in_3Pool * CURVE_3CRV_SCALING_FACTOR / 1000,
+            USDTBalance_in_3Pool * CURVE_3CRV_SCALING_FACTOR / 1000
         );
     }
 
