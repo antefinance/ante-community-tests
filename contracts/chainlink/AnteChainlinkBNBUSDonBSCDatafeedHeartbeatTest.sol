@@ -21,7 +21,7 @@ contract AnteChainlinkBNBUSDonBSCDatafeedHeartbeatTest is AnteTest("Chainlink fe
     AggregatorV3Interface datafeed = AggregatorV3Interface(0x0567F2323251f0Aab15c8dFb1967E4e8A7D42aeE);
 
     uint256 private constant HEARTBEAT = 27;
-    uint256 private constant BUFFER = 2 * 6;
+    uint256 private constant BUFFER = 2 * 2; //2 blocks
 
     constructor() {
         protocolName = "Chainlink";
@@ -30,7 +30,7 @@ contract AnteChainlinkBNBUSDonBSCDatafeedHeartbeatTest is AnteTest("Chainlink fe
         ];
     }
 
-    /// @return true if the feed has been updated within the heartbeat + 6 blocks
+    /// @return true if the feed has been updated within the heartbeat + 2 blocks
     function checkTestPasses() public view override returns (bool) {
         uint256 currentTimeStamp = block.timestamp;
         uint256 lastUpdate = 0;
