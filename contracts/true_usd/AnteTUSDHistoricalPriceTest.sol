@@ -94,22 +94,32 @@ contract AnteTUSDHistoricalPriceTest is
         // Go through storage responses to make grab the corresponding values from the slot
         HotVars memory s_hotvars;
         Transmission[] memory s_transmissions;
-        for (uint256 i = 0; i < blockResponses.length; i++) {
-            if (accountResponses[i].addr == aggregator && storageResponses[i].slot == S_HOTVARS_SLOT) {
-                bytes memory value_bytes = abi.encodePacked(storageResponses[i].value);
-                s_hotvars = abi.decode(value_bytes, (HotVars));
-            }
-            if (accountResponses[i].addr == aggregator && storageResponses[i].slot == S_TRANSMISSIONS_SLOT) {
-                bytes memory value_bytes = abi.encodePacked(storageResponses[i].value);
-                s_transmissions = abi.decode(value_bytes, (Transmission[]));
-            }
+
+        // Ensure that the storageResponses are a length of 2 to check values for
+        if (storageResponses.length != 2) {
+            revert("storageResponses doesn't have a length of 2");
         }
 
-        // Check if data was extracted from storageResponses and check if price holds
-        if (s_hotvars.latestAggregatorRoundId > 0 && s_transmissions.length > 0) {
+        // Check if the addresses and storage slots match the aggregator address and slot numbers
+        if (
+            storageResponses[0].addr == aggregator &&
+            storageResponses[1].addr == aggregator &&
+            storageResponses[0].slot == S_HOTVARS_SLOT &&
+            storageResponses[1].slot == S_TRANSMISSIONS_SLOT
+        ) {
+
+            // Extract data from storageResponses and check if price holds
+            bytes memory hotvars_storage_bytes = abi.encodePacked(storageResponses[0].value);
+            s_hotvars = abi.decode(hotvars_storage_bytes, (HotVars));
             uint80 roundId = s_hotvars.latestAggregatorRoundId;
+
+            bytes memory transmission_storage_bytes = abi.encodePacked((storageResponses[1].value));
+            s_transmissions = abi.decode(transmission_storage_bytes, (Transmission[]));
             Transmission memory transmission = s_transmissions[uint32(roundId)];
+
             return (90000000 < transmission.answer);
+        } else {
+            revert("Address from account storage didn't match aggregator or storage slot doesn't match s_hotVars, s_transmissions");
         }
 
         return true;
