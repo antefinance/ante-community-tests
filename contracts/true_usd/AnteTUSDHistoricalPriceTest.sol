@@ -104,25 +104,27 @@ contract AnteTUSDHistoricalPriceTest is
         if (
             storageResponses[0].addr == aggregator &&
             storageResponses[1].addr == aggregator &&
-            storageResponses[0].slot == S_HOTVARS_SLOT &&
-            storageResponses[1].slot == S_TRANSMISSIONS_SLOT
+            storageResponses[0].slot == S_HOTVARS_SLOT
         ) {
 
             // Extract data from storageResponses and check if price holds
             bytes memory hotvars_storage_bytes = abi.encodePacked(storageResponses[0].value);
             s_hotvars = abi.decode(hotvars_storage_bytes, (HotVars));
             uint80 roundId = s_hotvars.latestAggregatorRoundId;
+            
+            if (bytes32(storageResponses[1].slot) == keccak256(abi.encode(roundId, S_TRANSMISSIONS_SLOT))) {
+                bytes memory transmission_storage_bytes = abi.encodePacked((storageResponses[1].value));
+                s_transmissions = abi.decode(transmission_storage_bytes, (Transmission[]));
+                Transmission memory transmission = s_transmissions[uint32(roundId)];
 
-            bytes memory transmission_storage_bytes = abi.encodePacked((storageResponses[1].value));
-            s_transmissions = abi.decode(transmission_storage_bytes, (Transmission[]));
-            Transmission memory transmission = s_transmissions[uint32(roundId)];
+                return (90000000 < transmission.answer);
+            } else {
+                revert("s_transmissions array at roundId slot doesn't match");
+            }
 
-            return (90000000 < transmission.answer);
         } else {
-            revert("Address from account storage didn't match aggregator or storage slot doesn't match s_hotVars, s_transmissions");
+            revert("Address from account storage didn't match aggregator or storage slot doesn't match s_hotVars");
         }
-
-        return true;
     }
 
     function _setState(bytes memory _state) internal override {
