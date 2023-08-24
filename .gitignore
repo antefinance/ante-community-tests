@@ -45,3 +45,6 @@ cache
 # added 2023-03-31
 cache_forge
 out
+# added 2023-05-16
+artifacts-zk
+cache-zk
