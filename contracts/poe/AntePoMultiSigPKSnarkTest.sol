@@ -5,8 +5,8 @@ pragma solidity ^0.8.0;
 import {AnteTest} from "../AnteTest.sol";
 import "./AntePoMultiSigPKSnarkVerifier.sol";
 
-
-/// @title Checks that no one knows the private key for an address
+/// @title Nobody knows the private key to one of these public addresses
+/// @notice Ante Test to check that the zk-SNARK verifier has not received a valid zk-SNARK showing a private key to one of these public addresses
 contract AntePoMultiSigPKSnarkTest is AnteTest("Nobody knows a private key for one of these addresses") {
     // These are the public addresses that this AnteTest was written for
     address public testAddress1 = 0x66c777464c62F125760f80254257ed8DFccB2921;

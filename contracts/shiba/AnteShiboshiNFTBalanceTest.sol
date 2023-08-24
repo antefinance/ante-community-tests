@@ -8,7 +8,7 @@ import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 /// @title Checks that LockShiboshi holds at least 400 [NFT]s
 /// @author Put your ETH address here
 /// @notice Ante Test to check
-contract AnteNFTBalanceTestTemplate is AnteTest("LockShiboshi Shiboshi balance remains >= 400") {
+contract AnteShiboshiNFTBalanceTest is AnteTest("LockShiboshi Shiboshi balance remains >= 400") {
 
     // https://etherscan.io/address/0xbe4e191b22368bff26aa60be498575c477af5cc3
     address public constant HOLDER_ADDRESS = 0xBe4E191B22368bfF26aA60Be498575C477AF5Cc3;

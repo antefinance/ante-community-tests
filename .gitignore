@@ -22,6 +22,7 @@ abi
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+yarn.lock
 .idea/
 .vscode/
 node_modules/
