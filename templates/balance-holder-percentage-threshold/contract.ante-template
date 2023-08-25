@@ -1,0 +1,54 @@
+`// SPDX-License-Identifier: GPL-3.0-only
+
+pragma solidity ^0.8.0;
+
+import "../AnteTest.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+/// @title ${contractName} ${protocolName} ${networkName}
+/// @notice Ante Test to check if ${protocolName} ${networkName} "rugs" ${100-percentageThreshold}% of its top ${tokens.length} tokens (as of test deployment)
+contract ${contractName} is AnteTest("${protocolName} does not rug ${100-percentageThreshold}% of its top ${tokens.length} tokens") {
+    
+    
+    address public constant ${holder.varName} = ${holder.address};
+
+    // Pool Assets
+    IERC20[${tokens.length}] public tokens = [
+${tokens
+  .map(
+    ({ symbol, address }, index, arr) =>
+      "      IERC20(" +
+      address +
+      ")" +
+      (index == arr.length - 1 ? "" : ",") +
+      " //" +
+      symbol
+  )
+  .join("\n")}
+    ];
+    
+    uint256 public constant THRESHOLD = ${percentageThreshold};
+
+    mapping(address => uint256) public tokenThresholds;
+
+    constructor() {
+        protocolName = "${protocolName}";
+        testedContracts = [${holder.varName}];
+
+        for(uint256 i = 0; i < tokens.length; i++) {
+          tokenThresholds[address(tokens[i])] = (tokens[i].balanceOf(${holder.varName}) * THRESHOLD) / 100;
+        }
+    }
+
+    /// @notice test to check value of top 3 tokens on Across Bridge
+    /// @return true if bridge has more than 30% of assets from when it was deployed
+    function checkTestPasses() public view override returns (bool) {
+        for(uint256 i = 0; i < tokens.length; i++) {
+          if (tokens[i].balanceOf(${holder.varName}) < tokenThresholds[address(tokens[i])]) {
+            return false;
+          }
+        }
+        return true;
+    }
+}
+`

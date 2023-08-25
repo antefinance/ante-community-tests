@@ -49,7 +49,7 @@ contract AnteCobieRugTest is AnteTest("Cobie Doesnt Rug Do-Algod-DCR Escrow Wall
 
     /// @notice Checks USDC + USDT balance of Do-Algod-DCR escrow wallet address
     /// @return true if escrow wallet has greater than or equal to 22M USDC+USDT
-    function checkTestPasses() external view override returns (bool) {
+    function checkTestPasses() public view override returns (bool) {
         // only check rug during the bet period
         if (block.timestamp <= BET_EXPIRY_TIMESTAMP) {
             return (normalizedCobieBalanceOf(USDC) + normalizedCobieBalanceOf(USDT)) >= rugThreshold;

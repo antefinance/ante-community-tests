@@ -11,7 +11,7 @@
 
 pragma solidity ^0.7.0;
 
-import "../AnteTest.sol";
+import "../libraries/ante-v05-core/AnteTest.sol";
 
 /// @title ETHDev multisig doesn't rug test
 /// @notice Ante Test to check if EthDev multisig "rugs" 99% of its ETH (as of May 2021)

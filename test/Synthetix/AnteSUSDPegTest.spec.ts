@@ -46,3 +46,4 @@ describe('AnteSUSDPegTest', function () {
     expect(await test.checkTestPasses()).to.be.true;
   });
 });
+

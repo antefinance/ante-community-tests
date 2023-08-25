@@ -50,7 +50,7 @@ contract AnteUniswapUSDCETHUSDTETHPoolTVLDifference is
 
         // Compare the two
         if (ethusdcDollarValue >= ethusdtDollarValue) {
-            return (ethusdcDollarValue / ethusdcDollarValue <= 10);
+            return (ethusdcDollarValue / ethusdtDollarValue <= 10);
         } else {
             return (ethusdtDollarValue / ethusdcDollarValue <= 10);
         }

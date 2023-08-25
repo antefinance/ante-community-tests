@@ -12,7 +12,7 @@
 pragma solidity ^0.7.0;
 
 import "@openzeppelin-contracts-old/contracts/token/ERC20/IERC20.sol";
-import "../AnteTest.sol";
+import "../libraries/ante-v05-core/AnteTest.sol";
 
 /// @title WBTC supply never exceeds 21 million test
 /// @notice Ante Test to check that WBTC supply is always less than 21 million

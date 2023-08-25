@@ -11,14 +11,14 @@
 
 pragma solidity ^0.7.0;
 
-import "../AnteTest.sol";
+import "../libraries/ante-v05-core/AnteTest.sol";
 import "@openzeppelin-contracts-old/contracts/token/ERC20/IERC20.sol";
 
 /// @title Avalanche Bridge doesn't rug test on mainnet
 /// @notice Ante Test to check if EOA Avalanche Bridge "rugs" 99% of its value (as of test deployment)
 contract AnteAvalancheBridgeRugTest is AnteTest("EOA Avalanche Bridge Doesnt Rug 99% of its Value Test") {
-    // https://etherscan.io/address/0xE78388b4CE79068e89Bf8aA7f218eF6b9AB0e9d0
-    address public constant eoaAvalancheBridgeAddr = 0xE78388b4CE79068e89Bf8aA7f218eF6b9AB0e9d0;
+    // https://etherscan.io/address/0x8eb8a3b98659cce290402893d0123abb75e3ab28
+    address public constant eoaAvalancheBridgeAddr = 0x8EB8a3b98659Cce290402893d0123abb75E3ab28;
     // https://etherscan.io/address/0x6B175474E89094C44Da98b954EedeAC495271d0F
     address public constant daiAddr = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
     // https://etherscan.io/address/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2

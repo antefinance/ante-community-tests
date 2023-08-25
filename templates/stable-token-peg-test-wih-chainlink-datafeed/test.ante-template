@@ -1,0 +1,31 @@
+`import hre from 'hardhat';
+const { waffle } = hre;
+
+import { ${contractName}__factory, ${contractName} } from '../../typechain';
+
+import { evmSnapshot, evmRevert } from '../helpers';
+import { expect } from 'chai';
+
+describe('${contractName}', function () {
+  let test: ${contractName};
+
+  let globalSnapshotId: string;
+
+  before(async () => {
+    globalSnapshotId = await evmSnapshot();
+
+    const [deployer] = waffle.provider.getWallets();
+    const factory = (await hre.ethers.getContractFactory('${contractName}', deployer)) as ${contractName}__factory;
+    test = await factory.deploy();
+    await test.deployed();
+  });
+
+  after(async () => {
+    await evmRevert(globalSnapshotId);
+  });
+
+  it('should pass', async () => {
+    expect(await test.checkTestPasses()).to.be.true;
+  });
+});
+`

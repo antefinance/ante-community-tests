@@ -70,7 +70,7 @@ contract AnteBalancerStablePoolStabilityTest is AnteTest("Balancer stable pool r
     /// @notice In a rare care a challenger may have to call reorder() if the vault returns values in a
     /// different order than at deployment.
     /// @return true if the pool is stable with a 3% tolerance
-    function checkTestPasses() external view override returns (bool) {
+    function checkTestPasses() public view override returns (bool) {
         uint256 adjustToDecimals = 9999999;
         for (uint8 i = 0; i < tokenDecimals.length; i++) {
             if (tokenDecimals[i] < adjustToDecimals) {

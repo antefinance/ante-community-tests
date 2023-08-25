@@ -112,7 +112,7 @@ contract AnteILSIDiversifiedTest is AnteTest("ILSI has more than 3 tokens and no
 
     /// @notice Checks the number of components and each component position
     /// @return true if components count is greater than 3 and none has a +50% position
-    function checkTestPasses() external view override returns (bool) {
+    function checkTestPasses() public view override returns (bool) {
         // Need to make sure that the preCheck() function was called before this function
         // If not, then the test defaults to true.
         // Precheck should be done at least 20 blocks before the test is checked

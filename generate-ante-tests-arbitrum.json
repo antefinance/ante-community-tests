@@ -1,0 +1,250 @@
+[
+  {
+    "templateName": "total-supply-drop-list-of-tokens",
+    "vars": {
+      "protocolName": "AAVE",
+      "contractName": "AnteTotalSupplyPlungeAaveArbitrumTest",
+      "networkName": "Arbitrum",
+      "percentageThreshold": 15,
+      "tokens": [
+        {
+          "address": "0xe50fA9b3c56FfB159cB0FCA61F5c9D750e8128c8",
+          "symbol": "aArbWETH"
+        },
+        {
+          "address": "0x82E64f49Ed5EC1bC6e43DAD4FC8Af9bb3A2312EE",
+          "symbol": "aArbDAI"
+        },
+        {
+          "address": "0x6ab707Aca953eDAeFBc4fD23bA73294241490620",
+          "symbol": "aArbUSDT"
+        },
+        {
+          "address": "0x078f358208685046a11C85e8ad32895DED33A249",
+          "symbol": "aArbWBTC"
+        },
+        {
+          "address": "0x625E7708f30cA75bfd92586e17077590C60eb4cD",
+          "symbol": "aArbUSDC"
+        }
+      ]
+    }
+  },
+  {
+    "templateName": "balance-holder-percentage-threshold",
+    "vars": {
+      "protocolName": "Abracadabra",
+      "contractName": "AnteBalanceHolderPercentageThresholdAbracadabraArbitrumTest",
+      "networkName": "Arbitrum",
+      "percentageThreshold": 30,
+      "holder": {
+        "varName": "BENTO_BOX",
+        "address": "0x74c764D41B77DBbb4fe771daB1939B00b146894A"
+      },
+      "tokens": [
+        {
+          "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+          "symbol": "WETH"
+        },
+        {
+          "address": "0x3082CC23568eA640225c2467653dB90e9250AaA0",
+          "symbol": "RDNT"
+        },
+        {
+          "address": "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+          "symbol": "USDC"
+        }
+      ]
+    }
+  },
+  {
+    "templateName": "balance-holder-percentage-threshold",
+    "vars": {
+      "protocolName": "Across",
+      "contractName": "AnteBalanceHolderPercentageThresholdAcrossArbitrumTest",
+      "networkName": "Arbitrum",
+      "percentageThreshold": 30,
+      "holder": {
+        "varName": "POOL_ADDRESS",
+        "address": "0xB88690461dDbaB6f04Dfad7df66B7725942FEb9C"
+      },
+      "tokens": [
+        {
+          "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+          "symbol": "WETH"
+        },
+        {
+          "address": "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+          "symbol": "USDC"
+        },
+        {
+          "address": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+          "symbol": "WBTC"
+        }
+      ]
+    }
+  },
+  {
+    "templateName": "balance-holder-percentage-threshold",
+    "vars": {
+      "protocolName": "Balancer",
+      "contractName": "AnteBalanceHolderPercentageThresholdBalancerArbitrumTest",
+      "networkName": "Arbitrum",
+      "percentageThreshold": 10,
+      "holder": {
+        "varName": "BALANCER_VAULT_ADDRESS",
+        "address": "0xBA12222222228d8Ba445958a75a0704d566BF2C8"
+      },
+      "tokens": [
+        {
+          "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+          "symbol": "WETH"
+        },
+        {
+          "address": "0x3082CC23568eA640225c2467653dB90e9250AaA0",
+          "symbol": "RDNT"
+        },
+        {
+          "address": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+          "symbol": "WBTC"
+        },
+        {
+          "address": "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+          "symbol": "USDC"
+        }
+      ]
+    }
+  },
+  {
+    "templateName": "chainlink-datafeed-update-daily",
+    "vars": {
+      "protocolName": "Chainlink",
+      "contractName": "AnteChainlinkLINKUSDDatafeedUpdateDailyArbitrumTest",
+      "networkName": "Arbitrum",
+      "datafeed": {
+        "name": "LINK/USD",
+        "address": "0x86E53CF1B870786351Da77A57575e79CB55812CB"
+      }
+    }
+  },
+  {
+    "templateName": "chainlink-datafeed-update-daily",
+    "vars": {
+      "protocolName": "Chainlink",
+      "contractName": "AnteChainlinkETHUSDDatafeedUpdateDailyArbitrumTest",
+      "networkName": "Arbitrum",
+      "datafeed": {
+        "name": "ETH/USD",
+        "address": "0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612"
+      }
+    }
+  },
+  {
+    "templateName": "chainlink-datafeed-heartbeat",
+    "vars": {
+      "protocolName": "Chainlink",
+      "contractName": "AnteChainlinkLINKUSDDatafeedHeartbeatArbitrumTest",
+      "networkName": "Arbitrum",
+      "datafeed": {
+        "name": "LINK/USD",
+        "address": "0x86E53CF1B870786351Da77A57575e79CB55812CB"
+      },
+      "heartbeat": {
+        "description": "at least once per hour",
+        "valueSeconds": 3600
+      }
+    }
+  },
+  {
+    "templateName": "chainlink-datafeed-heartbeat",
+    "vars": {
+      "protocolName": "Chainlink",
+      "contractName": "AnteChainlinkETHUSDDatafeedHeartbeatArbitrumTest",
+      "networkName": "Arbitrum",
+      "datafeed": {
+        "name": "ETH/USD",
+        "address": "0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612"
+      },
+      "heartbeat": {
+        "description": "at least once per day",
+        "valueSeconds": 86400
+      }
+    }
+  },
+  {
+    "templateName": "stable-token-peg-test-wih-chainlink-datafeed",
+    "vars": {
+      "protocolName": "DAI",
+      "contractName": "AnteStableTokenDaiPegArbitrumTest",
+      "networkName": "Arbitrum",
+      "token": {
+        "symbol": "DAI",
+        "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1"
+      },
+      "peg": {
+        "symbol": "USD",
+        "percentage": 5,
+        "minValue": "95000000",
+        "maxValue": "105000000",
+        "datafeed": "0xc5C8E77B397E531B8EC06BFb0048328B30E9eCfB"
+      }
+    }
+  },
+  {
+    "templateName": "stable-token-peg-test-wih-chainlink-datafeed",
+    "vars": {
+      "protocolName": "USDC",
+      "contractName": "AnteStableTokenUsdcPegArbitrumTest",
+      "networkName": "Arbitrum",
+      "token": {
+        "symbol": "USDC",
+        "address": "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8"
+      },
+      "peg": {
+        "symbol": "USD",
+        "percentage": 5,
+        "minValue": "95000000",
+        "maxValue": "105000000",
+        "datafeed": "0x50834F3163758fcC1Df9973b6e91f0F0F0434aD3"
+      }
+    }
+  },
+  {
+    "templateName": "stable-token-peg-test-wih-chainlink-datafeed",
+    "vars": {
+      "protocolName": "tether",
+      "contractName": "AnteStableTokenTetherPegArbitrumTest",
+      "networkName": "Arbitrum",
+      "token": {
+        "symbol": "USDT",
+        "address": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9"
+      },
+      "peg": {
+        "symbol": "USD",
+        "percentage": 5,
+        "minValue": "95000000",
+        "maxValue": "105000000",
+        "datafeed": "0x3f3f5dF88dC9F13eac63DF89EC16ef6e7E25DdE7"
+      }
+    }
+  },
+  {
+    "templateName": "stable-token-peg-test-wih-chainlink-datafeed",
+    "vars": {
+      "protocolName": "frax",
+      "contractName": "AnteStableTokenFraxPegArbitrumTest",
+      "networkName": "Arbitrum",
+      "token": {
+        "symbol": "FRAX",
+        "address": "0x17FC002b466eEc40DaE837Fc4bE5c67993ddBd6F"
+      },
+      "peg": {
+        "symbol": "USD",
+        "percentage": 5,
+        "minValue": "95000000",
+        "maxValue": "105000000",
+        "datafeed": "0x0809E3d38d1B4214958faf06D8b1B1a2b73f2ab8"
+      }
+    }
+  }
+]

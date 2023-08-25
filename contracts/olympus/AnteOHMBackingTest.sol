@@ -4,7 +4,7 @@ pragma solidity ^0.7.0;
 
 // import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 // import "@openzeppelin/contracts/math/SafeMath.sol";
-import "../AnteTest.sol";
+import "../libraries/ante-v05-core/AnteTest.sol";
 import "hardhat/console.sol";
 import "./interfaces/TreasuryV1.sol";
 

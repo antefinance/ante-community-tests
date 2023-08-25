@@ -7,6 +7,8 @@ import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
 
 describe('AntePolygonUSDCPegTest', function () {
+  if (process.env.NETWORK != 'polygon') return;
+
   let test: AntePolygonUSDCPegTest;
 
   let globalSnapshotId: string;

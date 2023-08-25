@@ -11,7 +11,7 @@
 
 pragma solidity ^0.8.0;
 
-import {AnteTest} from "../AnteTest.sol";
+import {AnteTest} from "../libraries/ante-v05-avax/AnteTest.sol";
 import {IRibbonThetaVault} from "./ribbon-v2-contracts/interfaces/IRibbonThetaVault.sol";
 import {IController, GammaTypes} from "./ribbon-v2-contracts/interfaces/GammaInterface.sol";
 import {Vault} from "./ribbon-v2-contracts/libraries/Vault.sol";
@@ -62,7 +62,7 @@ contract AnteRibbonV2ThetaVaultPlungeTest is AnteTest("RibbonV2 doesn't lose 90%
     /// @notice checks balance of Ribbon Theta V2 vaults against threshold
     /// (10% of balance when this contract was deployed)
     /// @return true if balance of all theta vaults is greater than thresholds
-    function checkTestPasses() external view override returns (bool) {
+    function checkTestPasses() public view override returns (bool) {
         for (uint256 i; i < thetaVaults.length; i++) {
             if (calculateAssetBalance(thetaVaults[i]) < thresholds[i]) {
                 return false;

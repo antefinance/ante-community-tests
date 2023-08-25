@@ -34,15 +34,16 @@ describe('AnteBoredApeMaxSupplyTest', function () {
     expect(await test.checkTestPasses()).to.be.true;
   });
 
-  it('should fail if Yuga Labs reserves apes', async () => {
-    const BAYC_DEPLOYER_ADDRESS = '0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03';
+  // Not applicable anymore because owner is Zero Address
+  // it('should fail if Yuga Labs reserves apes', async () => {
+  //   const BAYC_DEPLOYER_ADDRESS = '0xaBA7161A7fb69c88e16ED9f455CE62B791EE4D03';
 
-    await runAsSigner(BAYC_DEPLOYER_ADDRESS, async () => {
-      const yugaLabs = await hre.ethers.getSigner(BAYC_DEPLOYER_ADDRESS);
-      await fundSigner(BAYC_DEPLOYER_ADDRESS);
-      // mint 30 new apes for yuga, bringing total above MAX
-      await bayc.connect(yugaLabs).reserveApes();
-    });
-    expect(await test.checkTestPasses()).to.be.false;
-  });
+  //   await runAsSigner(BAYC_DEPLOYER_ADDRESS, async () => {
+  //     const yugaLabs = await hre.ethers.getSigner(BAYC_DEPLOYER_ADDRESS);
+  //     await fundSigner(BAYC_DEPLOYER_ADDRESS);
+  //     // mint 30 new apes for yuga, bringing total above MAX
+  //     await bayc.connect(yugaLabs).reserveApes();
+  //   });
+  //   expect(await test.checkTestPasses()).to.be.false;
+  // });
 });
