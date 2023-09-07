@@ -8,7 +8,7 @@ import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IER
 
 /// @title Checks stETH and wETH in curve concentrated pool remains above 10% from deployment
 /// @author 0xa0e7Fb16cdE37Ebf2ceD6C89fbAe8780B8497e12
-contract AnteCurvestEthEthPoolTest is AnteTest("Curve stETH/ETH pool balances remain >= 10% of deployment") {
+contract AnteCurvestEthwEthPoolTest is AnteTest("Curve stETH/ETH pool balances remain >= 10% of deployment") {
     // https://etherscan.io/address/0x828b154032950C8ff7CF8085D841723Db2696056
     address public constant POOL_ADDRESS = 0x828b154032950C8ff7CF8085D841723Db2696056;
 
@@ -38,4 +38,13 @@ contract AnteCurvestEthEthPoolTest is AnteTest("Curve stETH/ETH pool balances re
             STETH_TOKEN.balanceOf(POOL_ADDRESS) >= stEthThresholdBalance / 10
         );
     }
+
+    function getBalanceW() public view returns (uint256) {
+        return WETH_TOKEN.balanceOf(POOL_ADDRESS);
+    }
+    
+    function getBalanceST() public view returns (uint256) {
+        return STETH_TOKEN.balanceOf(POOL_ADDRESS);
+    }
+
 }
