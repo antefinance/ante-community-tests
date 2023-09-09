@@ -22,6 +22,7 @@ abi
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+yarn.lock
 .idea/
 .vscode/
 node_modules/
@@ -44,3 +45,6 @@ cache
 # added 2023-03-31
 cache_forge
 out
+# added 2023-05-16
+artifacts-zk
+cache-zk

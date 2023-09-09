@@ -7,7 +7,7 @@ import "../AnteTest.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 // Ante Test to check USDC remains > 0.90
-contract AntefeiPegTest is AnteTest("Fei is above 90 cents on the dollar") {
+contract AnteFeiPegTest is AnteTest("Fei is above 90 cents on the dollar") {
     // https://etherscan.io/token/0x956F47F50A910163D8BF957Cf5846D573E7f87CA
     address public constant FeiAddr = 0x956F47F50A910163D8BF957Cf5846D573E7f87CA;
 
@@ -22,7 +22,7 @@ contract AntefeiPegTest is AnteTest("Fei is above 90 cents on the dollar") {
      * Address: 0x31e0a88fecB6eC0a411DBe0e9E76391498296EE9
      */
     constructor() {
-        protocolName = "FEI";
+        protocolName = "Fei";
         testedContracts = [FeiAddr];
         priceFeed = AggregatorV3Interface(0x31e0a88fecB6eC0a411DBe0e9E76391498296EE9);
     }
@@ -55,3 +55,4 @@ contract AntefeiPegTest is AnteTest("Fei is above 90 cents on the dollar") {
         return (90000000 < price) || (90000000 < preCheckPrice);
     }
 }
+

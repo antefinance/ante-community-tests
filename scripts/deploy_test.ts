@@ -5,9 +5,9 @@ const main = async () => {
   const [deployer] = await hre.ethers.getSigners();
 
   // name of the contract for Ante Test
-  const testName = 'AnteAvaxWhaleRugTest';
+  const testName = 'AntePoMultiSigPKSnarkTest';
   // array of constructor arguments for Ante Test
-  const args = ['0x55aEd0ce035883626e536254dda2F23a5b5D977f'] as const;
+  const args = ['0xFc70dFE1343027176F6b4D9447fE1254336E37b1'] as const;
 
   console.log(
     'Deploying Ante Test',
@@ -28,7 +28,7 @@ const main = async () => {
   await test.deployed();
 
   console.log('Ante test successfully deployed!');
-  console.log('Visit', chalk.cyan('app.ante.finance/#/create-pool'), 'to deploy an Ante Pool for this test');
+  console.log('Visit', chalk.cyan('app.ante.finance/create-pool'), 'to deploy an Ante Pool for this test');
   console.log(
     'Check out our docs (',
     chalk.magenta('docs.ante.finance'),

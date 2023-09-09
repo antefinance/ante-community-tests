@@ -27,11 +27,14 @@ Learn about Ante: [ante.finance](https://www.ante.finance/) | [Twitter](https://
     npm install --save-dev
     ```
 
-4. Copy [`.env.example`](./.env.example) to `.env` and fill in any required values:
-    1. To run the testing suite, you'll need a free [Alchemy API key](https://auth.alchemy.com/signup)
+4. Copy the file [`.env.example`](./.env.example) to a new file named `.env` (`cp .env.example .env`) and edit it to fill in required values:
+    1. To run the testing suite, you'll need a free [Alchemy API key](https://auth.alchemy.com/signup) (after creating an account, you can copy it from https://auth.alchemy.com/)
     2. To deploy contracts, you'll need a free [Infura API key](https://app.infura.io/register) as well as a mnemonic/private key (if you do not have a mnemonic you can use `test test test test test test test test test test test junk`)
     3. To verify deployed contracts, you'll need free block explorer API keys (e.g. [Etherscan](https://etherscan.io/register))
     
+5. Install Foundry ([Instructions](https://book.getfoundry.sh/getting-started/installation))
+
+
 ### Write your Ante Test
 
 Write an ante test for your desired protocol and put it in a file called `./contracts/[PROTOCOL_NAME]/[YOUR_TEST_NAME].sol`. For more information on writing Ante Tests, see our [docs](https://docs.ante.finance/). Ask questions in [Discord](https://discord.gg/yaJthzNdNG)!
@@ -50,6 +53,8 @@ We recommend writing unit tests to make sure your Ante Test works. Unit tests li
     npx hardhat test test/[PROTOCOL_NAME]/[YOUR_TEST_NAME].spec.ts
     ```
     >Troubleshooting: If you are trying to run the testing suite with `npx hardhat test`, you must run `npx hardhat typechain` first to avoid an error where hardhat cannot find the typechain directory
+
+    >Troubleshooting: If you run into an error about `hardhat-foundry` (eg "Error in plugin hardhat-foundry: Couldn't run `forge`. Please check that your foundry installation is correct.") you may need to run `yarn add --dev hardhat-foundry`
 
 **Using Foundry**
 

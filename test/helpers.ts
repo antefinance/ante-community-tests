@@ -2,10 +2,12 @@ import hre from 'hardhat';
 
 const { waffle } = hre;
 
-import { ContractFactory, Contract, BigNumber, Wallet } from 'ethers';
-import * as constants from './constants';
+import { BigNumber } from 'ethers';
 
-import { expect, assert } from 'chai';
+import { expect } from 'chai';
+import { HardhatNetworkHDAccountsConfig, HardhatRuntimeEnvironment } from 'hardhat/types';
+import * as zksync from 'zksync-web3';
+import { Deployer } from '@matterlabs/hardhat-zksync-deploy';
 
 export function expectAlmostEqual(num1: BigNumber, num2: BigNumber, tolerance: number): void {
   expect(num1.sub(num2).abs()).to.be.lt(tolerance);
@@ -74,4 +76,21 @@ export async function fundSigner(signerAddr: string) {
     method: 'hardhat_setBalance',
     params: [signerAddr, hre.ethers.utils.hexStripZeros(ETH_BAL.toHexString())],
   });
+}
+
+export function zksyncSignerFromHre(hre: HardhatRuntimeEnvironment): zksync.Wallet {
+  let zkSyncWallet: zksync.Wallet;
+  const mnemonic = (hre.network.config.accounts as HardhatNetworkHDAccountsConfig).mnemonic;
+  if (mnemonic) {
+    zkSyncWallet = zksync.Wallet.fromMnemonic(mnemonic);
+  } else {
+    zkSyncWallet = new zksync.Wallet((hre.network.config.accounts as string[])[0]);
+  }
+  return zkSyncWallet;
+}
+
+export async function getZksyncDeployer(hre: HardhatRuntimeEnvironment): Promise<Deployer> {
+  const zksyncDeployerWallet = zksyncSignerFromHre(hre);
+  const zksyncDeployer = new Deployer(hre, zksyncDeployerWallet);
+  return zksyncDeployer;
 }
