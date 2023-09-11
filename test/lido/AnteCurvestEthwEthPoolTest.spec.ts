@@ -13,7 +13,7 @@ describe('AnteCurvestEthwEthPoolTest', function () {
   let globalSnapshotId: string;
 
   const POOL_ADDRESS = '0x828b154032950C8ff7CF8085D841723Db2696056';
-  const targetAddr = '0x1A2B73207C883Ce8E51653d6A9cC8a022740cCA4'; // throwaway
+  const targetAddr = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'; // throwaway
   const stETHAddr = '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84';
   const wETHAddr = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 
