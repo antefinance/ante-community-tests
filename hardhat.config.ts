@@ -38,6 +38,10 @@ interface ForkingNetworkRPC {
   optimisticEthereum: { url: string };
   aurora: { url: string };
   zkSyncMainnet: { url: string };
+  baseMainnet: { url: string };
+  baseSepolia: { url: string };
+  redstoneHolesky: { url: string };
+  scrollSepolia: { url: string };
 }
 
 const forkingRPC: ForkingNetworkRPC = {
@@ -67,6 +71,18 @@ const forkingRPC: ForkingNetworkRPC = {
   },
   zkSyncMainnet: {
     url: 'https://mainnet.era.zksync.io',
+  },
+  baseMainnet: {
+    url: 'https://mainnet.base.org',
+  },
+  baseSepolia: {
+    url: 'https://sepolia.base.org',
+  },
+  redstoneHolesky: {
+    url: 'https://rpc.holesky.redstone.xyz',
+  },
+  scrollSepolia: {
+    url: 'https://sepolia-rpc.scroll.io',
   },
 };
 
@@ -234,6 +250,27 @@ const config: HardhatUserConfig = {
         mnemonic: process.env.TESTNET_MNEMONIC || '',
       },
       zksync: true,
+    },
+    baseMainnet: {
+      url: 'https://mainnet.base.org',
+      accounts: {
+        mnemonic: process.env.MNEMONIC || '',
+      },
+      gasPrice: 1000000000,
+    },
+    baseSepolia: {
+      url: 'https://sepolia.base.org',
+      accounts: [ process.env.SEPOLIA_PRIVATE_KEY || '' ],
+      gasPrice: 1000000000,
+    },
+    redstoneHolesky: {
+      url: 'https://rpc.holesky.redstone.xyz',
+      accounts: [ process.env.SEPOLIA_PRIVATE_KEY || '' ],
+    },
+    scrollSepolia: {
+      url: 'https://sepolia-rpc.scroll.io',
+      chainId: 534351,
+      accounts: [ process.env.SEPOLIA_PRIVATE_KEY || '' ],
     },
     hardhat: {
       forking: {
