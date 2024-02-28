@@ -7,7 +7,6 @@ import { evmSnapshot, evmRevert } from '../helpers';
 import { expect } from 'chai';
 
 describe('AnteSPELLSupplyTest', function () {
-  if (process.env.NETWORK != 'avalanche') return;
   let test: AnteSPELLSupplyTest;
 
   const SPELLAddr = '0x090185f2135308BaD17527004364eBcC2D37e5F6';
