@@ -9,10 +9,10 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-pragma solidity ^0.7.0;
+pragma solidity ^0.8.0;
 
-import "@openzeppelin-contracts-old/contracts/token/ERC20/IERC20.sol";
-import "../libraries/ante-v05-core/AnteTest.sol";
+import "../interfaces/IERC20.sol";
+import "../AnteTest.sol";
 
 /// @title SPELL supply never exceeds 420 billion test and 210 billion SPELL has been burned
 /// @notice Ante Test to check that SPELL supply is always less than 420 billion and 210 billion SPELL has been burned
@@ -39,7 +39,7 @@ contract AnteSPELLSupplyTest is AnteTest("SPELL supply doesn't exceed 21b") {
 
     /// @notice test to check SPELL token supply
     /// @return true if SPELL supply is less than 420 billion and more than 210 billion SPELL has been burned by being sent to the smart contract
-    function checkTestPasses() external view override returns (bool) {
+    function checkTestPasses() public view override returns (bool) {
         return (SPELLToken.totalSupply() <= THRESHOLD_SUPPLY && SPELLToken.balanceOf(SPELLAddr) >= BURNED_SUPPLY);
     }
 }
