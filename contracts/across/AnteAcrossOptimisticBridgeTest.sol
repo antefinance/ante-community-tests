@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
-pragma solidity ^0.7.0;
+pragma solidity ^0.8.0;
 
-import "../libraries/ante-v05-core/AnteTest.sol";
-import "@openzeppelin-contracts-old/contracts/token/ERC20/IERC20.sol";
+import "../AnteTest.sol";
+import "../interfaces/IERC20.sol";
 
 /// @title AcrossBridgeTest
 /// @notice Ante Test to check if Across Optimistic "rugs" 70% of its top 3 tokens (as of test deployment)
@@ -14,7 +14,7 @@ contract AnteAcrossOptimisticBridgeTest is AnteTest("Across Bridge does not rug 
     // HubPool Address: The main contract that holds assets
     address public constant hubPoolAddr = 0xc186fA914353c44b2E33eBE05f21846F1048bEda;
 
-    // Pool Assetss
+    // Pool Assets
 
     // Lets use 3 Major Assets: WETH WBTC USDC
     // WETH:  https://etherscan.io/address/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
@@ -45,7 +45,7 @@ contract AnteAcrossOptimisticBridgeTest is AnteTest("Across Bridge does not rug 
 
     /// @notice test to check value of top 3 tokens on Across Bridge
     /// @return true if bridge has more than 30% of assets from when it was deployed
-    function checkTestPasses() external view override returns (bool) {
+    function checkTestPasses() public view override returns (bool) {
         return
             wethThreshold < WETH.balanceOf(hubPoolAddr) &&
             wbtcThreshold < WBTC.balanceOf(hubPoolAddr) &&
