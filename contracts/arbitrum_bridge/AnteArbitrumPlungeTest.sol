@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
-pragma solidity ^0.7.0;
+pragma solidity ^0.8.0;
 
-import "../libraries/ante-v05-core/AnteTest.sol";
+import "../AnteTest.sol";
 
 /// @title AnteArbitrumPlungeTest
-/// @notice Ante Test to check that ETH in Arbitrum bridge does NOT drop below 7K (as of Aug 2022)
+/// @notice Ante Test to check that ETH in Arbitrum bridge does NOT drop below 15K (as of March 2024)
 contract AnteArbitrumPlungeTest is AnteTest("ETH in Arbitrum bridge does NOT drop below 7K") {
-    // https://etherscan.io/address/0x011b6e24ffb0b5f5fcc564cf4183c5bbbc96d515
-    address public constant arbitrumbridgeaddr = 0x011B6E24FfB0B5f5fCc564cf4183C5BBBc96D515;
+    // https://etherscan.io/address/0x8315177aB297bA92A06054cE80a67Ed4DBd7ed3a
+    address public constant arbitrumbridgeaddr = 0x8315177aB297bA92A06054cE80a67Ed4DBd7ed3a;
 
-    // 2022-08-18: Balance is ~715K ETH, so -99% is 7K ETH
-    uint256 public constant RUG_THRESHOLD = 7 * 1000 * 1e18;
+    // 2024-03-01: Balance is ~1.5M ETH, so -99% is 15K ETH
+    uint256 public constant RUG_THRESHOLD = 15 * 1000 * 1e18;
 
     constructor() {
         protocolName = "arbitrum";
@@ -19,8 +19,8 @@ contract AnteArbitrumPlungeTest is AnteTest("ETH in Arbitrum bridge does NOT dro
     }
 
     /// @notice test to check balance of ETH in Arbitrum bridge
-    /// @return true if ETH in Arbitrum bridge is above 7K
-    function checkTestPasses() external view override returns (bool) {
+    /// @return true if ETH in Arbitrum bridge is above 15K
+    function checkTestPasses() public view override returns (bool) {
         return arbitrumbridgeaddr.balance >= RUG_THRESHOLD;
     }
 }
