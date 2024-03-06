@@ -8,7 +8,7 @@ import "../AnteTest.sol";
 /// @author 0x11d1f1945414B60c4aC9e850dfD7bEB6B153d128
 /// @notice Ante test takes ETH at deployment and compares to set threshold (10%)
 contract AnteBlastETHYieldManagerPlungeTest is AnteTest("Blast ETHYieldManager doesn't drop under 10% of its ETH") {
-    // https://etherscan.io/address/0x98078db053902644191f93988341e31289e1c8fe#readProxyContract
+    // https://etherscan.io/address/0x98078db053902644191f93988341e31289e1c8fe
     address public constant blastETHYieldManagerAddress= 0x98078db053902644191f93988341E31289E1C8FE;
 
     // threshold amount for the test to fail
