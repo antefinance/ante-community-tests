@@ -9,17 +9,15 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-pragma solidity ^0.7.0;
+pragma solidity ^0.8.0;
 
-import "../libraries/ante-v05-core/AnteTest.sol";
-import "../interfaces/IERC20.sol";
-import "@openzeppelin-contracts-old/contracts/math/SafeMath.sol";
+import { AnteTest } from "../AnteTest.sol";
+import { IERC20 } from "../interfaces/IERC20.sol";
 
 /// @title Compound comptroller issuance rate is not too fast
 /// @notice Ante Test to check the decrease in the balance of COMP in the comptroller  doesn't exceed threshold
 /// currently 10,000 COMP/day
 contract AnteComptrollerIssuanceTest is AnteTest("$COMP (Comptroller) Issuance Rate Test") {
-    using SafeMath for uint256;
 
     /// @notice minimum period after checkpointing before checkTestPasses call
     /// is allowed to fail
@@ -55,7 +53,7 @@ contract AnteComptrollerIssuanceTest is AnteTest("$COMP (Comptroller) Issuance R
     /// @notice take checkpoint of current COMP balance
     function checkpoint() public {
         require(
-            block.timestamp.sub(lastCheckpointTime) > MIN_CHECKPOINT_INTERVAL,
+            block.timestamp - lastCheckpointTime > MIN_CHECKPOINT_INTERVAL,
             "Cannot call checkpoint more than once every 48 hours"
         );
 
@@ -68,7 +66,7 @@ contract AnteComptrollerIssuanceTest is AnteTest("$COMP (Comptroller) Issuance R
     /// increases to avoid reversion
     /// @return true if comptroller COMP balance increases or deosn't decrease by less than 10,000 COMP/day
     function checkTestPasses() public view override returns (bool) {
-        uint256 timeSinceLastCheckpoint = block.timestamp.sub(lastCheckpointTime);
+        uint256 timeSinceLastCheckpoint = block.timestamp - lastCheckpointTime;
         if (timeSinceLastCheckpoint > MIN_PERIOD) {
             uint256 compBalance = COMP.balanceOf(COMPTROLLER);
             // if COMP was added to contract then return true to avoid reversion due to underflow
@@ -76,7 +74,7 @@ contract AnteComptrollerIssuanceTest is AnteTest("$COMP (Comptroller) Issuance R
                 return true;
             }
 
-            return lastCompBalance.sub(compBalance).div(timeSinceLastCheckpoint) < COMP_PER_SEC_THRESHOLD;
+            return (lastCompBalance - compBalance) / timeSinceLastCheckpoint < COMP_PER_SEC_THRESHOLD;
         }
 
         // if timeSinceLastCheckpoint is less than MIN_PERIOD just return true
