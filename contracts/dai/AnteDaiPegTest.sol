@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity >=0.8.0;
+pragma solidity ^0.8.0;
 
-import "../interfaces/IERC20.sol";
+import { AnteTest } from "../AnteTest.sol";
+import { IERC20 } from "../interfaces/IERC20.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-import "../AnteTest.sol";
 
-// Ante Test to check DAI remains +- 5% of USD
+/// @title Ante Test to check DAI remains +- 5% of USD
+/// @notice Test uses Chainlink aggregator to grab the USD value of DAI to check it's price
 contract AnteDaiPegTest is AnteTest("DAI is pegged to USD") {
     // https://etherscan.io/token/0x6b175474e89094c44da98b954eedeac495271d0f
     address public constant DaiAddr = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
