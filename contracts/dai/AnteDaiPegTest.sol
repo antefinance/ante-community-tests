@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 
 import { AnteTest } from "../AnteTest.sol";
 import { IERC20 } from "../interfaces/IERC20.sol";
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import {AggregatorV3Interface } from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 /// @title Ante Test to check DAI remains +- 5% of USD
 /// @notice Test uses Chainlink aggregator to grab the USD value of DAI to check it's price
