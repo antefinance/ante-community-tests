@@ -7,7 +7,7 @@ import { IERC20 } from "../interfaces/IERC20.sol";
 import {AggregatorV3Interface } from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 /// @title Ante Test to check DAI remains +- 5% of USD
-/// @notice Uses Chainlink AggregatorV3Interface to grab the latest price data for Dai
+/// @notice Test uses Chainlink aggregator to grab the USD value of DAI to check it's price
 contract AnteDaiPegTest is AnteTest("DAI is pegged to USD") {
     // https://etherscan.io/token/0x6b175474e89094c44da98b954eedeac495271d0f
     address public constant DaiAddr = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
