@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity >=0.8.0;
+pragma solidity ^0.8.0;
 
 import {AnteTest} from "../AnteTest.sol";
 import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
 /// @title Instadapp Treasury Token Balance Test
 /// @notice Ante Test to check if Instadapp Treasury maintains a total balance greater than
-///          2 million INST tokens
+///         2 million INST tokens
 contract AnteInstadappTreasuryBalanceTest is AnteTest("Instadapp Treasury Balance greater than 2 million") {
     
     address public constant tokenAddr = 0x6f40d4A6237C257fff2dB00FA0510DeEECd303eb;
