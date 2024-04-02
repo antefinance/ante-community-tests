@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity >=0.8.0;
+pragma solidity ^0.8.0;
 
-import "../interfaces/IERC20.sol";
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import { AnteTest } from "../AnteTest.sol";
+import { IERC20 } from "../interfaces/IERC20.sol";
+import { AggregatorV3Interface } from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
-import "../AnteTest.sol";
 
 // Ante Test that the top 5 assets do not get rugged. (lose 90% of value.)
 contract AnteMultichainBridgeRugTest is AnteTest("Top 5 assets do not lose 90% value.") {
