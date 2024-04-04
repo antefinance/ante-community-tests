@@ -2,9 +2,9 @@
 
 pragma solidity ^0.8.0;
 
-import "../interfaces/IERC20.sol";
-import "../AnteTest.sol";
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import { AnteTest } from "../AnteTest.sol";
+import { IERC20 } from "../interfaces/IERC20.sol";
+import { AggregatorV3Interface } from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 // Ante Test to check USDC remains > 0.90
 contract AnteFeiPegTest is AnteTest("Fei is above 90 cents on the dollar") {

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity >=0.8.0;
+pragma solidity ^0.8.0;
 
 import {AnteTest} from "../AnteTest.sol";
 import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
@@ -8,7 +8,7 @@ import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 /// @title Immunefi Vault Balance Test
 /// @notice Ante Test to check if Immunefi's vault maintains a USDC balance greater than the value of 
-///          their smallest bounty (USD $1000).
+///         their smallest bounty (USD $1000).
 contract AnteImmunefiVaultBalanceTest is AnteTest("Immunefi Vault USDC Balance greater than 1 thousand USD") {
     
     address public constant vaultAddr = 0xf4a8714f6ca5Bf232F10b308C693448738be0661;
