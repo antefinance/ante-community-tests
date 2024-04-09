@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../AnteTest.sol";
+import { AnteTest } from "../AnteTest.sol";
 
 /// @notice Checks if the TVL is at least 15% the original TVL
 contract AnteOpynPlungeTest is AnteTest("Opyn Balance is greater than 15% the original") {
